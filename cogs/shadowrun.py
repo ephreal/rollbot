@@ -259,14 +259,15 @@ class shadowrun:
 		extended test), success is passed in as False.
 		"""
 
+		#TODO: Add in check for gremlins 1-4
 		message = ""
 
 		if roll_type == "roll":
 			if glitch:
 				if glitch == "critical":
-					message += "A critical glitch occured!"
+					message += "A critical glitch occured!\n"
 				else:
-					message += "A glitch occured!"
+					message += "A glitch occured!\n"
 
 			message += f"You rolled {len(rolls)} dice.\n"
 			message += f"Hits   : {hits[0]}\n"
