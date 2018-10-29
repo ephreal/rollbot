@@ -14,11 +14,11 @@ The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
@@ -34,17 +34,12 @@ class roller:
 		# Channels allowed to roll in.
 		# Change these to whatever channels
 		# you want to allow rolling in.
+		# I'm going to make this load in
+		# from the config file in the future.
 		self.rolling_channels = [
 			                     "501257611157569556",
 			                     "372413873070014464"
 			                    ]
-
-		# Maybe I'll put these in an external config file later...
-		self.sr_tweaks = {
-						   "glitch_more_than_half"          : False,
-						   "glitch_fails_extended"          : False,
-						   "critical_glitch_fails_extended" : False
-						 }
 
 	@commands.command(pass_context=True)
 	async def roll(self, ctx):
@@ -84,7 +79,7 @@ class roller:
 
 		content = ctx.message.content.split()
 		content = content[1:]
-		
+
 		try:
 
 			if len(content) == 0:
@@ -110,7 +105,7 @@ class roller:
 
 
 	async def multi_roll(self, dice_pool=1, sides=6):
-		return [await self.single_roll(sides) for i in range(0,dice_pool)]		
+		return [await self.single_roll(sides) for i in range(0,dice_pool)]
 
 
 	# Info checking functions below
