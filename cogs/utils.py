@@ -51,6 +51,11 @@ class utils:
 		command = ctx.message.content.lower().split()
 		command = command[1:]
 
+		valid_intervals = {
+							"s" : 1,
+							"m" : 60,
+							"h" : 3600
+						  }
 		timer = 1
 
 		try:
@@ -62,15 +67,20 @@ class utils:
 				await self.bot.say(f"Assuming {command[0]} seconds.")
 				command.append("s")
 
-			elif (command[1] != 'm') or (command[1] != 'h'):
+			if command[1] not in list(valid_intervals.keys()):
+				await self.bot.say(f"Unknown time of {command[1]}, assuming seconds...")
+				await self.bot.say(f"{command}")
 				command[1] = 's'
 
-			if command[1] == 'm':
-				timer = 60
-			elif command[1] == 'h':
-				timer = 3600
+#			if command[1] == 'm':
+#				timer = 60
+#			elif command[1] == 'h':
+#				timer = 3600
 
-			timer *= int(command[0])
+			timer = int(command[0])
+			interval = command[1]
+
+			timer *= valid_intervals[interval]
 
 			if timer >= (3600 * 3):
 				return await self.bot.say("Max time allowed is 3 hours.")
