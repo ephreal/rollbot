@@ -31,6 +31,9 @@ import random
 class roller:
 	def __init__(self, bot):
 		self.bot = bot
+		# Channels allowed to roll in.
+		# Change these to whatever channels
+		# you want to allow rolling in.
 		self.rolling_channels = [
 			                     "501257611157569556",
 			                     "372413873070014464"
@@ -80,24 +83,18 @@ class roller:
 		of roll commands to this channel.
 		"""
 
-		# Channels allowed to roll in
-		bot_channels = [
-						"501257611157569556",
-						"372413873070014464"
-					   ]
-
 		author = ctx.message.author
 		channel = ctx.message.channel.id
 
-		if channel not in bot_channels:
+		if channel not in self.rolling_channels:
 			# PM author if in wrong channel
 			await self.bot.send_message(author,
 				                  "Please limit roll commands to the rolling " \
-				                  "or bottesting channels.\nThe results of " \
-				                  "your roll will be found in rolling.")
+				                  "or bottesting channels.\nThe results of your " \
+				                  "roll will be found in the rolling channel")
 
 			# Return the rolling channel
-			channel = client.Client.get_channel(self.bot,id=bot_channels[0])
+			channel = client.Client.get_channel(self.bot,id=self.rolling_channels[0])
 			await self.bot.send_message(channel,
 				                        f"Command was \"{ctx.message.content}\"")
 			await client.Client.delete_message(self.bot, ctx.message)
