@@ -31,6 +31,10 @@ import random
 class roller:
 	def __init__(self, bot):
 		self.bot = bot
+		self.rolling_channels = [
+			                     "501257611157569556",
+			                     "372413873070014464"
+			                    ]
 
 	@commands.command(pass_context=True)
 	async def roll(self, ctx):
