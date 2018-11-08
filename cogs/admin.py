@@ -24,12 +24,14 @@ DEALINGS IN THE SOFTWARE.
 
 from discord import client
 from discord.ext import commands
+import json
 
 class admin:
 	def __init__(self,bot):
 		self.bot = bot
+		self.admins = self.get_admins()
 
-	@commands.command(pass_context=True)
+	@commands.command(pass_context=True, hidden=True)
 	async def purge(self, ctx):
 		"""
 		Usage:
@@ -43,9 +45,9 @@ class admin:
 		# Disallow anoyone but me from using this
 		# currently
 		author_id = ctx.message.author.id
-		if author_id != '172507494944342017':
+		if author_id not in self.admins:
 			await self.bot.say("That command is restricted " \
-				               "to my creator currently.")
+				               "to bot admins.")
 			return
 
 		channel = ctx.message.channel
@@ -72,6 +74,12 @@ class admin:
 				print("removed a message from being purged")
 			
 		await client.Client.delete_messages(self.bot, msgs)
+
+
+	def get_admins(self):
+		with open("config/admin.json", 'r') as f:
+			return json.load(f)["admins"]
+
 
 
 

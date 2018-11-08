@@ -36,6 +36,10 @@ def load_config():
 	with open("config/config.json", 'r') as f:
 		return json.load(f)
 
+def get_admins():
+	with open("config/admin.json", "r") as f:
+		return json.load(f)["admins"]
+
 
 config = load_config()
 
@@ -69,9 +73,19 @@ async def load_cogs():
 			print(f"{e}\n")
 
 
-@bot.command()
+@bot.command(hidden=True)
 async def reload():
 	await load_cogs()
 	await boy.say("Reloaded")
+
+@bot.command(hidden=True, pass_context=True)
+async def stop(ctx):
+	admins = await get_admins()
+
+	if ctx.message.author.id not in admins:
+		return await bot.say("Please don't try turn me off.")
+
+	await bot.say("Shutting do...")
+	sys.exit()
 
 bot.run(config["token"])
