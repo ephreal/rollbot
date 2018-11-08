@@ -80,13 +80,13 @@ After downloading and setting up the bot, open a terminal window and verify that
 Navigate to the main folder and run 
 
 <code>
-./docker\_setup
+./docker_setup
 </code>
 
 to build the docker image. Once the image is completed, run 
 
 <code>
-docker run --name bot docker\_bot
+docker run --name bot docker_bot
 </code>
 
 to start the bot.
