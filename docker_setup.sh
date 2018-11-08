@@ -20,9 +20,6 @@
 # it.
 
 
-if [ -d "docker_bot" ] ; then
-	rm -r docker_bot
-fi
 
 current=`docker images docker_bot | tail -n 1 | cut -d " " -f 25`
 
@@ -36,3 +33,4 @@ mkdir docker_bot
 cp -r ./* docker_bot/
 docker build -t docker_bot .
 
+rm -r docker_bot
