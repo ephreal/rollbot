@@ -18,6 +18,9 @@ Bonus features that I would like to add on at some point
 * Shadowrun character roll features (roll perception, roll gymnastics, etc)
 * Multiple DnD characters saved and usable
 
+Possibly impossible features I'd like to try set up
+* Have the bot check github once a day and see if there are any updates, if so, auto update.
+
 
 ## Setting up the bot
 
