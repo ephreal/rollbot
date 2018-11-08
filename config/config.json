@@ -1,0 +1,6 @@
+{
+	"token" : "YOUR_TOKEN_HERE",
+	"name" : "Your bot name here",
+	"avatar" : "config/avatar.jpg",
+	"prefix" : "."
+}
