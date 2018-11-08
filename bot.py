@@ -12,6 +12,11 @@ def load_config():
 		return json.load(f)
 
 
+config = load_config()
+
+bot = commands.Bot(command_prefix=config["prefix"],
+	               description="rollbot")
+
 @bot.event
 async def on_ready():
 	print("Startup complete, loading Cogs....")
@@ -43,10 +48,5 @@ async def load_cogs():
 async def reload():
 	await load_cogs()
 	await boy.say("Reloaded")
-
-config = load_config()
-
-bot = commands.Bot(command_prefix=config["prefix"],
-	               description="rollbot")
 
 bot.run(config["token"])
