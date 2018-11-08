@@ -31,6 +31,6 @@ fi
 
 mkdir docker_bot
 cp -r ./* docker_bot/
-docker build -t docker_bot .
+sudo docker build -t docker_bot .
 
-rm -r docker_bot
+sudo rm -r docker_bot
