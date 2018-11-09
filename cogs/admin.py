@@ -65,16 +65,22 @@ class admin:
 		async for x in client.Client.logs_from(self.bot, channel, limit=limit):
 			msgs.append(x)
 
-		pinned = await client.Client.pins_from(self.bot, channel)
-		pinned = [x.id for x in pinned]
+		# check for pinned messages
+		to_keep = await client.Client.pins_from(self.bot, channel)
+		to_keep = [x.id for x in to_keep]
+
 		
-		# Check msgs for any pinned message and do not
-		# delete them.
+		# Check msgs for any to_keep messages or messages
+		# with attachments and do not delete them.
 
 		for x in msgs:
-			if x.id in pinned:
+			if x.id in to_keep:
 				msgs.remove(x)
-				print("removed a message from being purged")
+
+			elif x.attachments:
+				msgs.remove(x)
+
+
 			
 		await client.Client.delete_messages(self.bot, msgs)
 
