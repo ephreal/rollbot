@@ -42,8 +42,7 @@ class admin:
 		is ran in.
 		"""
 
-		# Disallow anoyone but me from using this
-		# currently
+		# Only allow admins to run admin commands
 		author_id = ctx.message.author.id
 		if author_id not in self.admins:
 			await self.bot.say("That command is restricted " \

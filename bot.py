@@ -28,8 +28,8 @@ import json
 import os
 import sys
 
+from discord import client
 from discord.ext import commands
-
 
 
 def load_config():
@@ -46,11 +46,41 @@ config = load_config()
 bot = commands.Bot(command_prefix=config["prefix"],
 	               description="rollbot")
 
+
+def get_text_channel():
+	text_channels = []
+	for server in bot.servers:
+		for channel in server.channels:
+			if channel.type == "Text":
+				text_channels.append(channel)
+
+	return channels
+
+
+async def check_admins():
+	admins = get_admins()
+	if admins[0] == "YOUR_NUMERIC_USER_ID":
+		print("Entered admin check")
+		channels = get_text_channel()
+
+		print(channels)
+
+		message = "Bot admins have not been set up yet.\n" \
+		          "Admin commands will not work. Place " \
+		          "admins in config/admins.json.\nTo get " \
+		          "numeric ID's, run '.info'"
+
+		# await bot.send_message(channel, message)
+
+			
+
 @bot.event
 async def on_ready():
 	print("Startup complete, loading Cogs....")
 	await load_cogs()
 	print("Cog loading complete.")
+	await check_admins()
+
 
 
 async def load_cogs():
