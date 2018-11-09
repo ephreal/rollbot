@@ -39,9 +39,13 @@ class admin:
 		Usage:
 		.purge X
 
-		removes X amount of messages
-		from the channel the command
-		is ran in.
+		removes X amount of messages from the channel the command is 
+		ran in. Currently limited to 100 messages at a time. This
+		will default to removing 10 messages at a time.
+
+		Message purging ignores any pinned messages or messages with
+		attachments by default. To purge everything, include "all"
+		after in your purge command.
 		"""
 
 		author_id = ctx.message.author.id
@@ -58,7 +62,9 @@ class admin:
 		msgs = []
 		limit = ctx.message.content.split()
 
-		if len(limit) >= 2:
+		if limit[1] == "all":
+			limit = 1000
+		elif len(limit) >= 2:
 			limit = int(limit[1])
 		else:
 			limit = 10
@@ -66,24 +72,29 @@ class admin:
 		async for x in client.Client.logs_from(self.bot, channel, limit=limit):
 			msgs.append(x)
 
-		# check for pinned messages
-		to_keep = await client.Client.pins_from(self.bot, channel)
-		to_keep = [x.id for x in to_keep]
+		if not "all" in ctx.message.content:
 
-		
-		# Check msgs for any to_keep messages or messages
-		# with attachments and do not delete them.
-
-		for x in msgs:
-			if x.id in to_keep:
-				msgs.remove(x)
-
-			elif x.attachments:
-				msgs.remove(x)
-
+			# check for pinned messages
+			to_keep = await client.Client.pins_from(self.bot, channel)
+			to_keep = [x.id for x in to_keep]
 
 			
-		await client.Client.delete_messages(self.bot, msgs)
+			# Check msgs for any to_keep messages or messages
+			# with attachments and do not delete them.
+
+			for x in msgs:
+				if x.id in to_keep:
+					msgs.remove(x)
+
+				elif x.attachments:
+					msgs.remove(x)
+
+
+		# delete messages in groups of 100 at a time
+		while msgs:
+			await client.Client.delete_messages(self.bot, msgs[0:100])
+			msgs = msgs[100:]
+
 
 
 	@commands.command(hidden=True, pass_context=True)
