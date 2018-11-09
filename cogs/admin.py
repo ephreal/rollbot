@@ -31,6 +31,7 @@ class admin:
 	def __init__(self,bot):
 		self.bot = bot
 		self.admins = []
+		self.admin_group = "Admins"
 
 	@commands.command(pass_context=True, hidden=True)
 	async def purge(self, ctx):
@@ -108,13 +109,13 @@ class admin:
 
 
 	async def get_admins(self, ctx):
-		role = discord.utils.get(ctx.message.server.roles, name="Admins")
+		role = discord.utils.get(ctx.message.server.roles, name=self.admin_group)
 		for member in ctx.message.server.members:
 			if role in member.roles:
 				self.admins.append(member.id)
 
 		if len(self.admins) == 0:
-			message = "No admins found. Do you have and Admin group?\n" \
+			message = f"No admins found. Do you have an \"{self.admin_group}\" group with users?\n" \
 			          "(Note: Group name is case sensitive)"
 
 			await self.bot.send_message(ctx.message.channel, message)
