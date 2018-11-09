@@ -41,15 +41,31 @@ class roller:
 
 	@commands.command(pass_context=True)
 	async def roll(self, ctx):
+		"""
+		A general purpose rolling command.
 
-		# Check to make sure the bot isn't
-		# replying to any bots.
+		Roll will roll XdY dice, where X is the amount of dice,
+		and Y is the amount of dice sides. The maximum amount of
+		dice that can be rolled at any time is 100.
+
+		usage:
+			roll one 6 sided die
+				.roll
+				.roll 1d6
+
+			roll ten 6 sided die
+				.roll 10d6
+
+			roll fifteen 20-sided die
+				.roll 15d6
+		"""
+
+		# Check to make sure the bot isn't replying to any bots.
 
 		if ctx.message.author.bot:
 			return
 
-		# Channel checks. Rolling is
-		# restricted to a few channels
+		# Channel checks. Rolling is restricted to a few channels
 		# on my discord server.
 		# Comment out if not desired.
 		channel = await self.check_channel(ctx)
@@ -57,13 +73,22 @@ class roller:
 		content = ctx.message.content.split()
 		content = content[1:]
 		
-		if len(content) >= 2:
-			rolls = await self.multi_roll(int(content[0]), int(content[1]))
-		elif len(content) == 1:
-			rolls = await self.multi_roll(int(content[0]), 6)
-		else:
-			# return 1d6 roll
-			rolls = await self.multi_roll(1,6)
+		try:
+
+			if len(content) == 0:
+				# return 1d6 roll
+				rolls = await self.multi_roll(1,6)
+
+			elif len(content) >= 1:
+				content = content[0].split("d")
+				dice_pool = int(content[0])
+				sides = int(content[1])
+				rolls = await self.multi_roll(int(content[0]), 6)
+
+		except Exception as e:
+			await self.bot.send_message(channel, "Incorrect input. Run .help roll "\
+				                                 "if you need help.")
+			await self.bot.send_message(channel, f"Error message: {e}")
 
 		await self.bot.send_message(channel, rolls)
 
@@ -74,6 +99,18 @@ class roller:
 
 	async def multi_roll(self, dice_pool=1, sides=6):
 		return [await self.single_roll(sides) for i in range(0,dice_pool)]
+
+
+	@commands.command(pass_context=True,
+					  description="Shadowrun dice roller")
+	async def sr(selc, ctx):
+		"""
+		Shadowrun specific dice rolling.
+
+		Currently unused.
+		"""
+
+		pass
 
 
 	# Info checking functions below
