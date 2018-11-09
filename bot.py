@@ -36,42 +36,11 @@ def load_config():
 	with open("config/config.json", 'r') as f:
 		return json.load(f)
 
-def get_admins():
-	with open("config/admin.json", "r") as f:
-		return json.load(f)["admins"]
-
 
 config = load_config()
 
 bot = commands.Bot(command_prefix=config["prefix"],
 	               description="rollbot")
-
-
-def get_text_channel():
-	text_channels = []
-	for server in bot.servers:
-		for channel in server.channels:
-			if channel.type == "Text":
-				text_channels.append(channel)
-
-	return channels
-
-
-async def check_admins():
-	admins = get_admins()
-	if admins[0] == "YOUR_NUMERIC_USER_ID":
-		print("Entered admin check")
-		channels = get_text_channel()
-
-		print(channels)
-
-		message = "Bot admins have not been set up yet.\n" \
-		          "Admin commands will not work. Place " \
-		          "admins in config/admins.json.\nTo get " \
-		          "numeric ID's, run '.info'"
-
-		# await bot.send_message(channel, message)
-
 			
 
 @bot.event
@@ -79,7 +48,7 @@ async def on_ready():
 	print("Startup complete, loading Cogs....")
 	await load_cogs()
 	print("Cog loading complete.")
-	await check_admins()
+	print("Connected to server and awaiting commands.")
 
 
 
@@ -99,7 +68,7 @@ async def load_cogs():
 
 		except Exception as e:
 			print(f"Failed to load {extension}")
-			print("Error follows...\n")
+			print("Error follows:\n")
 			print(f"{e}\n")
 
 
@@ -108,14 +77,5 @@ async def reload():
 	await load_cogs()
 	await boy.say("Reloaded")
 
-@bot.command(hidden=True, pass_context=True)
-async def stop(ctx):
-	admins = await get_admins()
-
-	if ctx.message.author.id not in admins:
-		return await bot.say("Please don't try turn me off.")
-
-	await bot.say("Shutting do...")
-	sys.exit()
 
 bot.run(config["token"])

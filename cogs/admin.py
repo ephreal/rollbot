@@ -22,14 +22,16 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+import discord
 from discord import client
 from discord.ext import commands
+import sys
 import json
 
 class admin:
 	def __init__(self,bot):
 		self.bot = bot
-		self.admins = self.get_admins()
+		self.admins = []
 
 	@commands.command(pass_context=True, hidden=True)
 	async def purge(self, ctx):
@@ -42,12 +44,15 @@ class admin:
 		is ran in.
 		"""
 
-		# Only allow admins to run admin commands
 		author_id = ctx.message.author.id
+
+		# Get admins if this is the first time it's been ran
+		if not self.admins:
+			self.get_admins(ctx)
+
+		# Only allow admins to run admin commands
 		if author_id not in self.admins:
-			await self.bot.say("That command is restricted " \
-				               "to bot admins.")
-			return
+			return await self.bot.say("That command is restricted to admins.")
 
 		channel = ctx.message.channel
 		msgs = []
@@ -75,10 +80,33 @@ class admin:
 		await client.Client.delete_messages(self.bot, msgs)
 
 
-	def get_admins(self):
-		with open("config/admin.json", 'r') as f:
-			return json.load(f)["admins"]
+	@commands.command(hidden=True, pass_context=True)
+	async def stop(ctx):
+		
+		author_id = ctx.message.author.id
 
+		if not self.admins:
+			self.get_admins()
+
+		if author.id not in self.admins:
+			return await self.bot.say("Only admins may stop me.")
+
+		await self.bot.say("Shutting do...")
+		await client.Client.close(self.bot)
+		sys.exit()
+
+
+	@commands.command(hidden=True, pass_context=True)
+	async def refresh_admins():
+		self.get_admins
+		await self.bot.send_message(ctx.message.author, "Admin list refreshed")
+
+
+	def get_admins(self, ctx):
+		role = discord.utils.get(ctx.message.server.roles, name="Admins")
+		for member in ctx.message.server.members:
+			if role in member.roles:
+				self.admins.append(member.id)
 
 
 
