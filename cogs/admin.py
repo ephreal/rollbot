@@ -25,7 +25,6 @@ DEALINGS IN THE SOFTWARE.
 import discord
 from discord import client
 from discord.ext import commands
-import sys
 import json
 
 class admin:
@@ -48,7 +47,7 @@ class admin:
 
 		# Get admins if this is the first time it's been ran
 		if not self.admins:
-			self.get_admins(ctx)
+			await self.get_admins(ctx)
 
 		# Only allow admins to run admin commands
 		if author_id not in self.admins:
@@ -81,32 +80,38 @@ class admin:
 
 
 	@commands.command(hidden=True, pass_context=True)
-	async def stop(ctx):
+	async def stop(self,ctx):
 		
 		author_id = ctx.message.author.id
 
 		if not self.admins:
-			self.get_admins()
+			await self.get_admins(ctx)
 
-		if author.id not in self.admins:
+		if author_id not in self.admins:
 			return await self.bot.say("Only admins may stop me.")
 
-		await self.bot.say("Shutting do...")
-		await client.Client.close(self.bot)
-		sys.exit()
+		await self.bot.say("Shutting d....")
+		# await client.Client.close(self.bot)
+		await client.Client.logout(self.bot)
 
 
 	@commands.command(hidden=True, pass_context=True)
-	async def refresh_admins():
-		self.get_admins
+	async def refresh_admins(self, ctx):
+		self.get_admins(ctx)
 		await self.bot.send_message(ctx.message.author, "Admin list refreshed")
 
 
-	def get_admins(self, ctx):
+	async def get_admins(self, ctx):
 		role = discord.utils.get(ctx.message.server.roles, name="Admins")
 		for member in ctx.message.server.members:
 			if role in member.roles:
 				self.admins.append(member.id)
+
+		if len(self.admins) == 0:
+			message = "No admins found. Do you have and Admin group?\n" \
+			          "(Note: Group name is case sensitive)"
+
+			await self.bot.send_message(ctx.message.channel, message)
 
 
 
