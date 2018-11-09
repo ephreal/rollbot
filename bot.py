@@ -30,6 +30,7 @@ import sys
 
 from discord import client
 from discord.ext import commands
+from discord import game
 
 
 def load_config():
@@ -49,6 +50,7 @@ async def on_ready():
 	await load_cogs()
 	print("Cog loading complete.")
 	print("Connected to server and awaiting commands.")
+	await bot.change_presence(game=game.Game(name="message '.help' for help"))
 
 
 
@@ -57,7 +59,8 @@ async def load_cogs():
 	modules = [
 			   "cogs.admin",
 			   "cogs.roller",
-			   "cogs.tests"
+			   "cogs.tests",
+			   "cogs.utils"
 			  ]
 	
 	for extension in modules:
