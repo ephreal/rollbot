@@ -13,7 +13,7 @@ Expected future roll types are:
 * DnD dice rolling
 
 Bonus features that I would like to add on at some point
-* Message cleanup of a channel
+* Message cleanup of a channel (Completed)
 * DnD character creator
 * Shadowrun character roll features (roll perception, roll gymnastics, etc)
 * Multiple DnD characters saved and usable
