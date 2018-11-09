@@ -36,16 +36,24 @@ class admin:
 	@commands.command(pass_context=True, hidden=True)
 	async def purge(self, ctx):
 		"""
-		Usage:
-		.purge X
-
-		removes X amount of messages from the channel the command is 
+		Removes X amount of messages from the channel the command is 
 		ran in. Currently limited to 100 messages at a time. This
 		will default to removing 10 messages at a time.
 
 		Message purging ignores any pinned messages or messages with
 		attachments by default. To purge everything, include "all"
 		after in your purge command.
+
+		usage examples:
+
+			purge 10 messages:  .purge  OR  .purge 10
+			purge 100 messages: .purge 100
+
+			purge 100 messages (including messages with attachments/pins)
+				.purge 100 all
+
+			purge 1000 messages (including messsges with attachments/pins)
+				.purge all  or  .purge 1000 all
 		"""
 
 		author_id = ctx.message.author.id
@@ -99,6 +107,11 @@ class admin:
 
 	@commands.command(hidden=True, pass_context=True)
 	async def stop(self,ctx):
+		"""
+		Stops the bot
+
+		usage: .stop
+		"""
 		
 		author_id = ctx.message.author.id
 
@@ -109,17 +122,35 @@ class admin:
 			return await self.bot.say("Only admins may stop me.")
 
 		await self.bot.say("Shutting d....")
-		# await client.Client.close(self.bot)
 		await client.Client.logout(self.bot)
 
 
-	@commands.command(hidden=True, pass_context=True)
+	@commands.command(pass_context=True)
 	async def refresh_admins(self, ctx):
+		"""
+		Reloads admin group membership
+
+		usage: .refresh_admins
+		"""
 		self.get_admins(ctx)
 		await self.bot.send_message(ctx.message.author, "Admin list refreshed")
 
 
 	async def get_admins(self, ctx):
+		"""
+		Gets a list of admins from the server and places them in
+		self.admins. If no admins are found, it sends a message
+		to the channel warning the user that the admin group has
+		no users. 
+
+		If no admins are found, it's also possible the the admin
+		group does not exist and must be created.
+
+		To change the admin group, modify the self.admins in the
+		class definition.
+
+		Default admin group: Admins
+		"""
 		role = discord.utils.get(ctx.message.server.roles, name=self.admin_group)
 		for member in ctx.message.server.members:
 			if role in member.roles:
