@@ -35,9 +35,16 @@ class roller:
 		# Change these to whatever channels
 		# you want to allow rolling in.
 		self.rolling_channels = [
-			                     "501257611157569556",
-			                     "372413873070014464"
+			                     "501257611157569556"#,
+			                     #"372413873070014464"
 			                    ]
+
+		# Maybe I'll put these in an external config file later...
+		self.sr_tweaks = {
+						   "glitch_more_than_half"          : False,
+						   "glitch_fails_extended"          : False,
+						   "critical_glitch_fails_extended" : False
+						 }
 
 	@commands.command(pass_context=True)
 	async def roll(self, ctx):
@@ -85,12 +92,12 @@ class roller:
 				sides = int(content[1])
 				rolls = await self.multi_roll(int(content[0]), 6)
 
+			await self.bot.send_message(channel, rolls)
+
 		except Exception as e:
 			await self.bot.send_message(channel, "Incorrect input. Run .help roll "\
 				                                 "if you need help.")
 			await self.bot.send_message(channel, f"Error message: {e}")
-
-		await self.bot.send_message(channel, rolls)
 
 
 	async def single_roll(self, sides):
@@ -103,14 +110,15 @@ class roller:
 
 	@commands.command(pass_context=True,
 					  description="Shadowrun dice roller")
-	async def sr(selc, ctx):
+	async def sr(self, ctx):
 		"""
 		Shadowrun specific dice rolling.
 
 		Currently unused.
 		"""
 
-		pass
+		await self.bot.say(dir(ctx.message))
+		
 
 
 	# Info checking functions below
