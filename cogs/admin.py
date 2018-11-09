@@ -23,9 +23,10 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import discord
+import json
+from asyncio import sleep
 from discord import client
 from discord.ext import commands
-import json
 
 class admin:
 	def __init__(self,bot):
@@ -132,8 +133,60 @@ class admin:
 
 		usage: .refresh_admins
 		"""
-		self.get_admins(ctx)
+		await self.get_admins(ctx)
 		await self.bot.send_message(ctx.message.author, "Admin list refreshed")
+
+
+	@commands.command(pass_context=True,
+		              description="Channel message spammer")
+	async def spam(self, ctx):
+		"""
+		Spams messges to a channel.
+
+		Sometimes you need to test things on a large amount of
+		messages. For those times, the spam command will be
+		your friend. Instead of having to individually create
+		hundreds of messages, why not have a bot do it for you?
+
+		The maximum amount of messages allowed is 1000.
+
+		usage:
+			send 100 messages to a channel
+				.spam or .spam 100
+
+			send 200 messages to a channel
+				.spam 200
+		"""
+
+		author_id = ctx.message.author.id
+
+		if not self.admins:
+			await self.get_admins(ctx)
+
+		if not author_id in self.admins:
+			return await self.bot.say ("This command is for admins only.")
+
+		command = ctx.message.content.split()
+		command = command[1:]
+
+		try:
+			if len(command) == 0:
+				amount = 100
+			else:
+				amount = int(command[0])
+
+			if amount > 1000:
+				return await self.bot.say("Messages to spam is over 1000")
+
+			for i in range(0,amount):
+				await self.bot.say(f"Message {i}.")
+				await sleep(1)
+
+		except Exception as e:
+			await self.bot.say("Invalid input received.")
+			await self.bot.say(f"Error follows:\n{e}")
+
+
 
 
 	async def get_admins(self, ctx):
