@@ -35,8 +35,8 @@ class roller:
 		# Change these to whatever channels
 		# you want to allow rolling in.
 		self.rolling_channels = [
-			                     "501257611157569556"#,
-			                     #"372413873070014464"
+			                     "501257611157569556",
+			                     "372413873070014464"
 			                    ]
 
 		# Maybe I'll put these in an external config file later...
@@ -65,6 +65,11 @@ class roller:
 
 			roll fifteen 20-sided die
 				.roll 15d6
+
+		If you are looking to roll dice for shadowrum, check the
+		help for the "sr" command.
+			.help sr
+
 		"""
 
 		# Check to make sure the bot isn't replying to any bots.
@@ -105,20 +110,7 @@ class roller:
 
 
 	async def multi_roll(self, dice_pool=1, sides=6):
-		return [await self.single_roll(sides) for i in range(0,dice_pool)]
-
-
-	@commands.command(pass_context=True,
-					  description="Shadowrun dice roller")
-	async def sr(self, ctx):
-		"""
-		Shadowrun specific dice rolling.
-
-		Currently unused.
-		"""
-
-		await self.bot.say(dir(ctx.message))
-		
+		return [await self.single_roll(sides) for i in range(0,dice_pool)]		
 
 
 	# Info checking functions below
