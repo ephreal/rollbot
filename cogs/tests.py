@@ -22,6 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+import discord
 from discord.ext import commands
 from discord import client
 
@@ -32,11 +33,31 @@ class tests:
 
 	@commands.command(description="Bot connectivity test")
 	async def ping(self):
+		"""
+		Checks bot availability
+
+		Ping lets you know if the bot can hear and respond
+		to you. In usual network fashion, a ping receives
+		a pong packet in response.
+
+		usage: .ping
+		"""
 		await self.bot.say("pong!")
 
 	@commands.command(pass_context=True,
-		              description="Get server/channel info")
+		              description="Gets basic server info")
 	async def info(self, ctx):
+		"""
+		Basic server, channel, and user info
+
+		This is the shortened version of the .all_info command.
+
+		It does not return as much information as .all_info, but
+		it dows give you a quick and dirty rundown of server
+		info, current channel info, and your user info.
+
+		usage: .info
+		"""
 		info = {
 				"server"     : ctx.message.server,
 				"server_id"  : ctx.message.server.id,
@@ -57,21 +78,50 @@ author id: {info['author_id']}
 """
 		await self.bot.say(message)
 
-	@commands.command()
-	async def redirect(self):
-		# rolling: 501257611157569556
-		# bottesting: 372413873070014464
-		# tabletop: 372119891966296066
+
+	@commands.command(pass_context = True,
+		              description="Get a large amount of useful " \
+		                          "server channel/user info")
+	async def all_info(self, ctx):
+		"""
+		Gets server information
+
+		Shows you what channels are currently on the server
+		and who your server's members are.
+
+		usage: .all_info
+		"""
+		channels = [x.name for x in ctx.message.server.channels]#client.Client.get_all_channels(self.bot)]
+		# channels = [{channel : channel.id} for channel in discord.utils.get(channels)]
+
+		users = [member for member in ctx.message.server.members]
+		users = [{member.name : [member.id, member.roles]} for member in users]
+
+		for user in users:
+			for key in user.keys():
+				roles = []
+				for role in user[key][1]:
+					role = role.name
+					if role == "@everyone":
+						continue
+					roles.append(role)
+				user[key][1] = roles
+
 		
-		channel = client.Client.get_channel(self.bot, id='372413873070014464')
+		await self.bot.say(f"```CSS\nchannels:\n\t{channels}```")
+		await self.bot.say("users:\n")
 
-		await self.bot.say("Attempting to send message to bot testing channel")
-		await self.bot.send_message(channel, "Did I do good?")
 
-	@commands.command()
-	async def all_info(self):
-		channels = [x.name for x in client.Client.get_all_channels(self.bot)]
-		await self.bot.say(channels)
+		for user in users:
+			name = list(user.keys())[0]
+			user_id = user[name][0]
+			roles = user[name][1]
+			message  =  "```CSS\n"
+			message += f"Name : {name}\n" \
+				       f"\tID: {user_id}\n" \
+				       f"\tRoles: {roles}\n```"
+			await self.bot.say(message)
+		await self.bot.say("All info complete.")
 
 def setup(bot):
 	bot.add_cog(tests(bot))
