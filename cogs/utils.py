@@ -33,19 +33,19 @@ class utils:
 
 	@commands.command(pass_context=True,
 					  description="Timer/Reminder")
-	async def reminder(self, ctx):
+	async def timer(self, ctx):
 		"""
 		Sets a timer
 
-		Reminder sets a timer for X minutes/seconds/hours that messages you
+		timer sets a timer for X minutes/seconds/hours that messages you
 		when time is up. This assumes seconds if you do not pass in a 
 		length value. The maximum available time you may set a timer for is
 		3 hours.
 
 		usage:
-			30 second timer: .reminder 30 s    or    .reminder 30
-			10 minute timer: .reminder 10 m
-			1 hour timer:    .reminder 1 h
+			30 second timer: .timer 30 s    or    .timer 30
+			10 minute timer: .timer 10 m
+			1 hour timer:    .timer 1 h
 		"""
 
 		command = ctx.message.content.lower().split()
@@ -54,6 +54,17 @@ class utils:
 		timer = 1
 
 		try:
+			if len(command) == 0:
+				return await self.bot.say("How long do you want a timer set for?\n" \
+					                      "See '.help timer' for more info.")
+
+			elif len(command) == 1:
+				await self.bot.say(f"Assuming {command[0]} seconds.")
+				command.append("s")
+
+			elif (command[1] != 'm') or (command[1] != 'h'):
+				command[1] = 's'
+
 			if command[1] == 'm':
 				timer = 60
 			elif command[1] == 'h':
@@ -62,10 +73,11 @@ class utils:
 			timer *= int(command[0])
 
 			if timer >= (3600 * 3):
-				await self.bot.say("Max time allowed is 3 hours.")
+				return await self.bot.say("Max time allowed is 3 hours.")
+
+			await self.bot.say(f"Timer set for {command[0]} {command[1]}")
 			
-			else:
-				await sleep(timer)
+			await sleep(timer)
 
 			await self.bot.send_message(ctx.message.author, "Timer is up!")			
 
