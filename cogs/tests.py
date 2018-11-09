@@ -68,13 +68,14 @@ class tests:
 			   }
 		# print(dir(ctx.message.server))
 
-		message = f"""
-server: {info['server']}
-server id: {info['server_id']}
-channel: {info['channel']}
+		message = f"""```CSS
+server:     {info['server']}
+server id:  {info['server_id']}
+channel:    {info['channel']}
 channel id: {info['channel_id']}
-author: {info['author']}
-author id: {info['author_id']}
+author:     {info['author']}
+author id:  {info['author_id']}
+```
 """
 		await self.bot.say(message)
 
