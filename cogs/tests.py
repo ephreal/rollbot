@@ -98,8 +98,16 @@ author id:  {info['author_id']}
 
 		usage: .all_info
 		"""
-		channels = [x.name for x in ctx.message.server.channels]#client.Client.get_all_channels(self.bot)]
-		# channels = [{channel : channel.id} for channel in discord.utils.get(channels)]
+
+		channels = [channel for channel in client.Client.get_all_channels(self.bot)]
+		channels = [{channel.name : channel.id} for channel in channels]
+
+		await self.bot.say("Channels:")
+
+		for channel in channels:
+			message = await self.format_channel(channel)
+			await self.bot.say(message)
+			await sleep(1)
 
 		users = [member for member in ctx.message.server.members]
 		users = [{member.name : [member.id, member.roles]} for member in users]
@@ -114,9 +122,7 @@ author id:  {info['author_id']}
 					roles.append(role)
 				user[key][1] = roles
 
-
-		await self.bot.say(f"```CSS\nchannels:\n\t{channels}```")
-		await self.bot.say("users:\n")
+		await self.bot.say("Users:\n")
 
 
 		for user in users:
@@ -130,6 +136,15 @@ author id:  {info['author_id']}
 			await self.bot.say(message)
 			await sleep(1)
 		await self.bot.say("All info complete.")
+
+
+	async def format_channel(self, channel):
+		name = list(channel.keys())[0]
+		channel_message = "```CSS\n"
+		channel_message += f"\tName : {name}\n"
+		channel_message += f"\tID   : {channel[name]}\n"
+		channel_message += "```"
+		return channel_message
 
 def setup(bot):
 	bot.add_cog(tests(bot))
