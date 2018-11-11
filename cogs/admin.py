@@ -14,11 +14,11 @@ The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
@@ -37,7 +37,7 @@ class admin:
 	@commands.command(pass_context=True, hidden=True)
 	async def purge(self, ctx):
 		"""
-		Removes X amount of messages from the channel the command is 
+		Removes X amount of messages from the channel the command is
 		ran in. Currently limited to 100 messages at a time. This
 		will default to removing 10 messages at a time.
 
@@ -87,7 +87,7 @@ class admin:
 			to_keep = await client.Client.pins_from(self.bot, channel)
 			to_keep = [x.id for x in to_keep]
 
-			
+
 			# Check msgs for any to_keep messages or messages
 			# with attachments and do not delete them.
 
@@ -113,7 +113,7 @@ class admin:
 
 		usage: .stop
 		"""
-		
+
 		author_id = ctx.message.author.id
 
 		if not self.admins:
@@ -138,6 +138,7 @@ class admin:
 
 
 	@commands.command(pass_context=True,
+					  hidden=True,
 		              description="Channel message spammer")
 	async def spam(self, ctx):
 		"""
@@ -194,7 +195,7 @@ class admin:
 		Gets a list of admins from the server and places them in
 		self.admins. If no admins are found, it sends a message
 		to the channel warning the user that the admin group has
-		no users. 
+		no users.
 
 		If no admins are found, it's also possible the the admin
 		group does not exist and must be created.
