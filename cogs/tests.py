@@ -14,15 +14,16 @@ The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
 import discord
+from asyncio import sleep
 from discord.ext import commands
 from discord import client
 
@@ -90,6 +91,11 @@ author id:  {info['author_id']}
 		Shows you what channels are currently on the server
 		and who your server's members are.
 
+		Note: This command has a built in slowdown in
+		returning the user data. This is because there can
+		be a lot of information, and the bot WILL be rate
+		limited if the slowdown is not enforced.
+
 		usage: .all_info
 		"""
 		channels = [x.name for x in ctx.message.server.channels]#client.Client.get_all_channels(self.bot)]
@@ -108,7 +114,7 @@ author id:  {info['author_id']}
 					roles.append(role)
 				user[key][1] = roles
 
-		
+
 		await self.bot.say(f"```CSS\nchannels:\n\t{channels}```")
 		await self.bot.say("users:\n")
 
@@ -122,6 +128,7 @@ author id:  {info['author_id']}
 				       f"\tID: {user_id}\n" \
 				       f"\tRoles: {roles}\n```"
 			await self.bot.say(message)
+			await sleep(1)
 		await self.bot.say("All info complete.")
 
 def setup(bot):
