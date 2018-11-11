@@ -115,7 +115,7 @@ author id:  {info['author_id']}
 		await self.bot.say("Users:\n")
 
 		for user in users:
-			message = await self.format_users(user)
+			message = await self.format_user(user)
 			await self.bot.say(message)
 			await sleep(1)
 		await self.bot.say("All info complete.")
@@ -133,7 +133,7 @@ author id:  {info['author_id']}
 		return channel_message
 
 
-	async def format_users(self, user):
+	async def format_user(self, user):
 		"""
 		Takes a dictionary of {member name : member info} where
 		member info is a list. Member info contains
