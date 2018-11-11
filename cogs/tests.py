@@ -112,39 +112,46 @@ author id:  {info['author_id']}
 		users = [member for member in ctx.message.server.members]
 		users = [{member.name : [member.id, member.roles]} for member in users]
 
-		for user in users:
-			for key in user.keys():
-				roles = []
-				for role in user[key][1]:
-					role = role.name
-					if role == "@everyone":
-						continue
-					roles.append(role)
-				user[key][1] = roles
-
 		await self.bot.say("Users:\n")
 
-
 		for user in users:
-			name = list(user.keys())[0]
-			user_id = user[name][0]
-			roles = user[name][1]
-			message  =  "```CSS\n"
-			message += f"Name : {name}\n" \
-				       f"\tID: {user_id}\n" \
-				       f"\tRoles: {roles}\n```"
+			message = await self.format_users(user)
 			await self.bot.say(message)
 			await sleep(1)
 		await self.bot.say("All info complete.")
 
 
 	async def format_channel(self, channel):
+		"""
+		Takes a dictionary of {"channel name" : "channel id"}.
+		Returns a formatted message to send back.
+		"""
 		name = list(channel.keys())[0]
 		channel_message = "```CSS\n"
 		channel_message += f"\tName : {name}\n"
-		channel_message += f"\tID   : {channel[name]}\n"
-		channel_message += "```"
+		channel_message += f"\tID   : {channel[name]}\n```"
 		return channel_message
+
+
+	async def format_users(self, user):
+		"""
+		Takes a dictionary of {member name : member info} where
+		member info is a list. Member info contains
+		[member id, member roles].
+
+		Returns a formatted message to send.
+		"""
+
+		username = list(user.keys())[0]
+		user_id = user[username][0]
+		roles = [role.name for role in user[username][1]]
+		roles.remove("@everyone")
+
+		user_message =  f"```CSS\nName: {username}\n"
+		user_message += f"\tID:    {user_id}\n"
+		user_message += f"\tRoles: {roles}\n```"
+		return user_message
+
 
 def setup(bot):
 	bot.add_cog(tests(bot))
