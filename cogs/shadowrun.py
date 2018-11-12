@@ -89,44 +89,136 @@ class shadowrun:
 		author = ctx.message.author.name
 		author = author.split("#")[0]
 
-		message = f"```Please try again {author}, I'm not sure what to do with that.```"
+		message = f"```Please try again {author}, I'm not sure what to do with that."
 
 		command = ctx.message.content.lower().split()
 		command = command[1:]
 
 		if len(command) == 0:
-			return await self.bot.say("please run '.help sr' for examples.")
+			return await self.bot.say("please run '.help sr' or .sr help for examples.")
 
 		channel = await self.check_channel(ctx)
 
 		available_commands = {
 							  "roll"       : self.roll,
-		 					  "initiative" : self.roll_initiative#,
+		 					  "initiative" : self.roll_initiative,
+		 					  "help"       : self.sr_help,
 							  # "extended"   : self.extended
 							 }
 
 		if command[0] in list(available_commands.keys()):
-			message = f"```CSS\n@{author}\n"
+			message = f"```CSS\nRan by {author}\n"
 			message += await available_commands[command[0]](command[1:])
-			message += "```"
 		else:
 			# Check if the command merely starts with the letter
 			# of a known command. It's easy to misspell a
 			# command.
 			if command[0].startswith("r"):
-				message = f"```CSS\n@{author}\n"
+				message = f"```CSS\nRan by {author}\n"
 				message += await available_commands["roll"](command[1:])
-				message += "```"
 			elif command[0].startswith("i"):
-				message  = message = f"```CSS\n@{author}\n"
+				message  = message = f"```CSS\nRan by {author}\n"
 				message += await available_commands["initiative"](command[1:])
-				message += "```"
+			elif command[0].startswith("h"):
+				message  = f"```CSS\n"
+				message += await available_commands["help"](command[1:])
 			# elif command[0].startswith("e"):
 			# 	message  = f"```CSS\n@{author}\n"
 			# 	message += await available_commands["extended"](command[1:])
-			# 	message += "```"
+
+		message += "```"
 
 		await self.bot.send_message(channel, message)
+
+
+	async def sr_help(self, command):
+		"""
+		Additional help for sr commands.
+
+		Added because the current help for sr is getting
+		a bit too long. This allows getting info for a 
+		specific command without having to wade through
+		a bunch of extraneous info.
+		"""
+
+		if len(command) == 0:
+			helptext = """
+			Help for sr commands.
+
+			.sr help gives you additional help for all .sr
+			commands. Available sr commands are
+
+			help (h)
+			extended (e)
+			initiative (i)
+			roll (r)
+
+			To use it, simply run 
+			.sr help <command>
+
+			Examples:
+				Get help for the roll command
+				.sr help roll
+				.sr help r
+			"""
+
+		elif command[0].startswith("i"):
+			helptext = """
+			Shadowrun initiative rolling
+
+			.sr initiative allows rolling for initiative and
+			automatically add in any modifiers.
+
+			When rolling initiative, the first number is the
+			amount of dice to roll (up to 5 per shadowrun
+			rules), and the second number is the modifier.
+
+			Like most sr commands, this command can be
+			shortened to just "i".
+
+			.sr i <dice> <modifier>
+
+			Examples:
+				roll 4 dice, add 10 to the result
+				.sr initiative 4 10
+
+				roll 5 dice, add 10 to the result
+				.sr i 5 10
+			"""
+
+		elif command[0].startswith("r"):
+			helptext = """
+			Shadowrun dice rolling.
+
+			.sr roll allows you to roll dice using the rules
+			for Shadowrun. This includes automatically
+			counting hits, misses, and ones. In addition, the
+			command accepts various flags to modify how hits,
+			misses, ones, and glitches are handles.
+
+			The roll command can be shortened to just "r" for
+			convenience.
+
+			Accepted flags: prime, show
+
+			Examples:
+				roll 10 dice. Counts hits, checks for glitches.
+				.sr roll 10
+				.sr r 10
+
+				roll 10 dice, count 4's as a hit (prime runner
+					quality)
+				.sr roll 10 prime
+
+				roll 10 dice, show the result of all rolls
+				.sr roll 10 show
+
+				roll 10 dice, count 4's as hits. Show all rolls.
+				.sr roll 10 show prime
+				.sr r prime show 10
+			"""
+
+		return helptext.replace("\t\t\t", "")
 
 
 	async def roll_initiative(self, rolls):
