@@ -43,7 +43,8 @@ class utils:
 		3 hours.
 
 		usage:
-			30 second timer: .timer 30 s    or    .timer 30
+			30 second timer: .timer 30 s
+			                 .timer 30
 			10 minute timer: .timer 10 m
 			1 hour timer:    .timer 1 h
 		"""
@@ -56,8 +57,7 @@ class utils:
 							"m" : 60,
 							"h" : 3600
 						  }
-		timer = 1
-
+						  
 		try:
 			if len(command) == 0:
 				return await self.bot.say("How long do you want a timer set for?\n" \
@@ -71,11 +71,6 @@ class utils:
 				await self.bot.say(f"Unknown time of {command[1]}, assuming seconds...")
 				await self.bot.say(f"{command}")
 				command[1] = 's'
-
-#			if command[1] == 'm':
-#				timer = 60
-#			elif command[1] == 'h':
-#				timer = 3600
 
 			timer = int(command[0])
 			interval = command[1]
