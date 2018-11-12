@@ -67,6 +67,19 @@ class shadowrun:
 				roll 10 dice, show rolls
 				.sr roll 10 show
 
+				roll 10 dice, show rolls (shortened)
+				.sr r 10 show
+
+			initiative:
+				roll 3 dice, add 8 to the result
+				.sr initiative 3 8
+
+				roll 3 dice, subtract 8 from the result
+				.sr initiative 3 -8
+
+				roll 3 dice, add 8 to the result (shortened)
+				.sr i 3 8
+
 
 
 		This function is currently unfinished. More features
@@ -87,8 +100,8 @@ class shadowrun:
 		channel = await self.check_channel(ctx)
 
 		available_commands = {
-							  "roll"       : self.roll#,
-		 					  # "initiative" : self.initiative,
+							  "roll"       : self.roll,
+		 					  "initiative" : self.roll_initiative#,
 							  # "extended"   : self.extended
 							 }
 
@@ -104,16 +117,43 @@ class shadowrun:
 				message = f"```CSS\n@{author}\n"
 				message += await available_commands["roll"](command[1:])
 				message += "```"
-			# elif command[0].startswith("i"):
-			# 	message  = message = f"```\n@{author}\n"
-			# 	message += await available_commands["initiative"](command[1:])
-			# 	message += "```"
+			elif command[0].startswith("i"):
+				message  = message = f"```CSS\n@{author}\n"
+				message += await available_commands["initiative"](command[1:])
+				message += "```"
 			# elif command[0].startswith("e"):
-			# 	message  = f"```\n@{author}\n"
+			# 	message  = f"```CSS\n@{author}\n"
 			# 	message += await available_commands["extended"](command[1:])
 			# 	message += "```"
 
 		await self.bot.send_message(channel, message)
+
+
+	async def roll_initiative(self, rolls):
+		"""
+		Initiative rolling for shadowrun.
+
+		The initiative rolls have the amount of dice first,
+		and the amount to add to the roll result second.
+
+		1 +5 means roll one die and add 5 to the result.
+		"""
+
+		initiative = 0
+		try:
+			dice_pool = int(rolls[0])
+			to_add = int(rolls[1])
+
+			initiative_rolls = await self.multi_roll(dice_pool)
+			for x in initiative_rolls:
+				initiative += x
+
+			initiative += to_add
+
+			initiative = await self.prettify_results(rolls=initiative_rolls, hits=initiative, roll_type="initiative")
+			return initiative
+		except Exception as e:
+			return f"Invalid input, exception follows...\n{e}"
 
 
 	async def roll(self, dice_pool):
@@ -151,7 +191,7 @@ class shadowrun:
 
 		glitch = await self.check_glitch(dice_pool, hits[0], hits[2])
 
-		message = await self.prettify_results(rolls, hits, glitch, "roll")
+		message = await self.prettify_results(rolls=rolls, hits=hits, glitch=glitch, roll_type="roll")
 
 		if all_info:
 			message += f"Rolls: {rolls}"
@@ -248,7 +288,7 @@ class shadowrun:
 		return rolls, success
 
 
-	async def prettify_results(self, rolls, hits, glitch, roll_type, success=True):
+	async def prettify_results(self, rolls=None, hits=None, glitch=None, roll_type=None, success=True):
 		"""
 		A function to clean up the data and make the results look
 		nice before sending the result back to the user.
@@ -273,6 +313,13 @@ class shadowrun:
 			message += f"Hits   : {hits[0]}\n"
 			message += f"Misses : {hits[1]}\n"
 			message += f"Ones   : {hits[2]}\n"
+
+		elif roll_type == "initiative":
+			message += f"Initiative score: {hits}\n"
+			message += f"Initiative rolls: {rolls}\n"
+
+		message = message.replace("[", "")
+		message = message.replace("]", "")
 
 		return message
 
