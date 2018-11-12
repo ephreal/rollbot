@@ -35,7 +35,7 @@ class shadowrun:
 		self.sr_tweaks = {
 						   "glitch_more_than_half"          : True,
 						   "glitch_fails_extended"          : False,
-						   "critical_glitch_fails_extended" : False
+						   "critical_glitch_fails_extended" : True
 						 }
 
 		self.rolling_channels = [
@@ -60,29 +60,22 @@ class shadowrun:
 			roll:
 				roll 10 dice
 				.sr roll 10
-
-				roll 10 dice (count 4's as hits)
-				.sr roll 10 prime
-
-				roll 10 dice, show rolls
-				.sr roll 10 show
-
-				roll 10 dice, show rolls (shortened)
-				.sr r 10 show
+				.sr r 10
 
 			initiative:
 				roll 3 dice, add 8 to the result
 				.sr initiative 3 8
-
-				roll 3 dice, subtract 8 from the result
-				.sr initiative 3 -8
-
-				roll 3 dice, add 8 to the result (shortened)
 				.sr i 3 8
 
+			extended:
+				roll an extended test with a dicepool of 20
+				and a threshold of 5.
+				.sr extended 20 5
+				.sr e 20 5
 
+		For more in depth help, please run .sr help <command>
 
-		This function is currently unfinished. More features
+		This command is currently unfinished. More features
 		are planned on being added in the future.
 		"""
 
@@ -103,7 +96,7 @@ class shadowrun:
 							  "roll"       : self.roll,
 		 					  "initiative" : self.roll_initiative,
 		 					  "help"       : self.sr_help,
-							  # "extended"   : self.extended
+							  "extended"   : self.extended
 							 }
 
 		if command[0] in list(available_commands.keys()):
@@ -122,9 +115,9 @@ class shadowrun:
 			elif command[0].startswith("h"):
 				message  = f"```CSS\n"
 				message += await available_commands["help"](command[1:])
-			# elif command[0].startswith("e"):
-			# 	message  = f"```CSS\n@{author}\n"
-			# 	message += await available_commands["extended"](command[1:])
+			elif command[0].startswith("e"):
+				message  = f"```CSS\nRan by {author}\n"
+				message += await available_commands["extended"](command[1:])
 
 		message += "```"
 
@@ -160,6 +153,34 @@ class shadowrun:
 				Get help for the roll command
 				.sr help roll
 				.sr help r
+			"""
+
+		elif command[0].startswith("e"):
+			helptext = """
+			Shadowrun extended test rolling
+
+			.sr extended allows rolling for extended tests.
+			Give it the dice pool to roll with, and the
+			threshold to try meet, and it will roll until
+			the hits either meet/pass the threshold, or until
+			the dice run out.
+
+			If the commands are configured to fail when a
+			glitch or critical glitch occur, the extended test
+			will fail and let you know that a glitch/critical
+			glitch occured.
+
+			Critical glitches fail the exteded test by default.
+
+			Examples:
+				run an extended test with a pice pool of 10 and
+				a threshold of 5
+				.sr extended 10 5
+				.sr e 10 5
+
+				Extended test. Dice pool 20, threshold 10
+				.sr extended 20 10
+				.sr e 20 10
 			"""
 
 		elif command[0].startswith("i"):
@@ -219,6 +240,73 @@ class shadowrun:
 			"""
 
 		return helptext.replace("\t\t\t", "")
+
+
+	async def extended(self, commands):
+		"""
+		Rolls extended tests for shadowrun, checks for
+		glitches that may or may not occur, and returns the
+		result.
+
+		If glitch_fails_extended is true, a normal glitch
+		will cause the extended test to fail. If it is not
+		true, a normal glitch will allow the test to finish.
+		glitch_fails_extended is off by default.
+
+		If critical_glitch_fails_extended is true, then a 
+		critical glitch will cause the extended test to fail
+		automatically. This is turned on by default.
+		"""
+
+		if len(commands) < 2:
+			return "Invalid extended test. Please try again.\n" \
+			       "See '.sr help extended' for help."
+
+		dice_pool = int(commands[0])
+		threshold = int(commands[1])
+		rolls = []
+		total_hits = 0
+		glitch = False
+
+		while total_hits < threshold and dice_pool > 0:
+			roll   = await self.multi_roll(dice_pool)
+			hits   = await self.get_hits(roll)
+			total_hits += hits[0]
+			glitch = await self.check_glitch(dice_pool, hits[0], hits[2])
+			roll = [
+					f"total hits: {total_hits}",
+			        f"hits: {hits[0]}", 
+			        f"rolls: {roll[0:]}"
+			        ]
+
+			if glitch:
+				if glitch == "critical":
+					roll.append("A critical glitch occured!")
+				else:
+					roll.append("A glitch occured!")						
+
+			rolls.append(roll)
+
+			if glitch and self.sr_tweaks["glitch_fails_extended"]:
+				break
+			elif glitch=="critical" and self.sr_tweaks["critical_glitch_fails_extended"]:
+				break
+
+
+			dice_pool -= 1
+
+			glitch = False
+
+		message = ""
+		if total_hits < threshold:
+			message = "Extended test failed...\n"
+
+		message += await self.prettify_results(rolls=rolls, roll_type="extended")
+
+		return  message
+
+
+
 
 
 	async def roll_initiative(self, rolls):
@@ -341,8 +429,8 @@ class shadowrun:
 
 		glitch = False
 
+		# Rounds down for glitch tests
 		if self.sr_tweaks["glitch_more_than_half"]:
-			# Rounding down for glitches
 			if ones > (dice_pool // 2):
 				glitch = True
 
@@ -409,6 +497,14 @@ class shadowrun:
 		elif roll_type == "initiative":
 			message += f"Initiative score: {hits}\n"
 			message += f"Initiative rolls: {rolls}\n"
+
+		elif roll_type == "extended":
+
+			for roll in rolls:
+				for i in roll:
+					message += f"{i} "
+				message += "\n"
+
 
 		message = message.replace("[", "")
 		message = message.replace("]", "")
