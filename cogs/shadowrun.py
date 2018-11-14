@@ -529,7 +529,7 @@ class shadowrun:
 			await self.bot.send_message(author,
 				                  "Please limit shadowrun commands to the rolling " \
 				                  "or bottesting channels.\nThe results of your " \
-				                  "commandd will be found in the rolling channel")
+				                  "command will be found in the rolling channel")
 
 			# Return the rolling channel
 			channel = client.Client.get_channel(self.bot,id=self.rolling_channels[0])
