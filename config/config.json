@@ -2,5 +2,9 @@
 	"token" : "YOUR_BOT_TOKEN_HERE",
 	"name" : "Your bot name here",
 	"avatar" : "config/avatar.jpg",
-	"prefix" : "."
+	"prefix" : ".",
+	"rolling_channels" : [
+                              "ROLLING_CHANNEL",
+                              "ROLLING_CHANNEL"
+                             ]
 }
