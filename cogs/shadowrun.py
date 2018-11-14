@@ -25,6 +25,7 @@ DEALINGS IN THE SOFTWARE.
 import random
 
 from discord.ext import commands
+from discord import client
 
 
 class shadowrun:
@@ -40,7 +41,7 @@ class shadowrun:
 
 		self.rolling_channels = [
 			                     "501257611157569556",
-			                     "372413873070014464"
+			                     #"372413873070014464"
 			                    ]
 
 	@commands.command(pass_context=True,
