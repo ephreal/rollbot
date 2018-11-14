@@ -22,24 +22,20 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import discord
+import json
+import random
+
 from discord import client
 from discord.ext import commands
-import random
 
 
 class roller:
 	def __init__(self, bot):
 		self.bot = bot
-		# Channels allowed to roll in.
-		# Change these to whatever channels
-		# you want to allow rolling in.
-		# I'm going to make this load in
-		# from the config file in the future.
-		self.rolling_channels = [
-			                     "501257611157569556",
-			                     "372413873070014464"
-			                    ]
+		# Channels the bot is allowed to run roll commands in.
+		# Change these in config.json to channels of your choice.
+		with open("config/config.json", 'r') as f:
+			self.rolling_channels = json.load(f)["rolling_channels"]
 
 	@commands.command(pass_context=True)
 	async def roll(self, ctx):

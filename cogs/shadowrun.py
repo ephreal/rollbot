@@ -22,6 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+import json
 import random
 
 from discord.ext import commands
@@ -38,11 +39,8 @@ class shadowrun:
 						   "glitch_fails_extended"          : False,
 						   "critical_glitch_fails_extended" : True
 						 }
-
-		self.rolling_channels = [
-			                     "501257611157569556",
-			                     #"372413873070014464"
-			                    ]
+		with open("config/config.json", 'r') as f:
+			self.rolling_channels = json.load(f)["rolling_channels"]
 
 	@commands.command(pass_context=True,
 					  description="Shadowrun dice roller")
