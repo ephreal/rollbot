@@ -523,6 +523,9 @@ class shadowrun:
 		author = ctx.message.author
 		channel = ctx.message.channel.id
 
+		if not self.rolling_channels or self.rolling_channels[0] == "ROLLING_CHANNEL":
+			return ctx.message.channel
+
 		if channel not in self.rolling_channels:
 			# PM author if in wrong channel
 			await self.bot.send_message(author,
