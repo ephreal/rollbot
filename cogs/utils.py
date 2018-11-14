@@ -23,7 +23,9 @@ DEALINGS IN THE SOFTWARE.
 """
 
 from asyncio import sleep
+
 from discord.ext import commands
+from discord import client
 
 
 class utils:
@@ -90,6 +92,31 @@ class utils:
 			await self.bot.say("Invalid input received.")
 			await self.bot.say(f"Error follows:\n{e}")
 
+
+	@commands.command(pass_context=True,
+		              description="Plays sound from youtube")
+	async def play(self,ctx,url=None):
+		"""
+		Has the bot play music from youtube.
+
+		If no arguments are passed it, it will randomly
+		select somthing from the sound list in config.
+
+		usage:
+			Play a random sound/song
+			.play
+
+			Play a specific video
+			.play https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+		"""
+
+		author = ctx.message.author
+		voice_channel = author.voice_channel
+		vc = await self.bot.join_voice_channel(voice_channel)
+
+		player = await vc.create_ytdl_player(url)
+		player.start
 
 
 

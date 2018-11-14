@@ -1,3 +1,4 @@
 docker_bot
 config.json
 config/config.json
+__pycache__

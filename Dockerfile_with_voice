@@ -1,0 +1,13 @@
+from fedora:27
+copy docker_bot/ /docker_bot/
+RUN yum update -y
+RUN dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+RUN dnf -y install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+RUN dnf -y install ffmpeg
+run yum install -y opus python3-pip youtube-dl python3-devel libffi-devel gcc make
+run pip3 install discord.py
+run pip3 install -U discord.py[voice]
+run pip3 install PyNaCl
+run pip3 install youtube_dl
+workdir /docker_bot
+cmd ["python3", "bot.py"]
