@@ -58,6 +58,7 @@ async def load_cogs():
 
 	modules = [
 			   "cogs.admin",
+			   "cogs.audio",
 			   "cogs.roller",
 			   "cogs.shadowrun",
 			   "cogs.tests",
