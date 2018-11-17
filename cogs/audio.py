@@ -35,7 +35,81 @@ if not discord.opus.is_loaded():
 class musicPlayer():
 	def __init__(self, bot):
 		self.bot = bot
+		self.current_vc = None
+		self.player = None
+		self.music_queue = []
 
+
+	async def create_voice_client(self, author):
+		"""
+		Creates a voice client for hte music player to
+		use. 
+		"""
+
+		if author.voice_channel == None:
+			await self.bot.say("Please enter a voice channel first")
+			return None
+
+		if self.current_vc != None:
+			return
+		
+		return await self.bot.join_voice_channel(author.voice_channel)
+
+
+	async def queue(self, channel, url):
+		"""
+		Queues a song to play if a song is already playing.
+		"""
+
+		self.music_queue.append(url)
+
+		await self.bot.send_message(channel, f"```Your song is {len(self.music_queue)} in the queue.```")
+
+
+	async def play_queue(self):
+		try:
+			url = await self.get_url()
+			self.player = await self.current_vc.create_ytdl_player(url)
+			self.player.start()
+			while not await self.player.is_playing():
+				sleep(1)
+
+		except Exception as e:
+			await self.send_error(e)
+
+		else:
+			while True:
+				if not self.check_playing():
+					up_next = await self.get_url()
+
+					if not up_next:
+						break
+					else:
+						self.player = await self.current_vc.create_ytdl_player(up_next)
+						self.player.start()
+
+						while not self.check_playing:
+							sleep(1)
+
+
+			self.player == None
+			self.current_vc.disconnect()
+			self.current_vc == None
+
+
+	async def check_playing(self):
+		return self.player.is_playing()
+
+
+	async def get_url(self):
+		if len(self.music_queue) >= 1:
+			return self.music_queue.pop(0)
+		else:
+			return None
+
+
+	async def send_error(self, error):
+		await self.bot.say(f"```\nAn error has occured. Message follows....\n{e}\n```")		
 
 
 	@commands.command(pass_context=True,
@@ -56,16 +130,108 @@ class musicPlayer():
 
 		"""
 
+		await self.queue(ctx.message.channel, url)
+
 		await client.Client.delete_message(self.bot, ctx.message)
+		
+
+		if self.player != None:
+			if self.player.is_playing():
+				await self.queue(url)
+
+		self.current_vc = await self.create_voice_client(ctx.message.author)
+
+		await self.play_queue()
+
+		# else:
+		# 	try:
+		# 		self.player = await self.current_vc.create_ytdl_player(url)
+
+		# 	except Exception as e:
+		# 		await self.send_error(e)
+		# 		await self.current_vc.disconnect()
+
+		# 	self.player.start()
+
+
+	@commands.command(description="Stops playing music.")
+	async def stop(self):
+		"""
+		Stops playing music.
+
+		usage:
+			.stop
+		"""
+		await self.player.stop()
+		await self.bot.say("```\nMusic player stopped.\n```")
+
+
+	@commands.command(description="Pauses music playing.")
+	async def pause(self):
+		"""
+		Pauses music.
+
+		usage:
+			.pause
+		"""
+
+		await self.player.pause()
+		await self.bot.say("```\nMusic paused\n```")
+
+
+	@commands.command(description="Resumes playing music.")
+	async def resume(self):
+		"""
+		Resumes playing paused music.
+
+		usage:
+			.resume
+		"""
+		await self.player.start()
+		await self.bot.say("```\nResuming music...\n```")
+
+
+	@commands.command(description="Clears music queue.")
+	async def clear(self):
+		"""
+		Clears the music queue.
+
+		usage:
+			.clear
+		"""
+		self.music_queue = []
+		await self.bot.say("```Cleared the music queue```")
+
+
+	@commands.command(pass_context=True,
+					 description="Music player volume control.")
+	async def set_vol(self, ctx, vol):
+		"""
+		Attempts to set music player volume.
+
+		The highest the player can go is to 200%.
+
+		usage:
+			set the volume to 10%
+			.set_vol 10
+
+			set the volume to 50%
+			.set_vol 50
+		"""
 
 		try:
-			vc = await self.bot.join_voice_channel(ctx.message.author.voice_channel)
-			player = await vc.create_ytdl_player(url)
-			player.start()
+			vol = int(vol)
+			vol /= 100
+
+			if vol >= 2:
+				vol = 2
+
+			self.player.volume = vol
+
+			return await self.bot.say(f"Set player volume to {vol*100}%")
 
 		except Exception as e:
-			await self.bot.say(f"An error has occured. Message follows....\n{e}")
-			await vc.disconnect()
+			return await self.bot.say(f"Invalid input received, error follows:\n{e}")
 
 
 def setup(bot):
