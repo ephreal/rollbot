@@ -107,11 +107,11 @@ class admin:
 
 
 	@commands.command(hidden=True, pass_context=True)
-	async def stop(self,ctx):
+	async def halt(self,ctx):
 		"""
-		Stops the bot
+		halts the bot
 
-		usage: .stop
+		usage: .halt
 		"""
 
 		author_id = ctx.message.author.id
@@ -120,7 +120,7 @@ class admin:
 			await self.get_admins(ctx)
 
 		if author_id not in self.admins:
-			return await self.bot.say("Only admins may stop me.")
+			return await self.bot.say("Only admins may halt me.")
 
 		await self.bot.say("Shutting d....")
 		await client.Client.logout(self.bot)
