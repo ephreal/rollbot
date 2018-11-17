@@ -76,7 +76,7 @@ class utils:
 
 			timer *= valid_intervals[interval]
 
-			if timer >= (3600 * 3):
+			if timer > (3600 * 3):
 				return await self.bot.say("Max time allowed is 3 hours.")
 
 			await self.bot.say(f"Timer set for {command[0]} {command[1]}")
