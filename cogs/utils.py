@@ -95,7 +95,12 @@ class utils:
 	@commands.command(description="gets a random 'inspirational' quote")
 	async def quote(self):
 		"""
-		Gets a random quote from inspirobot.me
+		Gets a random quote created by inspirobot.me
+
+		Note: I am not responsible for anything the
+		inspirobot creates and sends to you. If you
+		are easily offended, this may not be for 
+		you.
 
 		usage:
 			.quote
@@ -105,15 +110,11 @@ class utils:
 
 		async with aiohttp.ClientSession() as session:
 			html = await self.fetch(session, url)
-			print(f"Utils line 108: html: {html}")
 			await self.bot.say(html)
 
 		
 	async def fetch(self, session, url):
 		async with session.get(url) as html:
-			print(f"Utils line 114: html: {html}")
-			print(f"Utils line 115: dir html: {dir(html)}")
-			print(f"Utils line 116: html.text(): {html.text()}")
 			return await html.text()
 
 
