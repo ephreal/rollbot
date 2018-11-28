@@ -71,13 +71,13 @@ class admin:
 		msgs = []
 		limit = ctx.message.content.split()
 
-		if limit[1] == "all":
+		if len(limit) == 1:
+			limit = 10
+		elif limit[1] == "all":
 			limit = 1000
 		elif len(limit) >= 2:
 			limit = int(limit[1])
-		else:
-			limit = 10
-
+		
 		async for x in client.Client.logs_from(self.bot, channel, limit=limit):
 			msgs.append(x)
 
