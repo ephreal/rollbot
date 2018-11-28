@@ -22,6 +22,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+import aiohttp
+
 from asyncio import sleep
 from discord.ext import commands
 
@@ -88,6 +90,31 @@ class utils:
 		except Exception as e:
 			await self.bot.say("Invalid input received.")
 			await self.bot.say(f"Error follows:\n{e}")
+
+
+	@commands.command(description="gets a random 'inspirational' quote")
+	async def quote(self):
+		"""
+		Gets a random quote from inspirobot.me
+
+		usage:
+			.quote
+		"""
+
+		url = "http://inspirobot.me/api?generate=true"
+
+		async with aiohttp.ClientSession() as session:
+			html = await self.fetch(session, url)
+			print(f"Utils line 108: html: {html}")
+			await self.bot.say(html)
+
+		
+	async def fetch(self, session, url):
+		async with session.get(url) as html:
+			print(f"Utils line 114: html: {html}")
+			print(f"Utils line 115: dir html: {dir(html)}")
+			print(f"Utils line 116: html.text(): {html.text()}")
+			return await html.text()
 
 
 
