@@ -47,11 +47,10 @@ class musicPlayer():
 		"""
 
 		if author.voice_channel == None:
-			await self.bot.say("Please enter a voice channel first")
-			return None
+			return await self.bot.say("Please enter a voice channel first")
 
 		if self.current_vc != None:
-			return
+			return self.current_vc.move_to(author.voice_channel)
 		
 		return await self.bot.join_voice_channel(author.voice_channel)
 
@@ -71,25 +70,25 @@ class musicPlayer():
 			url = await self.get_url()
 			self.player = await self.current_vc.create_ytdl_player(url)
 			self.player.start()
-			while not await self.player.is_playing():
+			while not self.player.is_playing():
 				sleep(1)
 
 		except Exception as e:
 			await self.send_error(e)
 
-		else:
-			while True:
-				if not self.check_playing():
-					up_next = await self.get_url()
+		# else:
+		# 	while True:
+		# 		if not self.player.is_playing():
+		# 			up_next = await self.get_url()
 
-					if not up_next:
-						break
-					else:
-						self.player = await self.current_vc.create_ytdl_player(up_next)
-						self.player.start()
+		# 			if not up_next:
+		# 				break
+		# 			else:
+		# 				self.player = await self.current_vc.create_ytdl_player(up_next)
+		# 				self.player.start()
 
-						while not self.check_playing:
-							sleep(1)
+		# 				while not self.check_playing:
+		# 					sleep(1)
 
 
 			self.player == None
@@ -109,7 +108,7 @@ class musicPlayer():
 
 
 	async def send_error(self, error):
-		await self.bot.say(f"```\nAn error has occured. Message follows....\n{e}\n```")		
+		await self.bot.say(f"```\nAn error has occured. Message follows....\n{error}\n```")		
 
 
 	@commands.command(pass_context=True,
@@ -162,7 +161,9 @@ class musicPlayer():
 		usage:
 			.stop
 		"""
-		await self.player.stop()
+		self.player.stop()
+		self.player = None
+		await self.current_vc.disconnect()
 		await self.bot.say("```\nMusic player stopped.\n```")
 
 
@@ -175,7 +176,7 @@ class musicPlayer():
 			.pause
 		"""
 
-		await self.player.pause()
+		self.player.pause()
 		await self.bot.say("```\nMusic paused\n```")
 
 

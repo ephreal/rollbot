@@ -85,7 +85,13 @@ class utils:
 			
 			await sleep(timer)
 
-			await self.bot.send_message(ctx.message.author, "Timer is up!")			
+			if ctx.message.author.voice_channel:
+				await self.bot.send_message(ctx.message.channel,
+											f"{ctx.message.author.name}, your timer is up",
+											tts=True)
+			else:
+				await self.bot.send_message(ctx.message.author, "Timer is up!")
+	
 
 		except Exception as e:
 			await self.bot.say("Invalid input received.")
