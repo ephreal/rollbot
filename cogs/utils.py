@@ -112,7 +112,7 @@ class utils:
 			.quote
 		"""
 
-		url = "http://inspirobot.me/api?generate=true"
+		url = "https://inspirobot.me/api?generate=true"
 
 		async with aiohttp.ClientSession() as session:
 			html = await self.fetch(session, url)
