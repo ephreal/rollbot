@@ -24,6 +24,8 @@ DEALINGS IN THE SOFTWARE.
 
 import json
 import random
+import aiohttp
+import re
 
 from discord.ext import commands
 from discord import client
@@ -95,7 +97,8 @@ class shadowrun:
 							  "roll"       : self.roll,
 		 					  "initiative" : self.roll_initiative,
 		 					  "help"       : self.sr_help,
-							  "extended"   : self.extended
+							  "extended"   : self.extended,
+							  "quote"	   : self.quote
 							 }
 
 		if command[0] in list(available_commands.keys()):
@@ -117,6 +120,9 @@ class shadowrun:
 			elif command[0].startswith("e"):
 				message  = f"```CSS\nRan by {author}\n"
 				message += await available_commands["extended"](command[1:])
+			elif command[0].startswith("q"):
+				message  = f"```CSS\nRan by {author}\n"
+				message += await available_commands["quote"](command[1:])
 
 		message += "```"
 
@@ -542,6 +548,43 @@ class shadowrun:
 
 		else:
 			return ctx.message.channel
+
+
+	async def quote(self, quote_type):
+
+		url = "https://mylife.needs.management/shadowrun/qboard/api.php?"
+
+		try:
+			if not quote_type:
+				url += "random=true"
+			elif quote_type[0] == "random":
+				url += "random=true"
+			elif int(quote_type[0]):
+				url += f"quote_id={quote_type[0]}"
+			else:
+				url += "random=true"
+
+		except Exception as e:
+			await self.bot.say(e)
+			url += "random=true"
+
+		finally:
+
+			async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
+				html = await self.fetch(session, url)
+				html = json.loads(html)
+				return_string  = f"quote id:     {html['id']}\n"
+				return_string += f"written:      {html['time']}\n"
+				return_string += f"quote author: {html['author']}\n\n"
+				return_string += f"quote title:  {html['title']}\n"
+				return_string += f"{html['quote']}"
+
+				return return_string
+
+		
+	async def fetch(self, session, url):
+		async with session.get(url) as html:
+			return await html.text()
 
 
 def setup(bot):
