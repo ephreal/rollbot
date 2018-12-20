@@ -38,7 +38,7 @@ class roller:
 			self.rolling_channels = json.load(f)["rolling_channels"]
 
 	@commands.command(pass_context=True)
-	async def roll(self, ctx):
+	async def roll(self, ctx, roll):
 		"""
 		A general purpose rolling command.
 
@@ -73,20 +73,17 @@ class roller:
 		# Comment out if not desired.
 		channel = await self.check_channel(ctx)
 
-		content = ctx.message.content.split()
-		content = content[1:]
-
 		try:
 
-			if len(content) == 0:
+			if len(roll) == 0:
 				# return 1d6 roll
 				rolls = await self.multi_roll(1,6)
 
-			elif len(content) >= 1:
-				content = content[0].split("d")
-				dice_pool = int(content[0])
-				sides = int(content[1])
-				rolls = await self.multi_roll(int(content[0]), 6)
+			elif len(roll) >= 2:
+				roll = roll.split("d")
+				dice_pool = int(roll[0])
+				sides = int(roll[1])
+				rolls = await self.multi_roll(int(roll[0]), int(roll[1]))
 
 			await self.bot.send_message(channel, rolls)
 
