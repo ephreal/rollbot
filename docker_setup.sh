@@ -25,7 +25,7 @@
 # Simple docker container removal/setup script.
 # Usage:
 #       
-#       sh docker_setup
+#       sh docker_setup.sh
 #
 # Once ran, run your docker container with a
 # name of "bot", otherwise this script will
