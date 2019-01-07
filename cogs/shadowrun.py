@@ -552,7 +552,7 @@ class shadowrun:
 
 	async def quote(self, quote_type):
 
-		url = "https://mylife.needs.management/shadowrun/qboard/api.php?"
+		url = "https://shadowrun.needs.management/api.php?"
 
 		try:
 			if not quote_type:
