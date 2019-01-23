@@ -109,9 +109,9 @@ class roller:
 		"""
 
 		author = ctx.message.author
-		channel = ctx.message.channel.id
+		channel = ctx.message.channel.name
 
-		if not self.rolling_channels or self.rolling_channels[0] == "ROLLING_CHANNEL":
+		if not self.rolling_channels:# or self.rolling_channels[0] == "ROLLING_CHANNEL":
 			return ctx.message.channel
 
 		if channel not in self.rolling_channels:
