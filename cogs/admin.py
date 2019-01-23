@@ -59,9 +59,8 @@ class admin:
 
 		author_id = ctx.message.author.id
 
-		# Get admins if this is the first time it's been ran
-		if not self.admins:
-			await self.get_admins(ctx)
+		# Get admins
+		await self.get_admins(ctx)
 
 		# Only allow admins to run admin commands
 		if author_id not in self.admins:
