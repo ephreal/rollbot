@@ -39,7 +39,7 @@ class utils:
 		Sets a timer
 
 		timer sets a timer for X minutes/seconds/hours that messages you
-		when time is up. This assumes seconds if you do not pass in a 
+		when time is up. This assumes seconds if you do not pass in a
 		length value. The maximum available time you may set a timer for is
 		3 hours.
 
@@ -91,7 +91,7 @@ class utils:
 											tts=True)
 			else:
 				await self.bot.send_message(ctx.message.author, "Timer is up!")
-	
+
 
 		except Exception as e:
 			await self.bot.say("Invalid input received.")

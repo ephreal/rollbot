@@ -43,7 +43,7 @@ class musicPlayer():
 	async def create_voice_client(self, author):
 		"""
 		Creates a voice client for hte music player to
-		use. 
+		use.
 		"""
 
 		if author.voice_channel == None:
@@ -51,7 +51,7 @@ class musicPlayer():
 
 		if self.current_vc != None:
 			return self.current_vc.move_to(author.voice_channel)
-		
+
 		return await self.bot.join_voice_channel(author.voice_channel)
 
 
@@ -91,9 +91,9 @@ class musicPlayer():
 		# 					sleep(1)
 
 
-			self.player == None
+		#	self.player == None
 			self.current_vc.disconnect()
-			self.current_vc == None
+		#	self.current_vc == None
 
 
 	async def check_playing(self):

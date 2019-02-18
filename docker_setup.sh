@@ -48,7 +48,7 @@
 current=$(sudo docker images docker_bot | tail -n 1 | cut -d " " -f 25)
 
 if [ "$current" != "" ] ; then
-	container=`sudo docker ps --filter "name=bot" -a | tail -n 1 | cut -d " " -f 1`
+	container=$(sudo docker ps --filter "name=bot" -a | tail -n 1 | cut -d " " -f 1)
 	sudo docker rm $container
 	sudo docker rmi $current
 fi 

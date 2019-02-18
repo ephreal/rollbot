@@ -76,7 +76,7 @@ class admin:
 			limit = 1000
 		elif len(limit) >= 2:
 			limit = int(limit[1])
-		
+
 		async for x in client.Client.logs_from(self.bot, channel, limit=limit):
 			msgs.append(x)
 
