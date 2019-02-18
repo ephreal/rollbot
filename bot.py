@@ -23,12 +23,8 @@ DEALINGS IN THE SOFTWARE.
 """
 
 
-import discord
 import json
-import os
-import sys
 
-from discord import client
 from discord.ext import commands
 from discord import game
 

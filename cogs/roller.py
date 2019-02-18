@@ -83,7 +83,7 @@ class roller:
 				roll = roll.split("d")
 				dice_pool = int(roll[0])
 				sides = int(roll[1])
-				rolls = await self.multi_roll(int(roll[0]), int(roll[1]))
+				rolls = await self.multi_roll(dice_pool, sides)
 
 			await self.bot.send_message(channel, rolls)
 

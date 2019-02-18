@@ -14,16 +14,16 @@ The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
 import discord
-import youtube_dl
+#import youtube_dl
 
 from asyncio import sleep
 from discord.ext import commands
@@ -108,7 +108,7 @@ class musicPlayer():
 
 
 	async def send_error(self, error):
-		await self.bot.say(f"```\nAn error has occured. Message follows....\n{error}\n```")		
+		await self.bot.say(f"```\nAn error has occured. Message follows....\n{error}\n```")
 
 
 	@commands.command(pass_context=True,
@@ -132,7 +132,6 @@ class musicPlayer():
 		await self.queue(ctx.message.channel, url)
 
 		await client.Client.delete_message(self.bot, ctx.message)
-		
 
 		if self.player != None:
 			if self.player.is_playing():

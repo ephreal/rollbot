@@ -6,21 +6,21 @@ Currently python 3.7 breaks the default pip install of discord. When this change
 This rollbot is a redesign of my older, broken roll bot. I am redesigning it to give it some better code consistiency, cleaner separation of modules, and also learning how to host a bot via docker.
 
 Currently supported roll types are:
-* basic dice rolling (Roll XdY dice)
-* Basic shadowrun dice rolling (hits, extended tests, initiative)
+  * basic dice rolling (Roll XdY dice)
+  * Basic shadowrun dice rolling (hits, extended tests, initiative)
 
 Expected future roll types are:
-* Advanced Shadowrun Dice Rolling (Gremlins glitching, edge cases, etc)
-* DnD dice rolling
+  * Advanced Shadowrun Dice Rolling (Gremlins glitching, edge cases, etc)
+  * DnD dice rolling
 
 Bonus features that I would like to add on at some point
-* Message cleanup of a channel (Completed)
-* DnD character creator
-* Shadowrun character roll features (roll perception, roll gymnastics, etc)
-* Multiple DnD characters saved and usable
+  * Message cleanup of a channel (Completed)
+  * DnD character creator
+  * Shadowrun character roll features (roll perception, roll gymnastics, etc)
+  * Multiple DnD characters saved and usable
 
 Possibly impossible features I'd like to try set up
-* Have the bot check github once a day and see if there are any updates, if so, auto update.
+  * Have the bot check github once a day and see if there are any updates, if so, auto update.
 
 
 ## Setting up the bot
@@ -30,20 +30,20 @@ If you are setting this bot up with a docker container, goto SETTING UP BOT WITH
 ### Running bot with python
 
 Verify that you have the following installed:
-* python 3.6.x
-* discord.py
+  * python 3.6.x
+  * discord.py
 
 If you don't have these, or you don't know if you do, continue on to the next section.
 
 #### Installing python and discord.py
 
-If you are on windows and need to install python, go here: https://www.python.org/downloads/release/python-367/
+If you are on windows and need to install python, go here: <https://www.python.org/downloads/release/python-367/>
 If you are on Linux, install python 3.6 from your repository. I don't know what distro you have, so I won't even speculate on the commands.
-If you are on Mac, I'm sorry. I have no idea how Mac's work. Going here should probably work though: https://www.python.org/downloads/release/python-367/
+If you are on Mac, I'm sorry. I have no idea how Mac's work. Going here should probably work though: <https://www.python.org/downloads/release/python-367/>
 
 Follow the install instructions and make sure that pip is installed with python.
 
-Once python is installed, install discord with pip. If you're not sure how to run commands, see here: https://itconnect.uw.edu/learn/workshops/online-tutorials/web-publishing/what-is-a-terminal/
+Once python is installed, install discord with pip. If you're not sure how to run commands, see here: <https://itconnect.uw.edu/learn/workshops/online-tutorials/web-publishing/what-is-a-terminal/>
 
 <code>
 pip install discord
@@ -59,18 +59,15 @@ python3 -m pip install discord
 
 If you still can't get discord installed, google your error. There's probably something else going on that you'll need to fix.
 
-
 #### Downloading and setting up the bot
 
 Now that you have set up python and discord, download the files for the bot. This can be done by going to the top of the page and clicking on the green button that says "Clone or Download" and choosing "Download Zip". Once that is done, unzip the files and move the folder to wherever makes sense for your system. Inside of the config folder, you'll find a file called "config.json". Open this in notepad/notepad++/sublime/vim/etc. Overwrite YOUR\_TOKEN\_HERE with your bot token.
 
-If you do not have a token yet, refer to here: https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token
-
+If you do not have a token yet, refer to here: <https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token>
 
 #### Running the bot with python
 
 Either double click the "bot.py" file, or navigate to the main folder in a terminal at run bot.py with "python bot.py". If everything goes as expected, the bot will start up and connect to your server.
-
 
 ### Running the bot with Docker
 

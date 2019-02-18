@@ -25,7 +25,6 @@ DEALINGS IN THE SOFTWARE.
 import json
 import random
 import aiohttp
-import re
 
 from discord.ext import commands
 from discord import client
@@ -134,7 +133,7 @@ class shadowrun:
 		Additional help for sr commands.
 
 		Added because the current help for sr is getting
-		a bit too long. This allows getting info for a 
+		a bit too long. This allows getting info for a
 		specific command without having to wade through
 		a bunch of extraneous info.
 		"""
@@ -258,7 +257,7 @@ class shadowrun:
 		true, a normal glitch will allow the test to finish.
 		glitch_fails_extended is off by default.
 
-		If critical_glitch_fails_extended is true, then a 
+		If critical_glitch_fails_extended is true, then a
 		critical glitch will cause the extended test to fail
 		automatically. This is turned on by default.
 		"""
@@ -280,7 +279,7 @@ class shadowrun:
 			glitch = await self.check_glitch(dice_pool, hits[0], hits[2])
 			roll = [
 					f"total hits: {total_hits}",
-			        f"hits: {hits[0]}", 
+			        f"hits: {hits[0]}",
 			        f"rolls: {roll[0:]}"
 			        ]
 
@@ -288,7 +287,7 @@ class shadowrun:
 				if glitch == "critical":
 					roll.append("A critical glitch occured!")
 				else:
-					roll.append("A glitch occured!")						
+					roll.append("A glitch occured!")
 
 			rolls.append(roll)
 
@@ -390,7 +389,7 @@ class shadowrun:
 		"""
 
 		rolls = []
-		for i in range(0,amount):
+		for _ in range(0,amount):
 			rolls.append(random.randint(1,6))
 
 		return rolls
@@ -581,7 +580,7 @@ class shadowrun:
 
 				return return_string
 
-		
+
 	async def fetch(self, session, url):
 		async with session.get(url) as html:
 			return await html.text()
