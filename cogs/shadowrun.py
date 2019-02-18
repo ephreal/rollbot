@@ -569,7 +569,7 @@ class shadowrun:
 
 		finally:
 
-			async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
+			async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=True)) as session:
 				html = await self.fetch(session, url)
 				html = json.loads(html)
 				return_string  = f"quote id:     {html['id']}\n"
@@ -578,7 +578,7 @@ class shadowrun:
 				return_string += f"quote title:  {html['title']}\n"
 				return_string += f"{html['quote']}"
 
-				return return_string
+		return return_string
 
 
 	async def fetch(self, session, url):
