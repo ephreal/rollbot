@@ -6,22 +6,21 @@ Currently python 3.7 breaks the default pip install of discord. When this change
 This rollbot is a redesign of my older, broken roll bot. I am redesigning it to give it some better code consistiency, cleaner separation of modules, and also learning how to host a bot via docker.
 
 Currently supported roll types are:
-  * basic dice rolling (Roll XdY dice)
-  * Basic shadowrun dice rolling (hits, extended tests, initiative)
+* basic dice rolling (Roll XdY dice)
+* Basic shadowrun dice rolling (hits, extended tests, initiative)
 
 Expected future roll types are:
-  * Advanced Shadowrun Dice Rolling (Gremlins glitching, edge cases, etc)
-  * DnD dice rolling
+* Advanced Shadowrun Dice Rolling (Gremlins glitching, edge cases, etc)
+* DnD dice rolling
 
 Bonus features that I would like to add on at some point
-  * Message cleanup of a channel (Completed)
-  * DnD character creator
-  * Shadowrun character roll features (roll perception, roll gymnastics, etc)
-  * Multiple DnD characters saved and usable
+* Message cleanup of a channel (Completed)
+* DnD character creator
+* Shadowrun character roll features (roll perception, roll gymnastics, etc)
+* Multiple DnD characters saved and usable
 
 Possibly impossible features I'd like to try set up
-  * Have the bot check github once a day and see if there are any updates, if so, auto update.
-
+* Have the bot check github once a day and see if there are any updates, if so, auto update.
 
 ## Setting up the bot
 
@@ -30,8 +29,8 @@ If you are setting this bot up with a docker container, goto SETTING UP BOT WITH
 ### Running bot with python
 
 Verify that you have the following installed:
-  * python 3.6.x
-  * discord.py
+* python 3.6.x
+* discord.py
 
 If you don't have these, or you don't know if you do, continue on to the next section.
 
