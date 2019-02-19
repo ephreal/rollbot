@@ -82,7 +82,7 @@ class utils:
 				return await self.bot.say("Max time allowed is 3 hours.")
 
 			await self.bot.say(f"Timer set for {command[0]} {command[1]}")
-			
+
 			await sleep(timer)
 
 			if ctx.message.author.voice_channel:
