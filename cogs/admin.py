@@ -32,7 +32,10 @@ class admin:
 	def __init__(self,bot):
 		self.bot = bot
 		self.admins = []
-		self.admin_group = "Admins"
+		with open("config/config.json", 'r') as f:
+			self.admin_group = json.load(f)["admin_group"]
+		# self.admin_group = "Admins"
+		# self.admin_group = self.get_admins(ctx)
 
 	@commands.command(pass_context=True, hidden=True)
 	async def purge(self, ctx):

@@ -58,7 +58,7 @@ class utils:
 							"m" : 60,
 							"h" : 3600
 						  }
-						  
+
 		try:
 			if len(command) == 0:
 				return await self.bot.say("How long do you want a timer set for?\n" \
