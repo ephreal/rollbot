@@ -136,7 +136,7 @@ class musicPlayer():
 		if self.player != None:
 			if self.player.is_playing():
 				# await self.queue(channel,url)
-				await self bot.say("I'm playing currently. Queueing videos will be added in a future update.")
+				await self.bot.say("I'm playing currently. Queueing videos will be added in a future update.")
 
 
 		self.current_vc = await self.create_voice_client(ctx.message.author)
