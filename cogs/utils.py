@@ -99,9 +99,11 @@ class utils:
 
 
 	@commands.command(description="gets a random 'inspirational' quote")
-	async def quote(self):
+	async def quote(self, amount=1):
 		"""
 		Gets a random quote created by inspirobot.me
+
+		It's also possible to get multiple quotes.
 
 		Note: I am not responsible for anything the
 		inspirobot creates and sends to you. If you
@@ -110,14 +112,45 @@ class utils:
 
 		usage:
 			.quote
+
+			Get 5 quotes
+			.quote 5
 		"""
 
 		url = "https://inspirobot.me/api?generate=true"
 
-		async with aiohttp.ClientSession() as session:
-			html = await self.fetch(session, url)
-			await self.bot.say(html)
+		if amount:
 
+			try:
+				amount = int(amount)
+
+				if amount == 0:
+					amount = 1
+
+				elif amount > 20:
+					amount = 20
+
+				for i in range(0,amount):
+					quote = await self.get_quote(url)
+					await self.bot.say(f"{i+1}\n{quote}")
+					if i == amount-1:
+						break
+					await sleep(7)
+				if amount > 1:
+					await self.bot.say("Quote grabbing complete.")
+
+			except:
+				await self.bot.say("I'm sorry, an error occured. Here is a single quote")
+				quote = self.get_qoute(url)
+				await self.bot.say(quote)
+		else:
+			quote = self.get_quote(url)
+			await self.bot.say(quote)
+
+	async def get_quote(self, url):
+		async with aiohttp.ClientSession() as session:
+					html = await self.fetch(session, url)
+					return html
 
 	async def fetch(self, session, url):
 		async with session.get(url) as html:
