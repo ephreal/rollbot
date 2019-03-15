@@ -143,7 +143,7 @@ class utils:
 					await self.bot.say("Quote grabbing complete.")
 
 			except Exception as e:
-				await self.bot.say("I'm sorry, an error occured. Here is a single quote")
+				await self.bot.say(f"I'm sorry, an error occured.\n{e}\n Here is a single quote")
 				quote = self.get_qoute(url)
 				await self.bot.say(quote)
 		else:
