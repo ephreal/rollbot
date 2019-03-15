@@ -461,7 +461,8 @@ class shadowrun:
 		for i in range(0,max_rolls):
 			rolls.append(roller.multi_roll(dice, 6))
 
-			hits, miss, ones = check_rolls(rolls[i])
+			# Add in ones variable if needed in the future
+			hits, miss, _ = check_rolls(rolls[i])
 			threshold -= hits
 			if threshold <= 0:
 				success = True
