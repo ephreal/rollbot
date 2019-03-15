@@ -136,10 +136,13 @@ class utils:
 					if i == amount-1:
 						break
 					await sleep(7)
+
+				# Let the caller know that quote grabbing
+				# is complete when there are multiple quotes
 				if amount > 1:
 					await self.bot.say("Quote grabbing complete.")
 
-			except:
+			except Exception as e:
 				await self.bot.say("I'm sorry, an error occured. Here is a single quote")
 				quote = self.get_qoute(url)
 				await self.bot.say(quote)

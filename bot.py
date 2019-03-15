@@ -58,7 +58,8 @@ async def load_cogs():
 			   "cogs.roller",
 			   "cogs.shadowrun",
 			   "cogs.tests",
-			   "cogs.utils"
+			   "cogs.utils",
+			   "cogs.vampire"
 			  ]
 
 	for extension in modules:
