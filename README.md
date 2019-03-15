@@ -1,5 +1,7 @@
 # rollbot
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c18a361a7f2f4d209a4b24a2f3eb1f50)](https://app.codacy.com/app/ephreal/rollbot?utm_source=github.com&utm_medium=referral&utm_content=ephreal/rollbot&utm_campaign=Badge_Grade_Dashboard)
+
 REQUIRES python 3.6.X
 Currently python 3.7 breaks the default pip install of discord. When this changes, python 3.7 will be good to use. Use python 3.6.x until then.
 
