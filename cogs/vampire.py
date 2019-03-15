@@ -62,7 +62,7 @@ class vampire_masquerade:
 
 	async def roll(self, roll):
 		"""
-		Handles the rolling for vampire the masquerade. 
+		Handles the rolling for vampire the masquerade.
 
 		The default roll type is a d10.
 		"""
