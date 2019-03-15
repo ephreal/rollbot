@@ -461,8 +461,8 @@ class shadowrun:
 		for i in range(0,max_rolls):
 			rolls.append(roller.multi_roll(dice, 6))
 
-			# Add in ones variable if needed in the future
-			hits, miss, _ = check_rolls(rolls[i])
+			# Add in misses/ones variables if needed in the future
+			hits, _, _ = check_rolls(rolls[i])
 			threshold -= hits
 			if threshold <= 0:
 				success = True
@@ -496,7 +496,7 @@ class shadowrun:
 
 			message += f"You rolled {len(rolls)} dice.\n"
 			message += f"Hits   : {hits[0]}\n"
-			message += f"Misses : {hits[1]}\n"
+			message += f"_es : {hits[1]}\n"
 			message += f"Ones   : {hits[2]}\n"
 
 		elif roll_type == "initiative":
