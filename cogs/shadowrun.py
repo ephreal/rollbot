@@ -23,8 +23,8 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import json
-import random
 import aiohttp
+from classes.roll_functions import roller
 
 from discord.ext import commands
 from discord import client
@@ -34,6 +34,8 @@ class shadowrun:
 
 	def __init__(self,bot):
 		self.bot = bot
+		self.roller = roller()
+
 		# Maybe I'll put these in an external config file later...
 		self.sr_tweaks = {
 						   "glitch_more_than_half"          : True,
@@ -273,7 +275,7 @@ class shadowrun:
 		glitch = False
 
 		while total_hits < threshold and dice_pool > 0:
-			roll   = await self.multi_roll(dice_pool)
+			roll   = await self.roller.multi_roll(dice_pool)
 			hits   = await self.get_hits(roll)
 			total_hits += hits[0]
 			glitch = await self.check_glitch(dice_pool, hits[0], hits[2])
@@ -328,7 +330,7 @@ class shadowrun:
 			dice_pool = int(rolls[0])
 			to_add = int(rolls[1])
 
-			initiative_rolls = await self.multi_roll(dice_pool)
+			initiative_rolls = await self.roller.multi_roll(dice_pool)
 			for x in initiative_rolls:
 				initiative += x
 
@@ -336,6 +338,7 @@ class shadowrun:
 
 			initiative = await self.prettify_results(rolls=initiative_rolls, hits=initiative, roll_type="initiative")
 			return initiative
+
 		except Exception as e:
 			return f"Invalid input, exception follows...\n{e}"
 
@@ -365,7 +368,7 @@ class shadowrun:
 
 		dice_pool = int(dice_pool[0])
 
-		rolls  = await self.multi_roll(dice_pool)
+		rolls  = await self.roller.multi_roll(dice_pool)
 
 		if prime:
 			await self.bot.say("Prime runner.")
@@ -380,19 +383,6 @@ class shadowrun:
 		if all_info:
 			message += f"Rolls: {rolls}"
 		return message
-
-
-	async def multi_roll(self, amount):
-		"""
-		returns rolls for a specified amount of dice. All
-		rolls are assumed to be six sided dice.
-		"""
-
-		rolls = []
-		for _ in range(0,amount):
-			rolls.append(random.randint(1,6))
-
-		return rolls
 
 
 	async def get_hits(self, rolls, prime=False):
@@ -496,7 +486,7 @@ class shadowrun:
 
 			message += f"You rolled {len(rolls)} dice.\n"
 			message += f"Hits   : {hits[0]}\n"
-			message += f"_es : {hits[1]}\n"
+			message += f"Misses : {hits[1]}\n"
 			message += f"Ones   : {hits[2]}\n"
 
 		elif roll_type == "initiative":
