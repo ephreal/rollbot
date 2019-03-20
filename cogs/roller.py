@@ -27,6 +27,7 @@ import random
 
 from discord import client
 from discord.ext import commands
+from classes.roll_functions import roller as rl
 
 
 class roller:
@@ -36,6 +37,7 @@ class roller:
 		# Change these in config.json to channels of your choice.
 		with open("config/config.json", 'r') as f:
 			self.rolling_channels = json.load(f)["rolling_channels"]
+		self.dice_roller = rl()
 
 	@commands.command(pass_context=True)
 	async def roll(self, ctx, roll):
@@ -77,13 +79,13 @@ class roller:
 
 			if len(roll) == 0:
 				# return 1d6 roll
-				rolls = await self.multi_roll(1,6)
+				rolls = await self.dice_roller.multi_roll(1,6)
 
 			elif len(roll) >= 2:
 				roll = roll.split("d")
 				dice_pool = int(roll[0])
 				sides = int(roll[1])
-				rolls = await self.multi_roll(dice_pool, sides)
+				rolls = await self.dice_roller.multi_roll(dice_pool, sides)
 
 			await self.bot.send_message(channel, rolls)
 
@@ -91,15 +93,6 @@ class roller:
 			await self.bot.send_message(channel, "Incorrect input. Run .help roll "\
 				                                 "if you need help.")
 			await self.bot.send_message(channel, f"Error message: {e}")
-
-
-	async def single_roll(self, sides):
-		return random.randint(1,sides)
-
-
-	async def multi_roll(self, dice_pool=1, sides=6):
-		return [await self.single_roll(sides) for i in range(0,dice_pool)]
-
 
 	# Info checking functions below
 	async def check_channel(self, ctx):
@@ -130,8 +123,6 @@ class roller:
 
 		else:
 			return ctx.message.channel
-
-
 
 
 def setup(bot):

@@ -24,7 +24,9 @@ DEALINGS IN THE SOFTWARE.
 
 import json
 import aiohttp
+
 from classes.roll_functions import roller
+from classes.bot_utils import utils
 
 from discord.ext import commands
 from discord import client
@@ -35,6 +37,7 @@ class shadowrun:
 	def __init__(self,bot):
 		self.bot = bot
 		self.roller = roller()
+		self.utils = utils(self.bot)
 
 		# Maybe I'll put these in an external config file later...
 		self.sr_tweaks = {
@@ -92,7 +95,7 @@ class shadowrun:
 		if len(command) == 0:
 			return await self.bot.say("please run '.help sr' or .sr help for examples.")
 
-		channel = await self.check_channel(ctx)
+		channel = await self.utils.check_channel(ctx, self.rolling_channels)
 
 		available_commands = {
 							  "roll"       : self.roll,
@@ -510,34 +513,34 @@ class shadowrun:
 	# another cog here. I know there HAS to be a
 	# way, I just don't know it yet. This would
 	# save me from some code reuse.
-	async def check_channel(self, ctx):
-		"""
-		Verifies that bot is allowed to send the output
-		of roll commands to this channel.
-		"""
+	# async def check_channel(self, ctx):
+	# 	"""
+	# 	Verifies that bot is allowed to send the output
+	# 	of roll commands to this channel.
+	# 	"""
 
-		author = ctx.message.author
-		channel = ctx.message.channel.name
+	# 	author = ctx.message.author
+	# 	channel = ctx.message.channel.name
 
-		if not self.rolling_channels:# or self.rolling_channels[0] == "ROLLING_CHANNEL":
-			return ctx.message.channel
+	# 	if not self.rolling_channels:# or self.rolling_channels[0] == "ROLLING_CHANNEL":
+	# 		return ctx.message.channel
 
-		if channel not in self.rolling_channels:
-			# PM author if in wrong channel
-			await self.bot.send_message(author,
-				                  "Please limit shadowrun commands to the rolling " \
-				                  "or bottesting channels.\nThe results of your " \
-				                  "command will be found in the rolling channel")
+	# 	if channel not in self.rolling_channels:
+	# 		# PM author if in wrong channel
+	# 		await self.bot.send_message(author,
+	# 			                  "Please limit shadowrun commands to the rolling " \
+	# 			                  "or bottesting channels.\nThe results of your " \
+	# 			                  "command will be found in the rolling channel")
 
-			# Return the rolling channel
-			channel = client.Client.get_channel(self.bot,id=self.rolling_channels[0])
-			await self.bot.send_message(channel,
-				                        f"Command was \"{ctx.message.content}\"")
-			await client.Client.delete_message(self.bot, ctx.message)
-			return channel
+	# 		# Return the rolling channel
+	# 		channel = client.Client.get_channel(self.bot,id=self.rolling_channels[0])
+	# 		await self.bot.send_message(channel,
+	# 			                        f"Command was \"{ctx.message.content}\"")
+	# 		await client.Client.delete_message(self.bot, ctx.message)
+	# 		return channel
 
-		else:
-			return ctx.message.channel
+	# 	else:
+	# 		return ctx.message.channel
 
 
 	async def quote(self, quote_type):
