@@ -546,6 +546,15 @@ class shadowrun:
 	async def quote(self, quote_type):
 
 		url = "https://shadowrun.needs.management/api.php?"
+		bbcode_tags = [
+		                "[b]", "[/b]", "[i]", "[/i]",
+		                "[u]", "[/u]", "[s]", "[/s]"
+		              ]
+
+		html_escaped  = {
+						  "&quot;" : '"',
+						  "&amp;"  : "&"
+						}
 
 		try:
 			if not quote_type:
@@ -571,6 +580,34 @@ class shadowrun:
 				return_string += f"quote author: {html['author']}\n\n"
 				return_string += f"quote title:  {html['title']}\n"
 				return_string += f"{html['quote']}"
+
+			for i in bbcode_tags:
+				return_string = return_string.replace(i, "")
+
+			for i in html_escaped.keys():
+				return_string = return_string.replace(i, html_escaped[i])
+
+			if "[ul]" in return_string:
+				return_string = return_string.replace("[ul]", "")
+				return_string = return_string.replace("[/ul]", "")
+				return_string = return_string.replace("[*]", "*")
+
+			elif "[ol]" in return_string:
+				count = 1
+				return_string = return_string.replace("[ol]", "")
+				return_string = return_string.replace("[/ol]", "")
+
+				amount = return_string.count("[*]")
+
+				for _ in range(0,amount):
+					current = return_string.find("[*]")
+					start = return_string[0:current]
+					end = return_string[current+3:]
+					return_string = f"{start}{count}) {end}"
+					print(return_string)
+					count += 1
+
+
 
 		return return_string
 

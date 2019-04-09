@@ -23,7 +23,6 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import json
-import random
 
 from discord import client
 from discord.ext import commands
