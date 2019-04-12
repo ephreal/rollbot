@@ -1,4 +1,6 @@
+import discord
 from discord import client
+from discord.utils import get
 
 class utils():
 	def __init__(self, bot):
@@ -12,8 +14,14 @@ class utils():
 
 			author = ctx.message.author
 			channel = ctx.message.channel.name
+			server = ctx.message.server
 
-			if not roll_channels:# or self.rolling_channels[0] == "ROLLING_CHANNEL":
+			# Return the channel if pm
+			if ctx.message.channel.is_private:
+				return ctx.message.channel
+
+			# Return the current channel if no rolling channels are defined
+			if not roll_channels:
 				return ctx.message.channel
 
 			if channel not in roll_channels:
@@ -23,12 +31,13 @@ class utils():
 					                  "or bottesting channels.\nThe results of your " \
 					                  "command will be found in the rolling channel")
 
+				await client.Client.delete_message(self.bot, ctx.message)
+
 				# Return the rolling channel
-				await self.bot.say(dir(ctx.message))
 				# channel = client.Client.get_channel(self.bot,id=roll_channels[0])
-				# await self.bot.send_message(channel,
-				# 	                        f"Command was \"{ctx.message.content}\"")
-				# await client.Client.delete_message(self.bot, ctx.message)
+				channel = get(server.channels, name=roll_channels[0], type=discord.ChannelType.text)
+				await self.bot.send_message(channel,
+					                        f"Command was \"{ctx.message.content}\"")
 				return channel
 
 			else:
