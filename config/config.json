@@ -6,5 +6,10 @@
 	"rolling_channels" : [
                               "ROLLING_CHANNEL",
                               "ROLLING_CHANNEL"
-                             ]
+                             ],
+        "sr_tweaks"   : {
+                           "glitch_more_than_half"          : true,
+                           "glitch_fails_extended"          : false,
+                           "critical_glitch_fails_extended" : true
+                         }
 }
