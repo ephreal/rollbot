@@ -27,6 +27,7 @@ import aiohttp
 
 from classes.roll_functions import roller
 from classes.bot_utils import utils
+from .cog_command_usage.helptext import shadowrun_help as sr_help
 
 from discord.ext import commands
 from discord import client
@@ -39,15 +40,12 @@ class shadowrun:
 		self.roller = roller()
 		self.utils = utils(self.bot)
 		self.previous_rolls = []
+		# I gotta admit... I chuckled a little writing down "self.help"
+		self.help = sr_help()
 
-		# Maybe I'll put these in an external config file later...
 		with open("config/config.json", 'r') as f:
 			self.sr_tweaks = json.load(f)["sr_tweaks"]
-		# self.sr_tweaks = {
-		# 				   "glitch_more_than_half"          : True,
-		# 				   "glitch_fails_extended"          : False,
-		# 				   "critical_glitch_fails_extended" : True
-		# 				 }
+
 		with open("config/config.json", 'r') as f:
 			self.rolling_channels = json.load(f)["rolling_channels"]
 
@@ -147,111 +145,18 @@ class shadowrun:
 		"""
 
 		if len(command) == 0:
-			helptext = """
-			Help for sr commands.
-
-			.sr help gives you additional help for all .sr
-			commands. Available sr commands are
-
-			help (h)
-			extended (e)
-			initiative (i)
-			roll (r)
-
-			To use it, simply run 
-			.sr help <command>
-
-			Examples:
-				Get help for the roll command
-				.sr help roll
-				.sr help r
-			"""
+			helptext = self.help.SR_GENERAL_USE
 
 		elif command[0].startswith("e"):
-			helptext = """
-			Shadowrun extended test rolling
-
-			.sr extended allows rolling for extended tests.
-			Give it the dice pool to roll with, and the
-			threshold to try meet, and it will roll until
-			the hits either meet/pass the threshold, or until
-			the dice run out.
-
-			If the commands are configured to fail when a
-			glitch or critical glitch occur, the extended test
-			will fail and let you know that a glitch/critical
-			glitch occured.
-
-			Critical glitches fail the exteded test by default.
-
-			Examples:
-				run an extended test with a pice pool of 10 and
-				a threshold of 5
-				.sr extended 10 5
-				.sr e 10 5
-
-				Extended test. Dice pool 20, threshold 10
-				.sr extended 20 10
-				.sr e 20 10
-			"""
+			helptext = self.help.SR_EXTENDED
 
 		elif command[0].startswith("i"):
-			helptext = """
-			Shadowrun initiative rolling
-
-			.sr initiative allows rolling for initiative and
-			automatically add in any modifiers.
-
-			When rolling initiative, the first number is the
-			amount of dice to roll (up to 5 per shadowrun
-			rules), and the second number is the modifier.
-
-			Like most sr commands, this command can be
-			shortened to just "i".
-
-			.sr i <dice> <modifier>
-
-			Examples:
-				roll 4 dice, add 10 to the result
-				.sr initiative 4 10
-
-				roll 5 dice, add 10 to the result
-				.sr i 5 10
-			"""
+			helptext = self.help.SR_INITIATIVE
 
 		elif command[0].startswith("r"):
-			helptext = """
-			Shadowrun dice rolling.
+			helptext = self.help.SR_ROLL
 
-			.sr roll allows you to roll dice using the rules
-			for Shadowrun. This includes automatically
-			counting hits, misses, and ones. In addition, the
-			command accepts various flags to modify how hits,
-			misses, ones, and glitches are handles.
-
-			The roll command can be shortened to just "r" for
-			convenience.
-
-			Accepted flags: prime, show
-
-			Examples:
-				roll 10 dice. Counts hits, checks for glitches.
-				.sr roll 10
-				.sr r 10
-
-				roll 10 dice, count 4's as a hit (prime runner
-					quality)
-				.sr roll 10 prime
-
-				roll 10 dice, show the result of all rolls
-				.sr roll 10 show
-
-				roll 10 dice, count 4's as hits. Show all rolls.
-				.sr roll 10 show prime
-				.sr r prime show 10
-			"""
-
-		return helptext.replace("\t\t\t", "")
+		return helptext
 
 
 	async def extended(self, commands):
