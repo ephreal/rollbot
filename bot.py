@@ -26,58 +26,58 @@ DEALINGS IN THE SOFTWARE.
 import json
 
 from discord.ext import commands
-from discord import game
+from discord import Game
 
 
 def load_config():
-	with open("config/config.json", 'r') as f:
-		return json.load(f)
+    with open("config/config.json", 'r') as f:
+        return json.load(f)
 
 
 config = load_config()
 
 bot = commands.Bot(command_prefix=config["prefix"],
-	               description="rollbot")
+                   description="rollbot")
 
 
 @bot.event
 async def on_ready():
-	print("Startup complete, loading Cogs....")
-	await load_cogs()
-	print("Cog loading complete.")
-	print("Connected to server and awaiting commands.")
-	await bot.change_presence(game=game.Game(name="message '.help' for help"))
+    print("Startup complete, loading Cogs....")
+    await load_cogs()
+    print("Cog loading complete.")
+    print("Connected to server and awaiting commands.")
+    await bot.change_presence(game=Game(name="message '.help' for help"))
 
 
 
 async def load_cogs():
 
-	modules = [
-			   "cogs.admin",
-			   "cogs.audio",
-			   "cogs.roller",
-			   "cogs.shadowrun",
-			   "cogs.tests",
-			   "cogs.utils",
-			   "cogs.vampire"
-			  ]
+    modules = [
+        "cogs.admin",
+        "cogs.audio",
+        "cogs.roller",
+        "cogs.shadowrun",
+        "cogs.tests",
+        "cogs.utils",
+        "cogs.vampire"
+        ]
 
-	for extension in modules:
-		try:
-			print(f"Loading {extension}...")
-			bot.load_extension(f"{extension}")
-			print(f"Loaded {extension.split('.')[-1]}")
+    for extension in modules:
+        try:
+            print(f"Loading {extension}...")
+            bot.load_extension(f"{extension}")
+            print(f"Loaded {extension.split('.')[-1]}")
 
-		except Exception as e:
-			print(f"Failed to load {extension}")
-			print("Error follows:\n")
-			print(f"{e}\n")
+        except Exception as e:
+            print(f"Failed to load {extension}")
+            print("Error follows:\n")
+            print(f"{e}\n")
 
 
 @bot.command(hidden=True)
 async def reload():
-	await load_cogs()
-	await boy.say("Reloaded")
+    await load_cogs()
+    await boy.say("Reloaded")
 
 
 bot.run(config["token"])
