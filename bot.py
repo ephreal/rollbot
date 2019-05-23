@@ -30,27 +30,39 @@ from discord import Game
 
 
 def load_config():
-    with open("config/config.json", 'r') as f:
-        return json.load(f)
+    """
+    Loads bot configuration for use.
+    """
+    with open("config/config.json", 'r') as config_file:
+        return json.load(config_file)
 
 
-config = load_config()
+CONFIG = load_config()
 
-bot = commands.Bot(command_prefix=config["prefix"],
+BOT = commands.Bot(command_prefix=CONFIG["prefix"],
                    description="rollbot")
 
 
-@bot.event
+@BOT.event
 async def on_ready():
+    """
+    Post setup hook.
+    Currently lets you know the bot is running
+    and sets the played game to a message on
+    how to get help.
+    """
     print("Startup complete, loading Cogs....")
     await load_cogs()
     print("Cog loading complete.")
     print("Connected to server and awaiting commands.")
-    await bot.change_presence(game=Game(name="message '.help' for help"))
+    await BOT.change_presence(Game(name="message '.help' for help"))
 
 
 
 async def load_cogs():
+    """
+    Handles loading all cogs in for the bot.
+    """
 
     modules = [
         "cogs.admin",
@@ -65,19 +77,26 @@ async def load_cogs():
     for extension in modules:
         try:
             print(f"Loading {extension}...")
-            bot.load_extension(f"{extension}")
+            BOT.load_extension(f"{extension}")
             print(f"Loaded {extension.split('.')[-1]}")
 
-        except Exception as e:
+        except ModuleNotFoundError as module_error:
             print(f"Failed to load {extension}")
             print("Error follows:\n")
-            print(f"{e}\n")
+            print(f"{module_error}\n")
+
+        except OSError as lib_error:
+            print("Opus is probably not installed")
+            print(f"{lib_error}")
 
 
-@bot.command(hidden=True)
+@BOT.command(hidden=True)
 async def reload():
+    """
+    Handles reloading all cogs which allows live updates.
+    """
     await load_cogs()
-    await boy.say("Reloaded")
+    await BOT.say("Reloaded")
 
 
-bot.run(config["token"])
+BOT.run(CONFIG["token"])
