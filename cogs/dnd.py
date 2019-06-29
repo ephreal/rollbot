@@ -102,7 +102,7 @@ class dnd:
 
             else:
                 message.append("I'm sorry, I don't know what to do with that.")
-        except TypeError:
+        except ValueError:
             message = ["There is something wrong with your command."]
 
         return "\n".join(message)
