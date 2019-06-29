@@ -55,7 +55,8 @@ async def on_ready():
     await load_cogs()
     print("Cog loading complete.")
     print("Connected to server and awaiting commands.")
-    await BOT.change_presence(Game(name="message '.help' for help"))
+    help_message = Game(name=f"message '{CONFIG['prefix']}help' for help")
+    await BOT.change_presence(game=help_message)
 
 
 async def load_cogs():
