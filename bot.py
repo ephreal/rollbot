@@ -58,7 +58,6 @@ async def on_ready():
     await BOT.change_presence(Game(name="message '.help' for help"))
 
 
-
 async def load_cogs():
     """
     Handles loading all cogs in for the bot.
@@ -67,6 +66,7 @@ async def load_cogs():
     modules = [
         "cogs.admin",
         "cogs.audio",
+        "cogs.dnd",
         "cogs.roller",
         "cogs.shadowrun",
         "cogs.tests",
