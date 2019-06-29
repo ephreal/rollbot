@@ -7,10 +7,11 @@ on discord.
 
 # Shadowrun commands help
 
-class shadowrun_help():
-	def __init__(self):
 
-		self.SR_GENERAL_USE = \
+class shadowrun_help():
+    def __init__(self):
+
+        self.SR_GENERAL_USE = \
 """
 Help for sr commands.
 
@@ -22,16 +23,16 @@ extended (e)
 initiative (i)
 roll (r)
 
-To use it, simply run 
+To use it, simply run
 .sr help <command>
 
 Examples:
-	Get help for the roll command
-	.sr help roll
-	.sr help r
+    Get help for the roll command
+    .sr help roll
+    .sr help r
 """
 
-		self.SR_EXTENDED = \
+        self.SR_EXTENDED = \
 """
 Shadowrun extended test rolling
 
@@ -48,17 +49,17 @@ Critical glitches fail the exteded test by default. This can be changed in the
 config file.
 
 Examples:
-	run an extended test with a pice pool of 10 and
-	a threshold of 5
-	.sr extended 10 5
-	.sr e 10 5
+    run an extended test with a pice pool of 10 and
+    a threshold of 5
+    .sr extended 10 5
+    .sr e 10 5
 
-	Extended test. Dice pool 20, threshold 10
-	.sr extended 20 10
-	.sr e 20 10
+    Extended test. Dice pool 20, threshold 10
+    .sr extended 20 10
+    .sr e 20 10
 """
 
-		self.SR_INITIATIVE = \
+        self.SR_INITIATIVE = \
 """
 Shadowrun initiative rolling
 
@@ -73,14 +74,14 @@ Like most sr commands, this command can be shortened to just "i".
 .sr i <dice> <modifier>
 
 Examples:
-	roll 4 dice, add 10 to the result
-	.sr initiative 4 10
+    roll 4 dice, add 10 to the result
+    .sr initiative 4 10
 
-	roll 5 dice, add 10 to the result
-	.sr i 5 10
+    roll 5 dice, add 10 to the result
+    .sr i 5 10
 """
 
-		self.SR_ROLL = \
+        self.SR_ROLL = \
 """
 Shadowrun dice rolling.
 
@@ -94,17 +95,17 @@ The roll command can be shortened to just "r" for convenience.
 Accepted flags: prime, show
 
 Examples:
-	roll 10 dice. Counts hits, checks for glitches.
-	.sr roll 10
-	.sr r 10
+    roll 10 dice. Counts hits, checks for glitches.
+    .sr roll 10
+    .sr r 10
 
-	roll 10 dice, count 4's as a hit (prime runner quality)
-	.sr roll 10 prime
+    roll 10 dice, count 4's as a hit (prime runner quality)
+    .sr roll 10 prime
 
-	roll 10 dice, show the result of all rolls
-	.sr roll 10 show
+    roll 10 dice, show the result of all rolls
+    .sr roll 10 show
 
-	roll 10 dice, count 4's as hits. Show all rolls.
-	.sr roll 10 show prime
-	.sr r prime show 10
+    roll 10 dice, count 4's as hits. Show all rolls.
+    .sr roll 10 show prime
+    .sr r prime show 10
 """
