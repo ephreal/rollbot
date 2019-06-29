@@ -114,7 +114,7 @@ class admin:
         usage: .halt
         """
 
-        shutdown_message = "The bot is currently shutting down. Good bye!"
+        shutdown_message = "The bot is currently shutting down. Good bye"
         shutdown_message = shutdown_message[0:random.randint(0,
                                             len(shutdown_message)-1)]
 
@@ -126,7 +126,7 @@ class admin:
         if author_id not in self.admins:
             return await self.bot.say("Only admins may halt me.")
 
-        await self.bot.say(shutdown_message)
+        await self.bot.say(f"{shutdown_message}"+shutdown_message[-1]*4+"....")
         await client.Client.logout(self.bot)
 
     @commands.command(pass_context=True)
