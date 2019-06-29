@@ -5,15 +5,16 @@
 REQUIRES python 3.6.X
 Currently python 3.7 breaks the default pip install of discord. When this changes, python 3.7 will be good to use. Use python 3.6.x until then.
 
-This rollbot is a redesign of my older, broken roll bot. I am redesigning it to give it some better code consistiency, cleaner separation of modules, and also learning how to host a bot via docker.
+This rollbot is a redesign of my older, broken roll bot. I am redesigning it to give it some better code consistency, cleaner separation of modules, and also learning how to host a bot via docker.
 
 Currently supported roll types are:
 * basic dice rolling (Roll XdY dice)
 * Basic shadowrun dice rolling (hits, extended tests, initiative)
+* Basic DnD rolling (roll 1d20 with modifiers)
 
 Expected future roll types are:
 * Advanced Shadowrun Dice Rolling (Gremlins glitching, edge cases, etc)
-* DnD dice rolling
+* Advanced DnD dice rolling (Multiple dice types)
 
 Bonus features that I would like to add on at some point
 * Message cleanup of a channel (Completed)
@@ -76,13 +77,13 @@ NOTE: I have only ever ran docker on Linux. The instructions here are for Linux.
 
 After downloading and setting up the bot, open a terminal window and verify that you have docker installed and running.
 
-Navigate to the main folder and run 
+Navigate to the main folder and run
 
 <code>
 ./docker_setup
 </code>
 
-to build the docker image. Once the image is completed, run 
+to build the docker image. Once the image is completed, run
 
 <code>
 docker run --name bot docker_bot
