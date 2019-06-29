@@ -12,7 +12,7 @@ class shadowrun_help():
     def __init__(self):
 
         self.SR_GENERAL_USE = \
-"""
+            """
 Help for sr commands.
 
 .sr help gives you additional help for all .sr
@@ -33,7 +33,7 @@ Examples:
 """
 
         self.SR_EXTENDED = \
-"""
+            """
 Shadowrun extended test rolling
 
 .sr extended allows rolling for extended tests.
@@ -60,7 +60,7 @@ Examples:
 """
 
         self.SR_INITIATIVE = \
-"""
+            """
 Shadowrun initiative rolling
 
 .sr initiative allows rolling for initiative and automatically adds in any
@@ -82,7 +82,7 @@ Examples:
 """
 
         self.SR_ROLL = \
-"""
+            """
 Shadowrun dice rolling.
 
 .sr roll allows you to roll dice using the rules for Shadowrun. This includes
