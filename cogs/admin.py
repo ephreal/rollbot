@@ -85,7 +85,7 @@ class admin:
         async for x in client.Client.logs_from(self.bot, channel, limit=limit):
             msgs.append(x)
 
-        if not "all" in ctx.message.content:
+        if "all" not in ctx.message.content:
 
             # check for pinned messages
             to_keep = await client.Client.pins_from(self.bot, channel)
@@ -166,7 +166,7 @@ class admin:
         if not self.admins:
             await self.get_admins(ctx)
 
-        if not author_id in self.admins:
+        if author_id not in self.admins:
             return await self.bot.say("This command is for admins only.")
 
         command = ctx.message.content.split()
