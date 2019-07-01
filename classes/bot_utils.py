@@ -6,6 +6,7 @@ from discord.utils import get
 class utils():
     def __init__(self, bot):
         self.bot = bot
+        self.rolls = {}
 
     async def check_channel(self, ctx, roll_channels):
         """
@@ -47,3 +48,21 @@ class utils():
 
         else:
             return ctx.message.channel
+
+    async def add_roll(self, author_id, roll):
+        """
+        Adds an author id/roll combination to self.rolls to allow rerolling of
+        dice at a later time.
+        """
+
+        self.rolls[author_id] = roll
+
+    async def last_roll(self, author_id):
+        """
+        Retrieves the last roll that was rolled by "author_id"
+        """
+
+        try:
+            return self.rolls[author_id]
+        except KeyError:
+            return None

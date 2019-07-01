@@ -56,11 +56,10 @@ class shadowrun:
         Shadowrun specific dice rolling.
 
         The sr command is used for anything related to
-        shadowrun. It has three subcommands: roll,
-        initiative, and extended. Roll is used for general
-        dice rolling, initiative is used to get initiative
-        score, and extended is used to roll an extended
-        test.
+        shadowrun. It has five subcommands: extended, initiative, quote,
+        roll, and reroll. Extended rolls SR extended tests, initative rolls
+        SR initative, quote gets a shadowrun quote from my quotesite, roll
+        does dice rolling, and reroll allows rerolling the last roll you did.
 
         examples:
             roll:
@@ -78,6 +77,14 @@ class shadowrun:
                 and a threshold of 5.
                 .sr extended 20 5
                 .sr e 20 5
+
+            quote:
+                get a random shadowrun quote
+                .sr quote
+
+            reroll:
+                roll previous dice roll
+                .sr reroll
 
         For more in depth help, please run .sr help <command>
 
@@ -101,35 +108,30 @@ class shadowrun:
         channel = await self.utils.check_channel(ctx, self.rolling_channels)
 
         available_commands = {
-                              "roll"       : self.roll,
-                              "initiative" : self.roll_initiative,
-                              "help"       : self.sr_help,
                               "extended"   : self.extended,
+                              "help"       : self.sr_help,
+                              "initiative" : self.roll_initiative,
                               "quote"      : self.quote,
+                              "reroll"     : self.reroll,
+                              "roll"       : self.roll,
                              }
 
-        if command[0] in list(available_commands.keys()):
-            message = f"```CSS\nRan by {author}\n"
-            message += await available_commands[command[0]](command[1:])
-        else:
-            # Check if the command merely starts with the letter
-            # of a known command. It's easy to misspell a
-            # command.
-            if command[0].startswith("r"):
-                message = f"```CSS\nRan by {author}\n"
-                message += await available_commands["roll"](command[1:])
-            elif command[0].startswith("i"):
-                message = message = f"```CSS\nRan by {author}\n"
-                message += await available_commands["initiative"](command[1:])
-            elif command[0].startswith("h"):
-                message = f"```CSS\n"
-                message += await available_commands["help"](command[1:])
-            elif command[0].startswith("e"):
-                message = f"```CSS\nRan by {author}\n"
-                message += await available_commands["extended"](command[1:])
-            elif command[0].startswith("q"):
-                message = f"```CSS\nRan by {author}\n"
-                message += await available_commands["quote"](command[1:])
+        message = f"```CSS\nRan by {author}\n"
+
+        if command[0].startswith("ro"):
+            message += await available_commands["roll"](author,
+                                                        command[1:])
+        elif command[0].startswith("i"):
+            message += await available_commands["initiative"](command[1:])
+        elif command[0].startswith("h"):
+            message = f"```CSS\n"
+            message += await available_commands["help"](command[1:])
+        elif command[0].startswith("e"):
+            message += await available_commands["extended"](command[1:])
+        elif command[0].startswith("q"):
+            message += await available_commands["quote"](command[1:])
+        elif command[0].startswith("re"):
+            message += await available_commands["reroll"](author, command[1:])
 
         message += "```"
 
@@ -154,7 +156,10 @@ class shadowrun:
         elif command[0].startswith("i"):
             helptext = self.help.SR_INITIATIVE
 
-        elif command[0].startswith("r"):
+        elif command[0].startswith('re'):
+            helptext = self.help.SR_REROLL
+
+        elif command[0].startswith("ro"):
             helptext = self.help.SR_ROLL
 
         return helptext
@@ -252,7 +257,7 @@ class shadowrun:
         except Exception as e:
             return f"Invalid input, exception follows...\n{e}"
 
-    async def roll(self, dice_pool):
+    async def roll(self, author, dice_pool):
         """
         Rolls dice for shadowrun.
 
@@ -278,6 +283,7 @@ class shadowrun:
         dice_pool = int(dice_pool[0])
 
         rolls = await self.roller.multi_roll(dice_pool)
+        await self.utils.add_roll(author, (rolls, dice_pool))
 
         if prime:
             await self.bot.say("Prime runner.")
@@ -292,6 +298,29 @@ class shadowrun:
 
         if all_info:
             message += f"Rolls: {rolls}"
+        return message
+
+    async def reroll(self, author, commands):
+        """
+        Re-rolls dice. If the person calling the command has ran a roll command
+        at least once, then the reroll command will return the previous roll
+        and a new roll with the changes.
+        """
+
+        past_roll, dice_pool = await self.utils.last_roll(author)
+
+        if past_roll is None:
+            return "No past rolls exist. Please try after using the shadowrun"\
+                   " roller"
+
+        if commands:
+            commands.append(dice_pool)
+        else:
+            # Needs to be in a list to make the roll function happy...
+            commands = [dice_pool]
+
+        message = f"Previous roll of {dice_pool}: {past_roll}\n"
+        message += await self.roll(author, commands)
         return message
 
     async def get_hits(self, rolls, prime=False):

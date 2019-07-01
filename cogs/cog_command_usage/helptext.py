@@ -18,10 +18,12 @@ Help for sr commands.
 .sr help gives you additional help for all .sr
 commands. Available sr commands are
 
-help (h)
 extended (e)
 initiative (i)
-roll (r)
+help (h)
+quote (q)
+reroll (re)
+roll (ro)
 
 To use it, simply run
 .sr help <command>
@@ -29,7 +31,7 @@ To use it, simply run
 Examples:
     Get help for the roll command
     .sr help roll
-    .sr help r
+    .sr help ro
 """
 
         self.SR_EXTENDED = \
@@ -81,6 +83,35 @@ Examples:
     .sr i 5 10
 """
 
+        self.SR_REROLL = \
+            """
+Reroll shadowrun dice.
+
+.sr reroll allows you to reroll your last dice roll. Given that there are
+multiple ways to do this in shadowrun with edge, each case will be added in
+sometime in the future.
+
+.sr reroll can also accept any additional roll command features such as "prime"
+or "show" to have those applied to the reroll.
+
+The reroll command can be shortened to "re" for convenience.
+
+Accepted flags: prime, show
+
+Examples:
+    Reroll your last dice roll
+        .sr reroll
+
+    Reroll as a prime runner
+        .sr reroll prime
+
+    Reroll and show the result of all rolls
+        .sr reroll
+
+    Reroll as a prime runner and show all rolls
+        .sr re prime show
+            """
+
         self.SR_ROLL = \
             """
 Shadowrun dice rolling.
@@ -90,14 +121,14 @@ automatically counting hits, misses, and ones. In addition, the command
 accepts various flags to modify how hits, misses, ones, and glitches are
 handled.
 
-The roll command can be shortened to just "r" for convenience.
+The roll command can be shortened to just "ro" for convenience.
 
 Accepted flags: prime, show
 
 Examples:
     roll 10 dice. Counts hits, checks for glitches.
     .sr roll 10
-    .sr r 10
+    .sr ro 10
 
     roll 10 dice, count 4's as a hit (prime runner quality)
     .sr roll 10 prime
@@ -107,5 +138,5 @@ Examples:
 
     roll 10 dice, count 4's as hits. Show all rolls.
     .sr roll 10 show prime
-    .sr r prime show 10
+    .sr ro prime show 10
 """
