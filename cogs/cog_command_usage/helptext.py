@@ -140,3 +140,51 @@ Examples:
     .sr roll 10 show prime
     .sr ro prime show 10
 """
+
+        self.SR_QUOTE = \
+            """
+Shadowrun quote fetcher.
+
+.sr quote fetches a quote from a shadowrun quote site. It's possible to specify
+the quote by number, get the latest quote on the site, or simply get a random
+quote from the site. The default behaviour is to return a random quote.
+
+The quote command can be shortened to "q" for convenience.
+
+Examples:
+    Get a random quote
+    .sr quote random
+    .sr quote
+
+    Get quote number 5
+    .sr quote 5
+
+    Get the latest quote
+    .sr quote latest
+            """
+
+
+# DnD help
+class DndHelp:
+    def __init__(self):
+
+        self.DND = \
+            """
+Basic DnD command handler.
+
+The DnD command handler parses all requests to .dnd and makes sure the right
+part of the program handles each command.
+
+By default, DnD simply rolls a single 20 sided die. It can also be rolled with
+modifiers to automatically calculate what the total should be after modifiers.
+
+Examples:
+    Roll a 20 sided die
+    .dnd
+
+    Roll a 20 sided die, add 3 to the result
+    .dnd +3
+
+    Roll a 20 sided die, subtract 3 from the result
+    .dnd -3
+            """

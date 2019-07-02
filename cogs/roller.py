@@ -30,99 +30,109 @@ from classes.roll_functions import roller as rl
 
 
 class roller:
-	def __init__(self, bot):
-		self.bot = bot
-		# Channels the bot is allowed to run roll commands in.
-		# Change these in config.json to channels of your choice.
-		with open("config/config.json", 'r') as f:
-			self.rolling_channels = json.load(f)["rolling_channels"]
-		self.dice_roller = rl()
+    def __init__(self, bot):
+        self.bot = bot
+        # Channels the bot is allowed to run roll commands in.
+        # Change these in config.json to channels of your choice.
+        with open("config/config.json", 'r') as f:
+            self.rolling_channels = json.load(f)["rolling_channels"]
+        self.dice_roller = rl()
 
-	@commands.command(pass_context=True)
-	async def roll(self, ctx, roll):
-		"""
-		A general purpose rolling command.
+    @commands.command(pass_context=True)
+    async def roll(self, ctx, roll):
+        """
+        A general purpose rolling command.
 
-		Roll will roll XdY dice, where X is the amount of dice,
-		and Y is the amount of dice sides. The maximum amount of
-		dice that can be rolled at any time is 100.
+        Roll will roll XdY dice, where X is the amount of dice,
+        and Y is the amount of dice sides. The maximum amount of
+        dice that can be rolled at any time is 100.
 
-		usage:
-			roll one 6 sided die
-				.roll
-				.roll 1d6
+        usage:
+            roll one 6 sided die
+                .roll
+                .roll 1d6
 
-			roll ten 6 sided die
-				.roll 10d6
+            roll ten 6 sided die
+                .roll 10d6
 
-			roll fifteen 20-sided die
-				.roll 15d6
+            roll fifteen 20-sided die
+                .roll 15d6
 
-		If you are looking to roll dice for shadowrum, check the
-		help for the "sr" command.
-			.help sr
+        If you are looking to roll dice for shadowrum, check the
+        help for the "sr" command.
 
-		"""
+        .help sr
 
-		# Check to make sure the bot isn't replying to any bots.
+        If you are looking to roll with DnD rules, check the help for the
+        "dnd" command.
 
-		if ctx.message.author.bot:
-			return
+            .help dnd
 
-		# Channel checks. Rolling is restricted to a few channels
-		# on my discord server.
-		# Comment out if not desired.
-		channel = await self.check_channel(ctx)
+        """
 
-		try:
+        # Check to make sure the bot isn't replying to any bots.
 
-			if len(roll) == 0:
-				# return 1d6 roll
-				rolls = await self.dice_roller.multi_roll(1,6)
+        if ctx.message.author.bot:
+            return
 
-			elif len(roll) >= 2:
-				roll = roll.split("d")
-				dice_pool = int(roll[0])
-				sides = int(roll[1])
-				rolls = await self.dice_roller.multi_roll(dice_pool, sides)
+        # Channel checks. Rolling is restricted to a few channels
+        # on my discord server.
+        # Comment out if not desired.
+        channel = await self.check_channel(ctx)
 
-			await self.bot.send_message(channel, rolls)
+        try:
 
-		except Exception as e:
-			await self.bot.send_message(channel, "Incorrect input. Run .help roll "\
-				                                 "if you need help.")
-			await self.bot.send_message(channel, f"Error message: {e}")
+            if len(roll) == 0:
+                # return 1d6 roll
+                rolls = await self.dice_roller.roll(1, 6)
 
-	# Info checking functions below
-	async def check_channel(self, ctx):
-		"""
-		Verifies that bot is allowed to send the output
-		of roll commands to this channel.
-		"""
+            elif len(roll) >= 2:
+                roll = roll.split("d")
+                dice_pool = int(roll[0])
+                sides = int(roll[1])
+                rolls = await self.dice_roller.roll(dice_pool, sides)
 
-		author = ctx.message.author
-		channel = ctx.message.channel.name
+            await self.bot.send_message(channel, rolls)
 
-		if not self.rolling_channels:# or self.rolling_channels[0] == "ROLLING_CHANNEL":
-			return ctx.message.channel
+        except Exception as e:
+            await self.bot.send_message(channel,
+                                        "Incorrect input. Run .help roll "
+                                        "if you need help.")
+            await self.bot.send_message(channel, f"Error message: {e}")
 
-		if channel not in self.rolling_channels:
-			# PM author if in wrong channel
-			await self.bot.send_message(author,
-				                  "Please limit roll commands to the rolling " \
-				                  "or bottesting channels.\nThe results of your " \
-				                  "roll will be found in the rolling channel")
+    # Info checking functions below
+    async def check_channel(self, ctx):
+        """
+        Verifies that bot is allowed to send the output
+        of roll commands to this channel.
+        """
 
-			# Return the rolling channel
-			channel = client.Client.get_channel(self.bot,id=self.rolling_channels[0])
-			await self.bot.send_message(channel,
-				                        f"Command was \"{ctx.message.content}\"")
-			await client.Client.delete_message(self.bot, ctx.message)
-			return channel
+        author = ctx.message.author
+        channel = ctx.message.channel.name
 
-		else:
-			return ctx.message.channel
+        if not self.rolling_channels:
+            return ctx.message.channel
+
+        if channel not in self.rolling_channels:
+            # PM author if in wrong channel
+            await self.bot.send_message(author,
+                                        "Please limit roll commands to the "
+                                        "rolling or bottesting channels.\n"
+                                        "The results of your roll will be "
+                                        "found in the rolling channel")
+
+            # Return the rolling channel
+            channel = client.Client.get_channel(self.bot,
+                                                id=self.rolling_channels[0])
+            command = ctx.message.content
+            await self.bot.send_message(channel,
+                                        f"Command was \"{command}\"")
+            await client.Client.delete_message(self.bot, ctx.message)
+            return channel
+
+        else:
+            return ctx.message.channel
 
 
 def setup(bot):
-	bot.add_cog(roller(bot))
+    bot.add_cog(roller(bot))

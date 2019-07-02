@@ -162,6 +162,12 @@ class shadowrun:
         elif command[0].startswith("ro"):
             helptext = self.help.SR_ROLL
 
+        elif command[0].startswith("q"):
+            helptext = self.help.SR_QUOTE
+
+        else:
+            helptext = "Shadowrun command not found."
+
         return helptext
 
     async def extended(self, commands):
@@ -191,7 +197,7 @@ class shadowrun:
         glitch = False
 
         while total_hits < threshold and dice_pool > 0:
-            roll = await self.roller.multi_roll(dice_pool)
+            roll = await self.roller.roll(dice_pool)
             hits = await self.get_hits(roll)
             total_hits += hits[0]
             glitch = await self.check_glitch(dice_pool, hits[0], hits[2])
@@ -243,7 +249,7 @@ class shadowrun:
             dice_pool = int(rolls[0])
             to_add = int(rolls[1])
 
-            initiative_rolls = await self.roller.multi_roll(dice_pool)
+            initiative_rolls = await self.roller.roll(dice_pool)
             for x in initiative_rolls:
                 initiative += x
 
@@ -282,7 +288,7 @@ class shadowrun:
 
         dice_pool = int(dice_pool[0])
 
-        rolls = await self.roller.multi_roll(dice_pool)
+        rolls = await self.roller.roll(dice_pool)
         await self.utils.add_roll(author, (rolls, dice_pool))
 
         if prime:
@@ -384,12 +390,12 @@ class shadowrun:
         success = False
 
         for i in range(0, max_rolls):
-            rolls.append(roller.multi_roll(dice, 6))
+            rolls.append(roller.roll(dice, 6))
 
             # Add in misses/ones variables if needed in the future
             # Past self... WTF?? Why this check rolls? Now I must fix your code
             # TODO: Figure out why check_rolls is here and fix this block.
-            hits, _, _ = check_rolls(rolls[i])
+            hits, _, _ = check_rolls(roll[i])
             threshold -= hits
             if threshold <= 0:
                 success = True

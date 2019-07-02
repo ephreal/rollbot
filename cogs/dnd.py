@@ -29,7 +29,6 @@ from classes.roll_functions import roller
 from classes.bot_utils import utils
 
 from discord.ext import commands
-# from discord import client
 
 
 class dnd:
@@ -63,18 +62,21 @@ class dnd:
         command = ctx.message.content.lower().split()
         command = command[1:]
 
+        message = "```"
         if len(command) < 1:
-            roll = await self.roller.single_roll(20)
-            message = "You rolled a 20 sided die.\n"\
-                      f"Your result was {roll}"
+            roll = await self.roller.roll(1, 20)
+            message += "You rolled a 20 sided die.\n"\
+                       f"Your result was {roll}"
 
         elif "+" in command[0] or "-" in command[0]:
             # this is a 1d20 roll with modifiers. Pass this to the rolling
             # function immediately to prevent additional checking.
-            message = await self.roll(command)
+            message += await self.roll(command)
 
         else:
-            message = "Please try again. I'm not sure what to do with that."
+            message += "Please try again. I'm not sure what to do with that."
+
+        message += "```"
 
         await self.bot.send_message(channel, message)
 
@@ -94,8 +96,8 @@ class dnd:
                 message.append("You rolled a 20 sided die.")
                 message.append(f"\nModifier : {roll_command[0]}")
 
-                roll = await self.roller.single_roll(20)
-                modified_roll = roll + int(roll_command[0])
+                roll = await self.roller.roll(1, 20)
+                modified_roll = roll[0] + int(roll_command[0])
 
                 message.append(f"Dice roll : {roll}")
                 message.append(f"Modified roll : {modified_roll}")
