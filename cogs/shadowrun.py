@@ -33,7 +33,7 @@ from discord.ext import commands
 # from discord import client
 
 
-class shadowrun:
+class shadowrun(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -46,11 +46,7 @@ class shadowrun:
         with open("config/config.json", 'r') as f:
             self.sr_tweaks = json.load(f)["sr_tweaks"]
 
-        with open("config/config.json", 'r') as f:
-            self.rolling_channels = json.load(f)["rolling_channels"]
-
-    @commands.command(pass_context=True,
-                      description="Shadowrun dice roller")
+    @commands.command(description="Shadowrun dice roller")
     async def sr(self, ctx):
         """
         Shadowrun specific dice rolling.
@@ -101,19 +97,21 @@ class shadowrun:
         command = ctx.message.content.lower().split()
         command = command[1:]
 
+        channel = await self.utils.check_roll_channel(ctx)
+
         if len(command) == 0:
-            return await self.bot.say("please run '.help sr' or .sr help for"
+            return await channel.send("please run '.help sr' or .sr help for"
                                       " examples.")
 
-        channel = await self.utils.check_channel(ctx, self.rolling_channels)
-
+        # Given that I've changed how this is done, I might be able to remove
+        # the available commands portion.
         available_commands = {
-                              "extended"   : self.extended,
-                              "help"       : self.sr_help,
-                              "initiative" : self.roll_initiative,
-                              "quote"      : self.quote,
-                              "reroll"     : self.reroll,
-                              "roll"       : self.roll,
+                              "extended":   self.extended,
+                              "help":       self.sr_help,
+                              "initiative": self.roll_initiative,
+                              "quote":      self.quote,
+                              "reroll":     self.reroll,
+                              "roll":       self.roll,
                              }
 
         message = f"```CSS\nRan by {author}\n"
@@ -135,7 +133,7 @@ class shadowrun:
 
         message += "```"
 
-        await self.bot.send_message(channel, message)
+        await channel.send(message)
 
     async def sr_help(self, command):
         """
@@ -275,6 +273,7 @@ class shadowrun:
         """
 
         # Check if this is to be considered a prime runner
+        message = ""
         all_info = False
         prime = False
         if len(dice_pool) > 1:
@@ -292,15 +291,15 @@ class shadowrun:
         await self.utils.add_roll(author, (rolls, dice_pool))
 
         if prime:
-            await self.bot.say("Prime runner.")
+            message += "\nPrime runner.\n\n"
             hits = await self.get_hits(rolls, prime=True)
         else:
             hits = await self.get_hits(rolls)
 
         glitch = await self.check_glitch(dice_pool, hits[0], hits[2])
 
-        message = await self.prettify_results(rolls=rolls, hits=hits,
-                                              glitch=glitch, roll_type="roll")
+        message += await self.prettify_results(rolls=rolls, hits=hits,
+                                               glitch=glitch, roll_type="roll")
 
         if all_info:
             message += f"Rolls: {rolls}"
@@ -395,7 +394,7 @@ class shadowrun:
             # Add in misses/ones variables if needed in the future
             # Past self... WTF?? Why this check rolls? Now I must fix your code
             # TODO: Figure out why check_rolls is here and fix this block.
-            hits, _, _ = check_rolls(roll[i])
+            hits, _, _ = check_rolls(rolls[i])
             threshold -= hits
             if threshold <= 0:
                 success = True
@@ -457,8 +456,8 @@ class shadowrun:
                       ]
 
         html_escaped = {
-                          "&quot;" : '"',
-                          "&amp;"  : "&"
+                          "&quot;": '"',
+                          "&amp;":  "&"
                         }
 
         try:
@@ -473,8 +472,7 @@ class shadowrun:
             else:
                 url += "random=true"
 
-        except Exception as e:
-            await self.bot.say(e)
+        except Exception:
             url += "random=true"
 
         finally:

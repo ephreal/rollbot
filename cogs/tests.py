@@ -24,51 +24,49 @@ DEALINGS IN THE SOFTWARE.
 
 from asyncio import sleep
 from discord.ext import commands
-from discord import client
 
-class tests:
 
-	def __init__(self, bot):
-		self.bot = bot
+class tests(commands.Cog):
 
-	@commands.command(description="Bot connectivity test")
-	async def ping(self):
-		"""
-		Checks bot availability
+    def __init__(self, bot):
+        self.bot = bot
 
-		Ping lets you know if the bot can hear and respond
-		to you. In usual network fashion, a ping receives
-		a pong packet in response.
+    @commands.command(description="Bot connectivity test")
+    async def ping(self, ctx):
+        """
+        Checks bot availability
 
-		usage: .ping
-		"""
-		await self.bot.say("pong!")
+        Ping lets you know if the bot can hear and respond
+        to you. In usual network fashion, a ping receives
+        a pong packet in response.
 
-	@commands.command(pass_context=True,
-		              description="Gets basic server info")
-	async def info(self, ctx):
-		"""
-		Basic server, channel, and user info
+        usage: .ping
+        """
+        await ctx.send("pong!")
 
-		This is the shortened version of the .all_info command.
+    @commands.command(description="Gets basic server info")
+    async def info(self, ctx):
+        """
+        Basic server, channel, and user info
 
-		It does not return as much information as .all_info, but
-		it dows give you a quick and dirty rundown of server
-		info, current channel info, and your user info.
+        This is the shortened version of the .all_info command.
 
-		usage: .info
-		"""
-		info = {
-				"server"     : ctx.message.server,
-				"server_id"  : ctx.message.server.id,
-				"channel"    : ctx.message.channel,
-				"channel_id" : ctx.message.channel.id,
-				"author"     : ctx.message.author,
-				"author_id"  : ctx.message.author.id
-			   }
-		# print(dir(ctx.message.server))
+        It does not return as much information as .all_info, but
+        it dows give you a quick and dirty rundown of server
+        info, current channel info, and your user info.
 
-		message = f"""```CSS
+        usage: .info
+        """
+        info = {
+                "server":      ctx.message.guild,
+                "server_id":   ctx.message.guild.id,
+                "channel":     ctx.message.channel,
+                "channel_id":  ctx.message.channel.id,
+                "author":      ctx.message.author,
+                "author_id":   ctx.message.author.id
+               }
+
+        message = f"""```CSS
 server:     {info['server']}
 server id:  {info['server_id']}
 channel:    {info['channel']}
@@ -77,80 +75,76 @@ author:     {info['author']}
 author id:  {info['author_id']}
 ```
 """
-		await self.bot.say(message)
+        await ctx.send(message)
 
+    @commands.command(description="Get a large amount of useful "
+                      "server channel/user info")
+    async def all_info(self, ctx):
+        """
+        Gets server information
 
-	@commands.command(pass_context = True,
-		              description="Get a large amount of useful " \
-		                          "server channel/user info")
-	async def all_info(self, ctx):
-		"""
-		Gets server information
+        Shows you what channels are currently on the server
+        and who your server's members are.
 
-		Shows you what channels are currently on the server
-		and who your server's members are.
+        Note: This command has a built in slowdown in
+        returning the user data. This is because there can
+        be a lot of information, and the bot WILL be rate
+        limited if the slowdown is not enforced.
 
-		Note: This command has a built in slowdown in
-		returning the user data. This is because there can
-		be a lot of information, and the bot WILL be rate
-		limited if the slowdown is not enforced.
+        usage: .all_info
+        """
 
-		usage: .all_info
-		"""
+        channels = ctx.message.guild.channels
+        channels = [{channel.name: channel.id} for channel in channels]
 
-		channels = [channel for channel in client.Client.get_all_channels(self.bot)]
-		channels = [{channel.name : channel.id} for channel in channels]
+        await ctx.send("Channels:")
 
-		await self.bot.say("Channels:")
+        for channel in channels:
+            message = await self.format_channel(channel)
+            await ctx.send(message)
+            await sleep(1)
 
-		for channel in channels:
-			message = await self.format_channel(channel)
-			await self.bot.say(message)
-			await sleep(1)
+        users = ctx.message.guild.members
+        users = [{member.name: [member.id, member.roles]} for member in users]
 
-		users = [member for member in ctx.message.server.members]
-		users = [{member.name : [member.id, member.roles]} for member in users]
+        await ctx.send("Users:\n")
 
-		await self.bot.say("Users:\n")
+        for user in users:
+            message = await self.format_user(user)
+            await ctx.send(message)
+            await sleep(1)
+        await ctx.send("All info complete.")
 
-		for user in users:
-			message = await self.format_user(user)
-			await self.bot.say(message)
-			await sleep(1)
-		await self.bot.say("All info complete.")
+    async def format_channel(self, channel):
+        """
+        Takes a dictionary of {"channel name" : "channel id"}.
+        Returns a formatted message to send back.
+        """
+        name = list(channel.keys())[0]
+        channel_message = "```CSS\n"
+        channel_message += f"\tName : {name}\n"
+        channel_message += f"\tID   : {channel[name]}\n```"
+        return channel_message
 
+    async def format_user(self, user):
+        """
+        Takes a dictionary of {member name : member info} where
+        member info is a list. Member info contains
+        [member id, member roles].
 
-	async def format_channel(self, channel):
-		"""
-		Takes a dictionary of {"channel name" : "channel id"}.
-		Returns a formatted message to send back.
-		"""
-		name = list(channel.keys())[0]
-		channel_message = "```CSS\n"
-		channel_message += f"\tName : {name}\n"
-		channel_message += f"\tID   : {channel[name]}\n```"
-		return channel_message
+        Returns a formatted message to send.
+        """
 
+        username = list(user.keys())[0]
+        user_id = user[username][0]
+        roles = [role.name for role in user[username][1]]
+        roles.remove("@everyone")
 
-	async def format_user(self, user):
-		"""
-		Takes a dictionary of {member name : member info} where
-		member info is a list. Member info contains
-		[member id, member roles].
-
-		Returns a formatted message to send.
-		"""
-
-		username = list(user.keys())[0]
-		user_id = user[username][0]
-		roles = [role.name for role in user[username][1]]
-		roles.remove("@everyone")
-
-		user_message =  f"```CSS\nName: {username}\n"
-		user_message += f"\tID:    {user_id}\n"
-		user_message += f"\tRoles: {roles}\n```"
-		return user_message
+        user_message = f"```CSS\nName: {username}\n"
+        user_message += f"\tID:    {user_id}\n"
+        user_message += f"\tRoles: {roles}\n```"
+        return user_message
 
 
 def setup(bot):
-	bot.add_cog(tests(bot))
+    bot.add_cog(tests(bot))

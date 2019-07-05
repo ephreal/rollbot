@@ -56,24 +56,28 @@ async def on_ready():
     print("Cog loading complete.")
     print("Connected to server and awaiting commands.")
     help_message = Game(name=f"message '{CONFIG['prefix']}help' for help")
-    await BOT.change_presence(game=help_message)
+    await BOT.change_presence(activity=help_message)
 
 
-async def load_cogs():
+async def load_cogs(unload_first=False):
     """
     Handles loading all cogs in for the bot.
     """
 
     modules = [
         "cogs.admin",
-        "cogs.audio",
+        # "cogs.audio",
         "cogs.dnd",
         "cogs.roller",
         "cogs.shadowrun",
         "cogs.tests",
         "cogs.utils",
-        "cogs.vampire"
+        "cogs.vampire",
         ]
+
+    if unload_first:
+        for cog in modules:
+            BOT.unload_extension(cog)
 
     for extension in modules:
         try:
@@ -92,12 +96,12 @@ async def load_cogs():
 
 
 @BOT.command(hidden=True)
-async def reload():
+async def reload(ctx):
     """
     Handles reloading all cogs which allows live updates.
     """
-    await load_cogs()
-    await BOT.say("Reloaded")
+    await load_cogs(unload_first=True)
+    await ctx.send("Reloaded")
 
 
 BOT.run(CONFIG["token"])

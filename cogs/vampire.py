@@ -23,52 +23,55 @@ DEALINGS IN THE SOFTWARE.
 from classes.roll_functions import roller
 from discord.ext import commands
 
-class vampire_masquerade:
-	def __init__(self, bot):
-		self.bot = bot
-		self.roller = roller()
 
+class vampire_masquerade(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.roller = roller()
 
-	@commands.command(pass_context=True)
-	async def vm(self, ctx, cmd):
-		"""
-		A collection of commands for Vampire the Masquerade.
+    @commands.command(description="Vampire the Masquerade commands")
+    async def vm(self, ctx):
+        """
+        A collection of commands for Vampire the Masquerade.
 
-		Available commands:
-			.vm roll
+        Available commands:
+            .vm
 
-		for more help, try running
-			.vm help
-		"""
+        Examples:
+            roll 2 dice
+            .vm 2
 
-		result = "```CSS\n"
-		result += f"Ran by {ctx.message.author.name}\n"
-		if "roll" in cmd:
-			roll = ctx.message.content.lower().split()
-			roll = roll[2]
-			result += f"Rolled {roll} dice\n"
+        for more help, try running
+            .vm help
+        """
 
-			roll = await self.roll(roll)
-			roll.sort()
+        result = "```CSS\n"
+        result += f"Ran by {ctx.message.author.name}\n"
 
-			result += f"Results: {roll}"
-			result.replace("[", "")
-			result.replace("]", "")
-			result += "```"
-			return await self.bot.say(result)
-		else:
-			return await self.bot.say("I'm not sure what to do with that. Please try again.")
+        cmd = ctx.message.content.split(" ")[1:]
 
+        if len(cmd) > 0:
 
-	async def roll(self, roll):
-		"""
-		Handles the rolling for vampire the masquerade.
+            try:
+                roll = int(cmd[0])
+            except Exception:
+                roll = 1
 
-		The default roll type is a d10.
-		"""
+            result += f"Rolled {roll} dice\n"
 
-		roll = int(roll)
-		return await self.roller.multi_roll(roll, 10)
+            roll = await self.roller.roll(roll, 10)
+            roll.sort()
+
+        else:
+            result += "rolling 1 die\n"
+            roll = await self.roller.roll(1, 10)
+
+        result += f"Results: {roll}"
+        result.replace("[", "")
+        result.replace("]", "")
+        result += "```"
+        return await ctx.send(result)
+
 
 def setup(bot):
-	bot.add_cog(vampire_masquerade(bot))
+    bot.add_cog(vampire_masquerade(bot))

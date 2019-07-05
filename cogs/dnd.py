@@ -22,26 +22,19 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import json
-# import aiohttp
-
 from classes.roll_functions import roller
 from classes.bot_utils import utils
 
 from discord.ext import commands
 
 
-class dnd:
+class dnd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.roller = roller()
         self.utils = utils(self.bot)
 
-        with open("config/config.json", 'r') as f:
-            self.rolling_channels = json.load(f)["rolling_channels"]
-
-    @commands.command(pass_context=True,
-                      description="DnD bot roller")
+    @commands.command(description="DnD bot roller")
     async def dnd(self, ctx):
         """
         The main DnD handler.
@@ -57,7 +50,7 @@ class dnd:
             .dnd help roll
         """
 
-        channel = await self.utils.check_channel(ctx, self.rolling_channels)
+        channel = await self.utils.check_roll_channel(ctx)
 
         command = ctx.message.content.lower().split()
         command = command[1:]
@@ -78,7 +71,7 @@ class dnd:
 
         message += "```"
 
-        await self.bot.send_message(channel, message)
+        await channel.send(message)
 
     async def roll(self, roll_command):
         """
