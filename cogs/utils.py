@@ -181,10 +181,11 @@ class utils(commands.Cog):
                 xkcd_num = int(command[0])
                 if xkcd_num > latest["num"]:
                     xkcd_num = latest["num"]
-            except Exception as e:
-                print(f"{e}")
+            except ValueError:
                 await ctx.send("I don't know what to do with that. I'll give "
-                               "you a random comic for now.")
+                               "you a random comic for now. If you're "
+                               "unsure of how to use this command, run\n"
+                               "```.help xkcd```")
                 xkcd_num = random.randint(1, latest["num"])
         else:
             xkcd_num = random.randint(1, latest["num"])
