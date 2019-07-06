@@ -68,6 +68,7 @@ async def load_cogs(unload_first=False):
         "cogs.admin",
         # "cogs.audio",
         "cogs.dnd",
+        "cogs.games",
         "cogs.roller",
         "cogs.shadowrun",
         "cogs.tests",
