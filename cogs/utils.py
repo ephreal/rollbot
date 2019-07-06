@@ -23,6 +23,8 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import aiohttp
+import json
+import random
 
 from asyncio import sleep
 from discord.ext import commands
@@ -154,6 +156,40 @@ class utils(commands.Cog):
     async def fetch(self, session, url):
         async with session.get(url) as html:
             return await html.text()
+
+    @commands.command(description="gets an XKCD webcomic")
+    async def xkcd(self, ctx):
+        """
+        Gets an XKCD comic. By default, will grab a random comic.
+
+        Examples:
+            Get a random webcomic
+            .xckd
+
+            Get comic number 404
+            .xkcd 404
+        """
+
+        command = ctx.message.content.split(" ")
+        command = command[1:]
+
+        latest = await self.get_quote("https://xkcd.com/info.0.json")
+        latest = json.loads(latest)
+
+        if command:
+            try:
+                xkcd_num = int(command[0])
+                if xkcd_num > latest["num"]:
+                    xkcd_num = latest["num"]
+            except Exception as e:
+                print(f"{e}")
+                await ctx.send("I don't know what to do with that. I'll give "
+                               "you a random comic for now.")
+                xkcd_num = random.randint(1, latest["num"])
+        else:
+            xkcd_num = random.randint(1, latest["num"])
+
+        await ctx.send(f"https://xkcd.com/{xkcd_num}")
 
 
 def setup(bot):
