@@ -66,6 +66,7 @@ async def load_cogs(unload_first=False):
 
     modules = [
         "cogs.admin",
+        "cogs.characters",
         # "cogs.audio",
         "cogs.dnd",
         "cogs.games",
