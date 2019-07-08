@@ -45,8 +45,9 @@ class Games(commands.Cog):
 
         choices = ["rock", "scissors", "paper"]
 
-        await ctx.send("Let's play rock papaer scissors. You have 3 choices\n"
-                       "rock\npaper\nscissors\nReply with your choice.")
+        await ctx.send("```css\n"
+                       "Let's play rock papaer scissors. You have 3 choices\n"
+                       "rock\npaper\nscissors\nReply with your choice.```")
 
         choice = random.randint(0, 2)
 
@@ -67,13 +68,15 @@ class Games(commands.Cog):
                 winning = True
 
             if winning == "tie":
-                message = f"We tied. I chose {choices[choice]}"
+                message = f"```css\nWe tied. I chose {choices[choice]}```"
             elif winning:
-                message = f"I chose {choices[choice]}. You won! :smile:"
+                message = f"```css\nI chose {choices[choice]}. You won! " \
+                          "```\n:smile:"
             else:
-                message = f"I chose {choices[choice]}. You lost, try again!"
+                message = f"```css\nI chose {choices[choice]}. You lost, " \
+                          "try again!```"
         except Exception as e:
-            await ctx.send(f"Something went wrong.\nError:\n{e}")
+            await ctx.send(f"```css Something went wrong.\nError:\n{e}```")
         await ctx.send(message)
 
     @commands.command(description="Guess the number game")
@@ -89,7 +92,7 @@ class Games(commands.Cog):
             .guess
 
             Guess a number
-            .guess 40
+            40
         """
 
         secret_num = random.randint(1, 101)
@@ -102,40 +105,48 @@ class Games(commands.Cog):
             try:
                 msg = await self.get_guess(ctx)
 
-                _, guess = msg.content.split(" ")
+                guess = msg.content
+                if guess == "quit":
+                    return ctx.send("```Try playing again sometime!```")
+
                 guess = int(guess)
 
-                await ctx.send(msg.author)
+                message = f'```\nRan by: {msg.author.name}\n'
 
                 if guess == secret_num:
-                    return await ctx.send("Congratulations! You guessed it.")
+                    message += "Congratulations! You guessed it.\n```"
+                    return await ctx.send(message)
 
-                elif guess > secret_num:
-                    await ctx.send("That was too high. Please try again.")
+                elif guess > secret_num and tries > 1:
+                    message += "That was too high. Please try again.\n"
 
-                elif guess < secret_num:
-                    await ctx.send("That was too low. Please try again.")
+                elif guess < secret_num and tries > 1:
+                    message += "That was too low. Please try again.\n"
 
+                message += "```"
+
+                await ctx.send(message)
                 tries -= 1
 
             except asyncio.TimeoutError:
-                return await ctx.send("I'm sorry, you took too long to reply."
-                                      "\nSimply run '.guess' to play again.")
+                return await ctx.send("``\n"
+                                      "I'm sorry, you took too long to reply."
+                                      "\nSimply run '.guess' to play again."
+                                      "\n```")
             except ValueError:
-                await ctx.send("I'm sorry, Something went wrong.\n"
-                               "Please try again.")
+                await ctx.send("```\nI'm sorry, Something went wrong.\n"
+                               "Please try again.\n```")
 
             except IndexError:
-                await ctx.send("Did you make a guess? I couldn't find the "
-                               "number.")
+                await ctx.send("```\nDid you make a guess? I couldn't find "
+                               "the number.\n```")
 
-        return await ctx.send("Better luck next time.")
+        return await ctx.send("```\nBetter luck next time.\n```")
 
     async def get_guess(self, ctx):
         def check(m):
             return (m.author == ctx.message.author and
-                    m.channel == ctx.message.channel and
-                    m.content.startswith(".guess"))
+                    m.channel == ctx.message.channel)
 
         return await self.bot.wait_for('message', check=check, timeout=60)
 
