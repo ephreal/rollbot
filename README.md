@@ -2,8 +2,9 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c18a361a7f2f4d209a4b24a2f3eb1f50)](https://app.codacy.com/app/ephreal/rollbot?utm_source=github.com&utm_medium=referral&utm_content=ephreal/rollbot&utm_campaign=Badge_Grade_Dashboard)
 
-REQUIRES python 3.6.X
-Currently python 3.7 breaks the default pip install of discord. When this changes, python 3.7 will be good to use. Use python 3.6.x until then.
+REQUIRES python 3.6.X+ and discord.py 1.2.3 or higher
+
+Python 3.7 is recommended.
 
 This rollbot is a redesign of my older, broken roll bot. I am redesigning it to give it some better code consistency, cleaner separation of modules, and also learning how to host a bot via docker.
 
@@ -32,16 +33,16 @@ If you are setting this bot up with a docker container, goto SETTING UP BOT WITH
 ### Running bot with python
 
 Verify that you have the following installed:
-* python 3.6.x
+* python 3.7
 * discord.py
 
 If you don't have these, or you don't know if you do, continue on to the next section.
 
 #### Installing python and discord.py
 
-If you are on windows and need to install python, go here: <https://www.python.org/downloads/release/python-367/>
-If you are on Linux, install python 3.6 from your repository. I don't know what distro you have, so I won't even speculate on the commands.
-If you are on Mac, I'm sorry. I have no idea how Mac's work. Going here should probably work though: <https://www.python.org/downloads/release/python-367/>
+If you are on windows and need to install python, go here: <https://www.python.org/downloads/release/python-373/>
+If you are on Linux, install python 3.7 from your repository. I don't know what distro you have, so I won't speculate on the commands needed.
+If you are on Mac, I'm sorry. I have no idea how Mac's work. Going here should probably work though: <https://www.python.org/downloads/release/python-373/>
 
 Follow the install instructions and make sure that pip is installed with python.
 
@@ -63,7 +64,7 @@ If you still can't get discord installed, google your error. There's probably so
 
 #### Downloading and setting up the bot
 
-Now that you have set up python and discord, download the files for the bot. This can be done by going to the top of the page and clicking on the green button that says "Clone or Download" and choosing "Download Zip". Once that is done, unzip the files and move the folder to wherever makes sense for your system. Inside of the config folder, you'll find a file called "config.json". Open this in notepad/notepad++/sublime/vim/etc. Overwrite YOUR\_TOKEN\_HERE with your bot token.
+Now that you have set up python and discord, download the files for the bot. This can be done by going to the top of the page and clicking on the green button that says "Clone or Download" and choosing "Download Zip". Once that is done, unzip the files and move the folder to wherever makes sense for your system. Inside of the config folder, you'll find a file called "config.json". Open this in notepad/notepad++/sublime/vim/etc. Overwrite YOUR\_TOKEN\_HERE with your bot token. If you have specific channels you want to limit rolling to, place the name of these channels in the rolling_channels.
 
 If you do not have a token yet, refer to here: <https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token>
 
@@ -75,7 +76,7 @@ Either double click the "bot.py" file, or navigate to the main folder in a termi
 
 NOTE: I have only ever ran docker on Linux. The instructions here are for Linux.
 
-After downloading and setting up the bot, open a terminal window and verify that you have docker installed and running.
+After downloading and setting up the bot configuration, open a terminal window and verify that you have docker installed and running.
 
 Navigate to the main folder and run
 
