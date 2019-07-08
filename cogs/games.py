@@ -24,6 +24,7 @@ DEALINGS IN THE SOFTWARE.
 
 import random
 from discord.ext import commands
+import asyncio
 
 
 class Games(commands.Cog):
@@ -74,6 +75,74 @@ class Games(commands.Cog):
         except Exception as e:
             await ctx.send(f"Something went wrong.\nError:\n{e}")
         await ctx.send(message)
+
+    @commands.command(description="Guess the number game")
+    async def guess(self, ctx):
+        """
+        A simple game where the bot picks a number from 1 to 100 and you try
+        guess it within 5 guesses.
+
+        To begin, simply type .guess
+
+        Examples:
+            Start the game
+            .guess
+
+            Guess a number
+            .guess 40
+        """
+
+        def check(m):
+            return (m.author == ctx.message.author and
+                    m.channel == ctx.message.channel and
+                    m.content.startswith(".guess"))
+
+        secret_num = random.randint(1, 101)
+        tries = 5
+
+        await ctx.send("I am thinking on a number from 1 to 100. Take a guess")
+
+        while tries > 0:
+
+            try:
+                msg = await self.get_guess(ctx)
+
+                command, guess = msg.content.split(" ")
+                guess = int(guess)
+
+                await ctx.send(msg.author)
+
+                if guess == secret_num:
+                    return await ctx.send("Congratulations! You guessed it.")
+
+                elif guess > secret_num:
+                    await ctx.send("That was too high. Please try again.")
+
+                elif guess < secret_num:
+                    await ctx.send("That was too low. Please try again.")
+
+                tries -= 1
+
+            except asyncio.TimeoutError:
+                return await ctx.send("I'm sorry, you took too long to reply."
+                                      "\nSimply run '.guess' to play again.")
+            except ValueError:
+                await ctx.send("I'm sorry, Something went wrong.\n"
+                               "Please try again.")
+
+            except IndexError:
+                await ctx.send("Did you make a guess? I couldn't find the "
+                               "number.")
+
+        return await ctx.send("Better luck next time.")
+
+    async def get_guess(self, ctx):
+        def check(m):
+            return (m.author == ctx.message.author and
+                    m.channel == ctx.message.channel and
+                    m.content.startswith(".guess"))
+
+        return await self.bot.wait_for('message', check=check, timeout=60)
 
 
 def setup(bot):
