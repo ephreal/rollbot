@@ -87,7 +87,21 @@ Navigate to the main folder and run
 to build the docker image. Once the image is completed, run
 
 <code>
-docker run --name bot docker_bot
+sudo docker run --name bot docker_bot
+</code>
+
+to start the bot.
+
+To do both steps at once, run
+
+<code>
+./docker_setup && sudo docker run --name bot docker_bot
+</code>
+
+From then on, until you update, you can simply run
+
+<code>
+sudo docker start bot
 </code>
 
 to start the bot.
