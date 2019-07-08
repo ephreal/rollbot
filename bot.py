@@ -24,6 +24,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 import json
+import traceback
 
 from discord.ext import commands
 from discord import Game
@@ -64,7 +65,7 @@ async def load_cogs(unload_first=False):
     Handles loading all cogs in for the bot.
     """
 
-    modules = [
+    cogs = [
         "cogs.admin",
         "cogs.characters",
         # "cogs.audio",
@@ -78,23 +79,33 @@ async def load_cogs(unload_first=False):
         ]
 
     if unload_first:
-        for cog in modules:
-            BOT.unload_extension(cog)
+        for cog in cogs:
+            try:
+                print(f"Unloading {cog}")
+                BOT.unload_extension(cog)
+            except commands.errors.ExtensionNotLoaded:
+                print(f"Cog {cog} is already unloaded.")
 
-    for extension in modules:
+    for extension in cogs:
         try:
             print(f"Loading {extension}...")
             BOT.load_extension(f"{extension}")
             print(f"Loaded {extension.split('.')[-1]}")
 
-        except ModuleNotFoundError as module_error:
-            print(f"Failed to load {extension}")
-            print("Error follows:\n")
-            print(f"{module_error}\n")
+        except ModuleNotFoundError:
+            print(f"Could not find {extension}. Please make sure it exists.")
 
         except OSError as lib_error:
             print("Opus is probably not installed")
             print(f"{lib_error}")
+
+        except commands.errors.ExtensionAlreadyLoaded:
+            print(f"The cog {extension} is already loaded.\n"
+                  "Skipping the load process for this cog.")
+
+        except SyntaxError as e:
+            print(f"The cog {extension} has a syntax error.")
+            traceback.print_tb(e.__traceback__)
 
 
 @BOT.command(hidden=True)
