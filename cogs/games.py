@@ -92,11 +92,6 @@ class Games(commands.Cog):
             .guess 40
         """
 
-        def check(m):
-            return (m.author == ctx.message.author and
-                    m.channel == ctx.message.channel and
-                    m.content.startswith(".guess"))
-
         secret_num = random.randint(1, 101)
         tries = 5
 
@@ -107,7 +102,7 @@ class Games(commands.Cog):
             try:
                 msg = await self.get_guess(ctx)
 
-                command, guess = msg.content.split(" ")
+                _, guess = msg.content.split(" ")
                 guess = int(guess)
 
                 await ctx.send(msg.author)
