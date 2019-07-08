@@ -26,11 +26,13 @@ import random
 from asyncio import sleep
 from discord import client
 from discord.ext import commands
+from classes import analytics
 
 
 class admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.analytics = analytics.GuildAnalytics()
 
     @commands.command(hidden=True,
                       description="Deletes messages")
@@ -143,6 +145,58 @@ class admin(commands.Cog):
         else:
             await ctx.send("Something is wrong with your command.\n"
                            f"Error message: {error}")
+
+    @commands.command(hidden=True, description="Rename the bot")
+    @commands.has_permissions(administrator=True)
+    async def rename(self, ctx, name):
+        """
+        Rename the bot in discord.
+
+        Note: If the bot has a nickname, this will not change the nickname.
+
+        Examples:
+            Rename the bot to fred
+            .rename fred
+        """
+        await self.bot.user.edit(username=name)
+        await ctx.send("Bot's name has been changed.")
+
+    @commands.command(hidden=True, description="Show guild member activity.")
+    @commands.has_permissions(administrator=True)
+    async def member_activity(self, ctx):
+        """
+        Gets a list of all members in the discord guild (discord server) and
+        then returns the date they joined.
+
+        .member_activity
+        """
+
+        guild = ctx.guild
+        members = guild.members
+
+        for i in members:
+            await ctx.send(f"```css\n"
+                           f"{i.name}\n"
+                           f"Joined on: {i.joined_at}```")
+
+        await ctx.send("Complete")
+
+    @commands.command(hidden=True,
+                      description="Stats guild/member status data collection")
+    @commands.has_permissions(administrator=True)
+    async def start_analytics(self, ctx):
+        """
+        Starts tracking whether users are active in the guild or not.
+
+        This is useful for tracking users that are in your guild, but do
+        not actually communicate with anyone in the guild. It's possible
+        that they have lost interest, no longer use discord, etc.
+
+        Examples:
+            Start analytics
+            .start_analytics
+        """
+
 
 
 def setup(bot):

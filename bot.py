@@ -60,6 +60,20 @@ async def on_ready():
     await BOT.change_presence(activity=help_message)
 
 
+@BOT.event
+async def on_message(message):
+    """
+    Generic operations on user message. For example, adding to analytics to
+    see if users are active on the guild.
+    """
+
+    if message.author.bot:
+        return
+
+    if message.content.startswith(CONFIG["prefix"]):
+        await BOT.process_commands(message)
+
+
 async def load_cogs(unload_first=False):
     """
     Handles loading all cogs in for the bot.
