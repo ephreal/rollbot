@@ -29,12 +29,12 @@ import datetime
 
 class GuildAnalytics():
     def __init__(self):
+        self.analytics = {}
         if os.path.exists("analytics/stats.json"):
             with open("analytics/stats.json", "r") as f:
                 self.analytics = json.load(f)
-        else:
+        elif not os.path.exists("analytics"):
             os.mkdir("analytics")
-            self.analytics = {}
 
     def add_guild(self, ctx):
         """
