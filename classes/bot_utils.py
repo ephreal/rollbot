@@ -45,7 +45,7 @@ class utils():
         """
 
         # Return the current channel if no rolling channels are defined
-        if not self.rolling_channels:
+        if not self.rolling_channels or "quote" in ctx.message.content:
             return ctx.message.channel
 
         # Allow rolling in DM channels
@@ -68,7 +68,7 @@ class utils():
                           type=discord.ChannelType.text)
 
             command = ctx.message.content
-            await ctx.send(f"Command was \"{command}\"")
+            await channel.send(f"Command was \"{command}\"")
             return channel
 
         else:
