@@ -118,7 +118,8 @@ class shadowrun(commands.Cog):
 
         if command[0].startswith("ro"):
             message += await available_commands["roll"](author,
-                                                        command[1:])
+                                                        command[1:],
+                                                        ctx)
         elif command[0].startswith("i"):
             message += await available_commands["initiative"](command[1:])
         elif command[0].startswith("h"):
@@ -261,7 +262,7 @@ class shadowrun(commands.Cog):
         except Exception as e:
             return f"Invalid input, exception follows...\n{e}"
 
-    async def roll(self, author, dice_pool):
+    async def roll(self, author, dice_pool, ctx):
         """
         Rolls dice for shadowrun.
 
@@ -286,6 +287,9 @@ class shadowrun(commands.Cog):
                 all_info = True
 
         dice_pool = int(dice_pool[0])
+
+        if dice_pool > 1000000:
+            await ctx.send("why are you trying to roll that much dice?")
 
         rolls = await self.roller.roll(dice_pool)
         await self.utils.add_roll(author, (rolls, dice_pool))
