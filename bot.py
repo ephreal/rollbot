@@ -70,6 +70,23 @@ async def on_message(message):
     if message.author.bot:
         return
 
+    if "+endorse" in message.content:
+        bot_nick = message.guild.me.nick
+        await message.channel.send(f"My name is {bot_nick}, and I endorse "
+                                   "the above message.\nNote that my "
+                                   "endorsement in no way reflects the "
+                                   "opinions of me or my creator, does "
+                                   "not make any guarantee about the "
+                                   "correctness of said message, and "
+                                   "may, in fact, not be an actual "
+                                   "endorsement of the sentiments expressed "
+                                   "in said message. Any statements claiming "
+                                   "my endorsing of this message implies "
+                                   "that I agree with said message is taken "
+                                   "horribly out of context.")
+
+        await message.add_reaction('👍')
+
     if message.content.startswith(CONFIG["prefix"]):
         await BOT.process_commands(message)
 
