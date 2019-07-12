@@ -289,7 +289,8 @@ class shadowrun(commands.Cog):
         dice_pool = int(dice_pool[0])
 
         if dice_pool > 1000000:
-            await ctx.send("why are you trying to roll that much dice?")
+            return await ctx.send("why are you trying to roll that much dice?"
+                                  "\nYou'll need to choose less dice to roll")
 
         rolls = await self.roller.roll(dice_pool)
         await self.utils.add_roll(author, (rolls, dice_pool))
