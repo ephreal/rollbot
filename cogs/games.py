@@ -46,7 +46,7 @@ class Games(commands.Cog):
         choices = ["rock", "scissors", "paper"]
 
         await ctx.send("```css\n"
-                       "Let's play rock papaer scissors. You have 3 choices\n"
+                       "Let's play rock paper scissors. You have 3 choices\n"
                        "rock\npaper\nscissors\nReply with your choice.```")
 
         choice = random.randint(0, 2)
