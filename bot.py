@@ -146,7 +146,7 @@ async def reload(ctx):
     Handles reloading all cogs which allows live updates.
     """
 
-    cmd = Popen("git pull", stdout=PIPE)
+    cmd = Popen(["git", "pull"], stdout=PIPE)
     out, _ = cmd.communicate()
 
     await load_cogs(unload_first=True)
