@@ -145,6 +145,12 @@ author id:  {info['author_id']}
         user_message += f"\tRoles: {roles}\n```"
         return user_message
 
+    @commands.command(description="Gives a usercount")
+    async def users(self, ctx):
+        users = ctx.message.guild.members
+
+        ctx.send(f"There are {len(users)} members in this guild.")
+
 
 def setup(bot):
     bot.add_cog(tests(bot))
