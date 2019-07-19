@@ -197,6 +197,7 @@ class admin(commands.Cog):
             .start_analytics
         """
 
+        await ctx.send("This feature is not ready for use yet.")
 
 
 def setup(bot):
