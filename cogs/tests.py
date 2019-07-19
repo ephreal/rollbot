@@ -149,7 +149,7 @@ author id:  {info['author_id']}
     async def users(self, ctx):
         users = ctx.message.guild.members
 
-        ctx.send(f"There are {len(users)} members in this guild.")
+        await ctx.send(f"There are {len(users)} members in this guild.")
 
 
 def setup(bot):
