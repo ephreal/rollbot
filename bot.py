@@ -28,6 +28,7 @@ import traceback
 
 from discord.ext import commands
 from discord import Game
+from subprocess import PIPE, Popen
 
 
 def load_config():
@@ -144,6 +145,10 @@ async def reload(ctx):
     """
     Handles reloading all cogs which allows live updates.
     """
+
+    cmd = Popen("git pull", stdout=PIPE)
+    out, _ = cmd.communicate()
+
     await load_cogs(unload_first=True)
     await ctx.send("Reloaded")
 
