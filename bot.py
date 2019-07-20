@@ -140,17 +140,4 @@ async def load_cogs(unload_first=False):
             traceback.print_tb(e.__traceback__)
 
 
-@BOT.command(hidden=True)
-async def reload(ctx):
-    """
-    Handles reloading all cogs which allows live updates.
-    """
-
-    cmd = Popen(["git", "pull"], stdout=PIPE)
-    out, _ = cmd.communicate()
-
-    await load_cogs(unload_first=True)
-    await ctx.send("Reloaded")
-
-
 BOT.run(CONFIG["token"])

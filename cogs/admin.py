@@ -22,11 +22,14 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+import os
 import random
+import traceback
 from asyncio import sleep
 from discord import client
 from discord.ext import commands
 from classes import analytics
+from subprocess import Popen, PIPE
 
 
 class admin(commands.Cog):
@@ -198,6 +201,73 @@ class admin(commands.Cog):
         """
 
         await ctx.send("This feature is not ready for use yet.")
+
+    @commands.command(hidden=True,
+                      description="Reloads bot cogs")
+    @commands.has_permissions(administrator=True)
+    async def reload(self, ctx, pull=None):
+        """
+        Reloads all bot cogs so updates can be performed while the bot is
+        running. Reloading can be from local files OR can pull the most
+        recent version of the files from the git repository.
+
+        This reloads files locally by default.
+
+        Examples:
+            Reload cogs locally
+            .reload
+
+            Pull files from github and reload the cogs
+            .reload pull
+        """
+
+        if pull == "pull":
+            cmd = Popen(["git", "pull"], stdout=PIPE)
+            out, _ = cmd.communicate()
+            await ctx.send(f"Attempted to pull files from github.\n{out}")
+
+        await self.load_cogs()
+        await ctx.send("Reloaded")
+
+    async def load_cogs(self):
+        """
+        Handles loading all cogs in for the bot.
+        """
+
+        cogs = [cog for cog in os.listdir('cogs')
+                if os.path.isfile(f"cogs/{cog}")]
+
+        cogs = [cog.replace(".py", "") for cog in cogs]
+
+        print(cogs)
+
+        for cog in cogs:
+            try:
+                print(f"Unloading {cog}")
+                self.bot.unload_extension(f"cogs.{cog}")
+            except commands.errors.ExtensionNotLoaded:
+                print(f"Cog {cog} is already unloaded.")
+
+        for cog in cogs:
+            try:
+                print(f"Loading {cog}...")
+                self.bot.load_extension(f"cogs.{cog}")
+                print(f"Loaded {cog.split('.')[-1]}")
+
+            except ModuleNotFoundError:
+                print(f"Could not find {cog}. Does it exist?")
+
+            except OSError as lib_error:
+                print("Opus is probably not installed")
+                print(f"{lib_error}")
+
+            except commands.errors.ExtensionAlreadyLoaded:
+                print(f"The cog {cog} is already loaded.\n"
+                      "Skipping the load process for this cog.")
+
+            except SyntaxError as e:
+                print(f"The cog {cog} has a syntax error.")
+                traceback.print_tb(e.__traceback__)
 
 
 def setup(bot):
