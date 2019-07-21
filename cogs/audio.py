@@ -32,7 +32,7 @@ from discord import client
 if not discord.opus.is_loaded():
 	discord.opus.load_opus("opus")
 
-class musicPlayer():
+class musicPlayer(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.current_vc = None

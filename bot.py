@@ -100,7 +100,7 @@ async def load_cogs(unload_first=False):
     cogs = [
         "cogs.admin",
         "cogs.characters",
-        # "cogs.audio",
+        "cogs.audio",
         "cogs.dnd",
         "cogs.games",
         "cogs.roller",
@@ -109,14 +109,6 @@ async def load_cogs(unload_first=False):
         "cogs.utils",
         "cogs.vampire",
         ]
-
-    if unload_first:
-        for cog in cogs:
-            try:
-                print(f"Unloading {cog}")
-                BOT.unload_extension(cog)
-            except commands.errors.ExtensionNotLoaded:
-                print(f"Cog {cog} is already unloaded.")
 
     for extension in cogs:
         try:
