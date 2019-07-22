@@ -225,7 +225,8 @@ class admin(commands.Cog):
         if pull == "pull":
             cmd = Popen(["git", "pull"], stdout=PIPE)
             out, _ = cmd.communicate()
-            await ctx.send(f"Attempted to pull files from github.\n{out}")
+            await ctx.send(f"Attempted to pull files from github.\n"
+                           f"{out.decode()}")
 
         await self.load_cogs()
         await ctx.send("Reloaded")
