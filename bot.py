@@ -100,7 +100,7 @@ async def load_cogs(unload_first=False):
     cogs = [
         "cogs.admin",
         "cogs.characters",
-        # "cogs.audio",
+        "cogs.audio",
         "cogs.dnd",
         "cogs.games",
         "cogs.roller",
@@ -109,14 +109,6 @@ async def load_cogs(unload_first=False):
         "cogs.utils",
         "cogs.vampire",
         ]
-
-    if unload_first:
-        for cog in cogs:
-            try:
-                print(f"Unloading {cog}")
-                BOT.unload_extension(cog)
-            except commands.errors.ExtensionNotLoaded:
-                print(f"Cog {cog} is already unloaded.")
 
     for extension in cogs:
         try:
@@ -138,19 +130,6 @@ async def load_cogs(unload_first=False):
         except SyntaxError as e:
             print(f"The cog {extension} has a syntax error.")
             traceback.print_tb(e.__traceback__)
-
-
-@BOT.command(hidden=True)
-async def reload(ctx):
-    """
-    Handles reloading all cogs which allows live updates.
-    """
-
-    cmd = Popen(["git", "pull"], stdout=PIPE)
-    out, _ = cmd.communicate()
-
-    await load_cogs(unload_first=True)
-    await ctx.send("Reloaded")
 
 
 BOT.run(CONFIG["token"])
