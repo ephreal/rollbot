@@ -33,22 +33,23 @@ class admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.analytics = analytics.GuildAnalytics()
+        self.prefix = {self.bot.command_prefix}
 
     @commands.command(hidden=True,
                       description="Deletes messages")
     @commands.has_permissions(administrator=True)
     async def purge(self, ctx, limit: int, flags=""):
-        """
+        f"""
         Purges a channel of a specified amount of messages. Currently no limit
         is set, but the discord library may have an upper limit.
         Requires administrator permissions to run
 
         Examples:
             purge 10 messages
-            .purge 10
+            {self.prefix}purge 10
 
             purge 10 messages including all attachments
-            .purge 10 all
+            {self.prefix}purge 10 all
         """
 
         await ctx.message.delete()
@@ -71,11 +72,11 @@ class admin(commands.Cog):
                       description="Shuts down the bot")
     @commands.has_permissions(administrator=True)
     async def halt(self, ctx):
-        """
+        f"""
         Shuts the bot down.
         Requires administrator permissions to run.
 
-        usage: .halt
+        usage: {self.prefix}halt
         """
 
         shutdown_message = "The bot is currently shutting down. Good bye"
@@ -97,7 +98,7 @@ class admin(commands.Cog):
                       description="Channel message spammer")
     @commands.has_permissions(administrator=True)
     async def spam(self, ctx):
-        """
+        f"""
         Spams messges to a channel.
 
         Sometimes you need to test things on a large amount of
@@ -111,10 +112,10 @@ class admin(commands.Cog):
 
         usage:
             send 10 messages to a channel
-                .spam or .spam 10
+                {self.prefix}spam or {self.prefix}spam 10
 
             send 200 messages to a channel
-                .spam 200
+                {self.prefix}spam 200
         """
 
         command = ctx.message.content.split()
@@ -149,14 +150,14 @@ class admin(commands.Cog):
     @commands.command(hidden=True, description="Rename the bot")
     @commands.has_permissions(administrator=True)
     async def rename(self, ctx, name):
-        """
+        f"""
         Rename the bot in discord.
 
         Note: If the bot has a nickname, this will not change the nickname.
 
         Examples:
             Rename the bot to fred
-            .rename fred
+            {self.prefix}rename fred
         """
         await self.bot.user.edit(username=name)
         await ctx.send("Bot's name has been changed.")
@@ -164,11 +165,11 @@ class admin(commands.Cog):
     @commands.command(hidden=True, description="Show guild member activity.")
     @commands.has_permissions(administrator=True)
     async def member_activity(self, ctx):
-        """
+        f"""
         Gets a list of all members in the discord guild (discord server) and
         then returns the date they joined.
 
-        .member_activity
+        {self.prefix}member_activity
         """
 
         guild = ctx.guild
@@ -185,7 +186,7 @@ class admin(commands.Cog):
                       description="Stats guild/member status data collection")
     @commands.has_permissions(administrator=True)
     async def start_analytics(self, ctx):
-        """
+        f"""
         Starts tracking whether users are active in the guild or not.
 
         This is useful for tracking users that are in your guild, but do
@@ -194,7 +195,7 @@ class admin(commands.Cog):
 
         Examples:
             Start analytics
-            .start_analytics
+            {self.prefix}start_analytics
         """
 
         await ctx.send("This feature is not ready for use yet.")
