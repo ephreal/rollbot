@@ -32,6 +32,7 @@ class poe(commands.Cog):
         self.bot = bot
         self.dice_roller = rl()
         self.utils = utils(self.bot)
+        self.rolls = {}
 
     @commands.command(pass_context=True)
     async def lab(self, ctx, amt: int):
@@ -49,12 +50,12 @@ class poe(commands.Cog):
 
             amt = int(amt)
 
-            if amt > 10:
-                return await ctx.send("I'm sorry, going larger than 10 makes"
-                                      "no sense")
+            if amt > 10 or amt < 1:
+                return await ctx.send("I'm sorry, going larger than 10 or less"
+                                      "than one makes no sense")
             else:
                 x = 0
-                distinct_rolls = []
+                distinct_rolls = [] if distinct_rolls is None
                 while x < amt:
                     roll = await self.dice_roller.roll(1, 10)
                     if roll[0] not in distinct_rolls:
