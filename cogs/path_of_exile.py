@@ -55,7 +55,7 @@ class poe(commands.Cog):
                                       " than one makes no sense")
             else:
                 x = 0
-                distinct_rolls = [] if distinct_rolls is None
+                distinct_rolls = []
                 while x < amt:
                     roll = await self.dice_roller.roll(1, 10)
                     if roll[0] not in distinct_rolls:
