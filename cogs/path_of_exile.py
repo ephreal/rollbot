@@ -52,7 +52,7 @@ class poe(commands.Cog):
 
             if amt > 10 or amt < 1:
                 return await ctx.send("I'm sorry, going larger than 10 or less"
-                                      "than one makes no sense")
+                                      " than one makes no sense")
             else:
                 x = 0
                 distinct_rolls = [] if distinct_rolls is None
