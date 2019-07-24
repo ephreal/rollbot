@@ -61,7 +61,8 @@ class poe(commands.Cog):
                         distinct_rolls.append(roll[0])
                         x += 1
 
-            await channel.send(distinct_rolls.sort())
+            distinct_rolls.sort()
+            await channel.send(distinct_rolls)
 
         except Exception as e:
             await channel.send("Incorrect input. Run .help lab if you need "
