@@ -22,6 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+import random
 from discord.ext import commands
 from classes.roll_functions import roller as rl
 from classes.bot_utils import utils
@@ -54,16 +55,10 @@ class poe(commands.Cog):
                 return await ctx.send("I'm sorry, going larger than 10 or less"
                                       " than one makes no sense")
             else:
-                x = 0
-                distinct_rolls = []
-                while x < amt:
-                    roll = await self.dice_roller.roll(1, 10)
-                    if roll[0] not in distinct_rolls:
-                        distinct_rolls.append(roll[0])
-                        x += 1
+                sample = random.sample([x for x in range(1, 11)], amt)
 
-            distinct_rolls.sort()
-            await channel.send(distinct_rolls)
+            sample.sort()
+            await channel.send(sample)
 
         except Exception as e:
             await channel.send("Incorrect input. Run .help lab if you need "
