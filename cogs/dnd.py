@@ -50,6 +50,10 @@ class dnd(commands.Cog):
             .dnd help roll
         """
 
+        advantage = False
+        disadvantage = False
+        modifier = 0
+
         channel = await self.utils.check_roll_channel(ctx)
 
         command = ctx.message.content.lower().split()
@@ -60,14 +64,49 @@ class dnd(commands.Cog):
             roll = await self.roller.roll(1, 20)
             message += "You rolled a 20 sided die.\n"\
                        f"Your result was {roll}"
+            return await ctx.send(message + "```")
 
-        elif "+" in command[0] or "-" in command[0]:
-            # this is a 1d20 roll with modifiers. Pass this to the rolling
-            # function immediately to prevent additional checking.
-            message += await self.roll(command)
+        # Check for advantage or disadvantage
+        if "adv" in command:
+            command.remove("adv")
+            advantage = True
+
+        if "dis" in command:
+            command.remove("dis")
+            disadvantage = True
+
+        if len(command) > 0 and ("+" in command[0] or "-" in command[0]):
+            modifier = command[0]
+            command.remove(modifier)
+            modifier = int(modifier)
+
+        if advantage and disadvantage:
+            advantage = False
+            disadvantage = False
+
+        if advantage:
+            message += "You rolled 2d20 with advantage.\n"
+            roll = await self.roller.roll(2, 20)
+            message += f"Rolls : {roll}\n"
+            roll = max(roll)
+
+        elif disadvantage:
+            message += "You rolled 2d20 with disadvantage.\n"
+            roll = await self.roller.roll(2, 20)
+            message += f"Rolls : {roll}\n"
+            roll = min(roll)
 
         else:
-            message += "Please try again. I'm not sure what to do with that."
+            message += "You rolled a d20.\n"
+            roll = await self.roller.roll(1, 20)
+            roll = roll[0]
+
+        message += f"\nModifier : {modifier}\n"
+        message += f"Roll : {roll}\n"
+        message += f"Final result : {roll + modifier}\n"
+
+        # else:
+        #     message += "Please try again. I'm not sure what to do with that."
 
         message += "```"
 
