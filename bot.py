@@ -28,7 +28,6 @@ import traceback
 
 from discord.ext import commands
 from discord import Game
-from subprocess import PIPE, Popen
 
 
 def load_config():
