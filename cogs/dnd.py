@@ -112,35 +112,6 @@ class dnd(commands.Cog):
 
         await channel.send(message)
 
-    async def roll(self, roll_command):
-        """
-        Checks the roll command for modifiers and any additional dice
-        that need to be rolled.
-
-        This function assumes a 20 sided die unless told otherwise.
-        """
-
-        message = []
-
-        try:
-
-            if "+" in roll_command[0] or "-" in roll_command[0]:
-                message.append("You rolled a 20 sided die.")
-                message.append(f"\nModifier : {roll_command[0]}")
-
-                roll = await self.roller.roll(1, 20)
-                modified_roll = roll[0] + int(roll_command[0])
-
-                message.append(f"Dice roll : {roll}")
-                message.append(f"Modified roll : {modified_roll}")
-
-            else:
-                message.append("I'm sorry, I don't know what to do with that.")
-        except ValueError:
-            message = ["There is something wrong with your command."]
-
-        return "\n".join(message)
-
 
 if __name__ == "__main__":
     # Do testing functions here
