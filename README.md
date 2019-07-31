@@ -49,17 +49,14 @@ Setting up the bot requires the following.
 
 Note: If you are running the bot through docker, you will instead need to configure docker for your system. Please see [the docker installation docs](https://docs.docker.com/install/) for information on how to do this. Once docker is installed and configured, skip to [modifying the configuration file.](#modifying-the-configuration-file)
 
-Verify that you have the following installed:
-* [python 3.7](https://www.python.org/downloads/release/python-373/)
-* [discord.py](https://github.com/Rapptz/discord.py)
-* [aiohttp](https://github.com/aio-libs/aiohttp)
+Verify that you have the requirements (listed at the top) installed.
 
 If you don't have these, or you don't know if you do, continue on to the next section.
 
 #### How to install python and all requirements
 
 If you are on windows and need to install python, go here: <https://www.python.org/downloads/release/python-373/>
-If you are on Linux, install python 3.6 or above from your repository. I don't know what distro you have, so I won't speculate on the commands needed.
+If you are on Linux, install python 3.7 or above from your repository. I don't know what distro you have, so I won't speculate on the commands needed.
 If you are on Mac, I'm sorry, but I have no idea how Mac installation works. Going here should probably get you started though: <https://www.python.org/downloads/release/python-373/>
 
 Follow the install instructions and make sure that pip is installed with python.
