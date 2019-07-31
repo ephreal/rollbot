@@ -25,10 +25,11 @@ DEALINGS IN THE SOFTWARE.
 import os
 import random
 import traceback
+
 from asyncio import sleep
+from classes import analytics
 from discord import client
 from discord.ext import commands
-from classes import analytics
 from subprocess import Popen, PIPE
 
 
@@ -74,6 +75,20 @@ class admin(commands.Cog):
     @commands.command(hidden=True,
                       description="Shuts down the bot")
     @commands.has_permissions(administrator=True)
+    async def reboot(self, ctx):
+        f"""
+        Reboots the bot so all files can be reloaded.
+        Requires administrator permissions.
+
+        usage: {self.prefix}reboot
+        """
+
+        await ctx.send(f"rebooting....")
+        await client.Client.logout(self.bot)
+
+    @commands.command(hidden=True,
+                      description="Shuts down the bot")
+    @commands.has_permissions(administrator=True)
     async def halt(self, ctx):
         f"""
         Shuts the bot down.
@@ -86,6 +101,8 @@ class admin(commands.Cog):
         shutdown_message = shutdown_message[0:random.randint(0,
                                             len(shutdown_message)-1)]
 
+        with open("poweroff", "w") as f:
+            f.write("Poweroff the bot.")
         await ctx.send(f"{shutdown_message}"+shutdown_message[-1]*4+"....")
         await client.Client.logout(self.bot)
 

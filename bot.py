@@ -23,112 +23,108 @@ DEALINGS IN THE SOFTWARE.
 """
 
 
-import json
 import traceback
 
-from discord.ext import commands
 from discord import Game
+from discord.ext import commands
 
 
-def load_config():
-    """
-    Loads bot configuration for use.
-    """
-    with open("config/config.json", 'r') as config_file:
-        return json.load(config_file)
+def build_bot(prefix, description="Rollbot"):
+
+    BOT = commands.Bot(command_prefix=prefix,
+                       description=description)
+
+    @BOT.event
+    async def on_ready():
+        """
+        Post setup hook.
+        Currently lets you know the bot is running
+        and sets the played game to a message on
+        how to get help.
+        """
+        print("Startup complete, loading Cogs....")
+        await load_cogs()
+        print("Cog loading complete.")
+        print("Connected to server and awaiting commands.")
+        help_message = Game(name=f"message '{prefix}help' for help")
+        await BOT.change_presence(activity=help_message)
+
+    @BOT.event
+    async def on_message(message):
+        """
+        Generic operations on user message. For example, adding to analytics to
+        see if users are active on the guild.
+        """
+
+        if message.author.bot:
+            return
+
+        if "+endorse" in message.content:
+            bot_nick = message.guild.me.nick
+            await message.channel.send(f"My name is {bot_nick}, and I endorse "
+                                       "the above message.\nNote that my "
+                                       "endorsement in no way reflects the "
+                                       "opinions of me or my creator, does "
+                                       "not make any guarantee about the "
+                                       "correctness of said message, and "
+                                       "may, in fact, not be an actual "
+                                       "endorsement of the sentiments "
+                                       "expressed in said message. Any "
+                                       "statements claiming my endorsing of "
+                                       "this message implies that I agree "
+                                       "with said message is taken horribly "
+                                       "out of context.")
+
+            await message.add_reaction('👍')
+
+        if message.content.startswith(prefix):
+            await BOT.process_commands(message)
+
+    async def load_cogs(unload_first=False):
+        """
+        Handles loading all cogs in for the bot.
+        """
+
+        cogs = [
+            "cogs.admin",
+            "cogs.characters",
+            "cogs.audio",
+            "cogs.dnd",
+            "cogs.games",
+            "cogs.roller",
+            "cogs.shadowrun",
+            "cogs.tests",
+            "cogs.utils",
+            "cogs.vampire",
+            ]
+
+        for extension in cogs:
+            try:
+                print(f"Loading {extension}...")
+                BOT.load_extension(f"{extension}")
+                print(f"Loaded {extension.split('.')[-1]}")
+
+            except ModuleNotFoundError:
+                print(f"Could not find {extension}. Please make sure it "
+                      "exists.")
+
+            except OSError as lib_error:
+                print("Opus is probably not installed")
+                print(f"{lib_error}")
+
+            except commands.errors.ExtensionAlreadyLoaded:
+                print(f"The cog {extension} is already loaded.\n"
+                      "Skipping the load process for this cog.")
+
+            except SyntaxError as e:
+                print(f"The cog {extension} has a syntax error.")
+                traceback.print_tb(e.__traceback__)
+
+    return BOT
 
 
-CONFIG = load_config()
-
-BOT = commands.Bot(command_prefix=CONFIG["prefix"],
-                   description="rollbot")
-
-
-@BOT.event
-async def on_ready():
-    """
-    Post setup hook.
-    Currently lets you know the bot is running
-    and sets the played game to a message on
-    how to get help.
-    """
-    print("Startup complete, loading Cogs....")
-    await load_cogs()
-    print("Cog loading complete.")
-    print("Connected to server and awaiting commands.")
-    help_message = Game(name=f"message '{CONFIG['prefix']}help' for help")
-    await BOT.change_presence(activity=help_message)
-
-
-@BOT.event
-async def on_message(message):
-    """
-    Generic operations on user message. For example, adding to analytics to
-    see if users are active on the guild.
-    """
-
-    if message.author.bot:
-        return
-
-    if "+endorse" in message.content:
-        bot_nick = message.guild.me.nick
-        await message.channel.send(f"My name is {bot_nick}, and I endorse "
-                                   "the above message.\nNote that my "
-                                   "endorsement in no way reflects the "
-                                   "opinions of me or my creator, does "
-                                   "not make any guarantee about the "
-                                   "correctness of said message, and "
-                                   "may, in fact, not be an actual "
-                                   "endorsement of the sentiments expressed "
-                                   "in said message. Any statements claiming "
-                                   "my endorsing of this message implies "
-                                   "that I agree with said message is taken "
-                                   "horribly out of context.")
-
-        await message.add_reaction('👍')
-
-    if message.content.startswith(CONFIG["prefix"]):
-        await BOT.process_commands(message)
-
-
-async def load_cogs(unload_first=False):
-    """
-    Handles loading all cogs in for the bot.
-    """
-
-    cogs = [
-        "cogs.admin",
-        "cogs.characters",
-        "cogs.audio",
-        "cogs.dnd",
-        "cogs.games",
-        "cogs.roller",
-        "cogs.shadowrun",
-        "cogs.tests",
-        "cogs.utils",
-        "cogs.vampire",
-        ]
-
-    for extension in cogs:
-        try:
-            print(f"Loading {extension}...")
-            BOT.load_extension(f"{extension}")
-            print(f"Loaded {extension.split('.')[-1]}")
-
-        except ModuleNotFoundError:
-            print(f"Could not find {extension}. Please make sure it exists.")
-
-        except OSError as lib_error:
-            print("Opus is probably not installed")
-            print(f"{lib_error}")
-
-        except commands.errors.ExtensionAlreadyLoaded:
-            print(f"The cog {extension} is already loaded.\n"
-                  "Skipping the load process for this cog.")
-
-        except SyntaxError as e:
-            print(f"The cog {extension} has a syntax error.")
-            traceback.print_tb(e.__traceback__)
-
-
-BOT.run(CONFIG["token"])
+if __name__ == "__main__":
+    import sys
+    print("The bot must be ran through main.py")
+    print("Please run 'python main.py' instead")
+    sys.exit()
