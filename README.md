@@ -2,7 +2,7 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c18a361a7f2f4d209a4b24a2f3eb1f50)](https://app.codacy.com/app/ephreal/rollbot?utm_source=github.com&utm_medium=referral&utm_content=ephreal/rollbot&utm_campaign=Badge_Grade_Dashboard)
 
-REQUIRES python 3.6 or higher (Python 3.7 is recommended) and discord.py 1.2.3 or higher
+REQUIRES python 3.7 or higher and discord.py 1.2.3 or higher
 
 **Requirements**
 * [discord.py](https://github.com/Rapptz/discord.py)
@@ -10,7 +10,7 @@ REQUIRES python 3.6 or higher (Python 3.7 is recommended) and discord.py 1.2.3 o
 
 This bot has become a general-purpose discord bot with more server management capabilities slowly being incorporated in. Along with being good for rolling dice, the bot also has some fun features such as posting a random (or specific) XKCD comic, getting shadowrun/DnD quotes from a quotesite, and more.
 
-The bot has been redisigned with better reliability in mind, and it's possible to run the bot in a docker container.
+The bot has been redesigned with better reliability in mind, and it's possible to run the bot in a docker container.
 
 **Bot Features (alphabetized)**
 * Get quotes
