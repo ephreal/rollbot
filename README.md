@@ -2,9 +2,8 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c18a361a7f2f4d209a4b24a2f3eb1f50)](https://app.codacy.com/app/ephreal/rollbot?utm_source=github.com&utm_medium=referral&utm_content=ephreal/rollbot&utm_campaign=Badge_Grade_Dashboard)
 
-REQUIRES python 3.7 or higher and discord.py 1.2.3 or higher
-
 **Requirements**
+* [python 3.7+](https://www.python.org/downloads/release/python-373)
 * [discord.py](https://github.com/Rapptz/discord.py)
 * [aiohttp](https://github.com/aio-libs/aiohttp)
 
