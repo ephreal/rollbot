@@ -40,7 +40,7 @@ class admin(commands.Cog):
         self.prefix = {self.bot.command_prefix}
 
     @commands.command(hidden=True,
-                      description="Shuts down the bot")
+                      description="Reboots the bot")
     @commands.is_owner()
     async def reboot(self, ctx):
         f"""
@@ -142,7 +142,7 @@ class admin(commands.Cog):
 
     @commands.command(hidden=True, description="Rename the bot")
     @commands.has_permissions(manage_nicknames=True)
-    async def rename(self, ctx, new_name):
+    async def rename(self, ctx, *new_name):
         f"""
         Rename the bot in discord.
 
@@ -153,7 +153,7 @@ class admin(commands.Cog):
             {self.prefix}rename fred
         """
 
-        await ctx.guild.me.edit(nick=new_name)
+        await ctx.guild.me.edit(nick=" ".join(new_name))
         await ctx.send("Bot's name has been changed.")
 
     @commands.command(hidden=True, description="Show guild member activity.")
