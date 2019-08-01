@@ -29,6 +29,10 @@ Commands provided by this cog:
 
     kick : Kicks a member from a guild. Member name and reason for kick
            are required. Messages both kicker and kickee durink kick process
+
+    promote : Promotes a member from a lower privileged role in the guild to
+              a higher privileged role. Members can only promote to their same
+              level. Roles must be created with create_roles.
 """
 
 from discord.ext import commands
