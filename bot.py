@@ -23,6 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 
+import os
 import traceback
 
 from discord import Game
@@ -36,9 +37,9 @@ def build_bot(prefix, description="Rollbot"):
 
     @BOT.event
     async def on_member_join(member):
-        await member.send("Welcome to our server. Please be kind and"
+        await member.send("Welcome to our server. Please be kind and "
                           "courteous. If you wish to test the bots, please ask"
-                          "to be given the bot testing role.")
+                          " to be given the bot testing role.")
 
     @BOT.event
     async def on_ready():
@@ -91,24 +92,21 @@ def build_bot(prefix, description="Rollbot"):
         Handles loading all cogs in for the bot.
         """
 
-        cogs = [
-            "cogs.admin",
-            "cogs.characters",
-            "cogs.audio",
-            "cogs.dnd",
-            "cogs.games",
-            "cogs.roller",
-            "cogs.shadowrun",
-            "cogs.tests",
-            "cogs.utils",
-            "cogs.vampire",
-            ]
+        cogs = [cog for cog in os.listdir('cogs')
+                if os.path.isfile(f"cogs/{cog}")]
+
+        cogs = [cog.replace(".py", "") for cog in cogs]
 
         for extension in cogs:
             try:
                 print(f"Loading {extension}...")
-                BOT.load_extension(f"{extension}")
-                print(f"Loaded {extension.split('.')[-1]}")
+                BOT.load_extension(f"cogs.{extension}")
+                print(f"Loaded {extension}")
+
+            except AttributeError as e:
+                print(f"Cog {extension} is malformed. Do you have a setup"
+                      "function?")
+                traceback.print_tb(e.__traceback__)
 
             except ModuleNotFoundError:
                 print(f"Could not find {extension}. Please make sure it "
@@ -124,6 +122,10 @@ def build_bot(prefix, description="Rollbot"):
 
             except SyntaxError as e:
                 print(f"The cog {extension} has a syntax error.")
+                traceback.print_tb(e.__traceback__)
+
+            except commands.errors.NoEntryPoint as e:
+                print(f"Cog {extension} has no setup function.")
                 traceback.print_tb(e.__traceback__)
 
     return BOT
