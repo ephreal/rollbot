@@ -99,6 +99,8 @@ git clone https://github.com/ephreal/rollbot
 
 Once the bot has been downloaded, it's necessary to modify the configuation file and add in your bot token. You can also modify the bot description, bot command prefix, or allowed rolling channels if you desire.
 
+I recommend running the setup.py by double clicking it. It will bring up a windows that asks for the required information. Simply fill out the items, click "Save Config", and you are ready to move on. If, for some reason, the setup.py does nothing, continue on in this section.
+
 Inside of the downloaded folder, you'll see a folder called "config". Inside here, you'll find a file called "config.json". Open this in notepad/notepad++/sublime/vim/etc. Overwrite YOUR\_TOKEN\_HERE with your bot token. This is necessary to have the bot run.
 
 If you have specific channels you want to limit rolling to, place the name of these channels in the rolling_channels. If you'd like to change the description of the bot, modify description. If you want the bot to use something else as the command prefix ("." by default), then change that too.
