@@ -20,14 +20,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
-"""
-
-from discord.ext import commands
-from discord import Embed
-from discord import Colour
 
 
-"""
 Commands provided by this cog:
 
     ban  : Bans a member from the guild. Member name and reason for ban are
@@ -36,6 +30,10 @@ Commands provided by this cog:
     kick : Kicks a member from a guild. Member name and reason for kick
            are required. Messages both kicker and kickee durink kick process
 """
+
+from discord.ext import commands
+from discord import Embed
+from discord import Colour
 
 
 class MemberManager(commands.Cog):
@@ -47,9 +45,11 @@ class MemberManager(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, banee, *reason):
         """
-        Bans a user from the build. A message will be sent to both the person
-        being banned to let them know they arenow banned, and a message will
-        be sent to the person doing the banning upon completion.
+        Bans a user from the guild.
+
+        A message will be sent to both the person being banned to let them know
+        they are now banned, and a message will be sent to the person doing the
+        banning upon completion.
 
         A reason for banning a member is required and must be provided.
 
@@ -58,7 +58,7 @@ class MemberManager(commands.Cog):
                     .ban joe You keep asking for train pictures. Why??
 
                 Ban Joe by user id
-                    .ban joe Seriously, how did you get back in?
+                    .ban joe#0000 Seriously, how did you get back in?
         """
 
         member = ctx.guild.get_member_named(banee)
@@ -88,8 +88,10 @@ class MemberManager(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, kickee, *reason):
         """
-        Kicks a user from the guild. A message will be sent to both the
-        person being kicked and the person doing the kicking.
+        Kicks a user from the guild.
+
+        A message will be sent to both the person being kicked and the person
+        doing the kicking.
 
         A reason for kicking a user is required and must be provided.
 

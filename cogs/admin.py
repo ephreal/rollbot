@@ -40,41 +40,8 @@ class admin(commands.Cog):
         self.prefix = {self.bot.command_prefix}
 
     @commands.command(hidden=True,
-                      description="Deletes messages")
-    @commands.has_permissions(administrator=True)
-    async def purge(self, ctx, limit: int, flags=""):
-        f"""
-        Purges a channel of a specified amount of messages. Currently no limit
-        is set, but the discord library may have an upper limit.
-        Requires administrator permissions to run
-
-        Examples:
-            purge 10 messages
-            {self.prefix}purge 10
-
-            purge 10 messages including all attachments
-            {self.prefix}purge 10 all
-        """
-
-        await ctx.message.delete()
-        if "all" in flags:
-            await ctx.message.channel.purge(limit=limit)
-        else:
-            await ctx.message.channel.purge(limit=limit,
-                                            check=lambda msg: not msg.pinned
-                                            and not msg.attachments)
-
-    @purge.error
-    async def purge_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You must be an administrator to use this command.")
-        else:
-            await ctx.send("Something is wrong with your command.\n"
-                           f"Error message: {error}")
-
-    @commands.command(hidden=True,
                       description="Shuts down the bot")
-    @commands.has_permissions(administrator=True)
+    @commands.is_owner()
     async def reboot(self, ctx):
         f"""
         Reboots the bot so all files can be reloaded.
@@ -94,7 +61,7 @@ class admin(commands.Cog):
 
     @commands.command(hidden=True,
                       description="Shuts down the bot")
-    @commands.has_permissions(administrator=True)
+    @commands.is_owner()
     async def halt(self, ctx):
         f"""
         Shuts the bot down.
@@ -174,8 +141,8 @@ class admin(commands.Cog):
                            f"Error message: {error}")
 
     @commands.command(hidden=True, description="Rename the bot")
-    @commands.has_permissions(administrator=True)
-    async def rename(self, ctx, name):
+    @commands.has_permissions(manage_nicknames=True)
+    async def rename(self, ctx, new_name):
         f"""
         Rename the bot in discord.
 
@@ -185,7 +152,8 @@ class admin(commands.Cog):
             Rename the bot to fred
             {self.prefix}rename fred
         """
-        await self.bot.user.edit(username=name)
+
+        await ctx.guild.me.edit(nick=new_name)
         await ctx.send("Bot's name has been changed.")
 
     @commands.command(hidden=True, description="Show guild member activity.")
