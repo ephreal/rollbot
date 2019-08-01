@@ -9,10 +9,13 @@
 
 This bot has become a general-purpose discord bot with more server management capabilities slowly being incorporated in. Along with being good for rolling dice, the bot also has some fun features such as posting a random (or specific) XKCD comic, getting shadowrun/DnD quotes from a quotesite, and more.
 
+It is also be possible to connect my bot to your discord server if you'd like to use the same bot that I do. If you'd like to try this, [click here and authorize my bot on your server.](https://discordapp.com/api/oauth2/authorize?client_id=286673190288228362&permissions=0&scope=bot) Do note that the bot is currently in a perpetual state of development and I make no guarantees about the uptime of the bot. I do my best to have it up as much as possible. If you'd like to support me in my endeavors to make the bot more awesome and reliable, please consider [supporting me on Patreon.](https://www.patreon.com/ephreal)
+
 The bot has been redesigned with better reliability in mind, and it's possible to run the bot in a docker container.
 
 **Bot Features (alphabetized)**
 * Ban users
+* Endorse something with a silly message
 * Get quotes
   * Shadowrun/DnD
   * Inspirobot
