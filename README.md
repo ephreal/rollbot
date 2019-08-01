@@ -12,10 +12,12 @@ This bot has become a general-purpose discord bot with more server management ca
 The bot has been redesigned with better reliability in mind, and it's possible to run the bot in a docker container.
 
 **Bot Features (alphabetized)**
+* Ban users
 * Get quotes
   * Shadowrun/DnD
   * Inspirobot
 * Halt the bot
+* Kick users
 * Ping the bot
 * Play a "guess the number" game
 * Play Rock Paper Scissors
@@ -35,6 +37,8 @@ The bot has been redesigned with better reliability in mind, and it's possible t
 Dice rolling features are still in progress. In particular, Shadowrun has a very complex dice rolling ruleset thta I am still adding new items to. Basic dice rolling is always available when a particular type of dice roll is unavailable.
 
 In addition to the above features, I have recently learned how to automatically update all portions of the bot. I'm looking into how to get automatic updates pushed out for those who would like it.
+
+To view progress of new feature and features planned for the future, check out [the bot feature project board.](https://github.com/ephreal/rollbot/projects/1)
 
 ## Setting up the bot
 
