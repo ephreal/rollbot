@@ -83,6 +83,12 @@ class admin(commands.Cog):
         usage: {self.prefix}reboot
         """
 
+        cmd = Popen(["git", "pull"], stdout=PIPE)
+        out, _ = cmd.communicate()
+        out = out.decode()
+        if "+" in out:
+            await ctx.send(f"Updated:\n{out}")
+
         await ctx.send(f"rebooting....")
         await client.Client.logout(self.bot)
 
