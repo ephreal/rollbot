@@ -258,8 +258,6 @@ class admin(commands.Cog):
 
         cogs = [cog.replace(".py", "") for cog in cogs]
 
-        print(cogs)
-
         for cog in cogs:
             try:
                 print(f"Unloading {cog}")
