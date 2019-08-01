@@ -36,14 +36,9 @@ def build_bot(prefix, description="Rollbot"):
 
     @BOT.event
     async def on_member_join(member):
-        await member.send("Welcome to our server. Please remember to be kind and"
-                    "courteous. If you wish to test the bots, please ask"
-                    "to be given the bot testing role.")
-
-    @BOT.event
-    async def on_member_remove(member):
-        await member.send("Thanks for spending time with us, if you ever wish to be"
-                    "brought back in, please contact on of the admins.")
+        await member.send("Welcome to our server. Please be kind and"
+                          "courteous. If you wish to test the bots, please ask"
+                          "to be given the bot testing role.")
 
     @BOT.event
     async def on_ready():
