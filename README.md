@@ -37,7 +37,7 @@ The bot has been redesigned with better reliability in mind, and it's possible t
 * Spam messages to a channel
 * Set a timer
 
-Dice rolling features are still in progress. In particular, Shadowrun has a very complex dice rolling ruleset thta I am still adding new items to. Basic dice rolling is always available when a particular type of dice roll is unavailable.
+Dice rolling features are still in progress. In particular, Shadowrun has a very complex dice rolling ruleset that I am still adding new items to. Basic dice rolling is always available when a particular type of dice roll is unavailable.
 
 In addition to the above features, I have recently learned how to automatically update all portions of the bot. I'm looking into how to get automatic updates pushed out for those who would like it.
 
