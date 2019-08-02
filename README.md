@@ -112,42 +112,29 @@ If you do not have a token yet, refer to here: <https://github.com/reactiflux/di
 
 ### Running the bot
 
-There are two ways to run the bot, with python, or with docker.
+There are three ways to run the bot, with the setup.py run button, with python commands, or with docker.
+
+#### Running the bot with setup.py
+
+Once your configuration has been saved, click the "Run Bot" button. The setup window will not allow any more use until you turn off the bot from discord with the halt command.
 
 #### Running the bot with python
 
-Either double click the "main.py" file, or navigate to the main folder in a terminal at run bot.py with "python main.py". If everything goes as expected, the bot will start up and connect to your server.
+Either double click the "main.py" file, or navigate to the main folder in a terminal at run bot.py with
+
+```bash
+python main.py
+```
+If everything goes as expected, the bot will start up and connect to your server.
 
 #### Running the bot with Docker
 
-NOTE: I have only ever ran docker on Linux. The instructions here are for Linux.
+NOTE: I have only ever ran docker on Linux. The instructions here are for Linux. Please see documentation for your oprating system if you are on a Windows or Mac device.
 
 After downloading and setting up the bot configuration, open a terminal window and verify that you have docker installed and running.
 
 Navigate to the main folder and run
 
 <code>
-./docker_setup
+./docker_build_and_run.sh
 </code>
-
-to build the docker image. Once the image is completed, run
-
-<code>
-sudo docker run --name bot docker_bot
-</code>
-
-to start the bot.
-
-To do both steps at once, run
-
-<code>
-./docker_setup && sudo docker run --name bot docker_bot
-</code>
-
-You can simply run
-
-<code>
-sudo docker start bot
-</code>
-
-to start the bot if it ever dies after that.
