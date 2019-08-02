@@ -23,38 +23,17 @@
 
 
 #
-# Simple docker container removal/setup script.
+# Simple docker container build and run script.
 # Usage:
 #       
-#       sh docker_setup.sh
+#       sh docker_build_and_run.sh
 #
-# Once ran, run your docker container with a
-# name of "bot", otherwise this script will
-# not automatically remove the old container
-# and image for you.
-#
-# ie: 
-#     # docker run --name bot docker_bot
-#
-#
-# I don't have a docker setup script for
-# windows yet, and I might never have one.
-# If someone is willing to be awesome and
-# create one, send me a pull request with
-# it.
+# Once ran, run your bot should be running inside
+# a docker container. Note that if you did not
+# modify the config file, the bot will not come
+# online and you will need to rerun the build.
 
 
 
-current=$(sudo docker images docker_bot | tail -n 1 | cut -d " " -f 25)
-
-if [ "$current" != "" ] ; then
-	container=$(sudo docker ps --filter "name=bot" -a | tail -n 1 | cut -d " " -f 1)
-	sudo docker rm $container
-	sudo docker rmi $current
-fi 
-
-mkdir docker_bot
-cp -r ./* docker_bot/
 sudo docker build -t docker_bot .
-
-sudo rm -r docker_bot
+sudo docker run --rm -d --name rollbot docker_bot
