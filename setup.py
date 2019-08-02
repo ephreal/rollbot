@@ -154,6 +154,7 @@ class SetupBot(ttk.Notebook):
             self.clear_entry(self.bot_avatar)
             self.bot_avatar.insert(1, filename.name)
 
+    @classmethod
     def clear_entry(self, entry):
         entry.delete(0, tk.END)
 
@@ -185,6 +186,7 @@ class SetupBot(ttk.Notebook):
         with open("config/config.json", "w") as f:
             f.write(json.dumps(config, indent=4))
 
+    @classmethod
     def run_bot(self):
         """
         Starts the bot with the click of a button.
