@@ -228,7 +228,10 @@ class Deck():
         """
 
         if isinstance(card, str):
-            self.place_card(card, len(self.cards))
+            self.place_card(card, len(self.cards)+1)
 
         elif isinstance(card, list):
-            self.place_cards(card, len(self.cards))
+            if len(card) == 1:
+                self.place_card(card, len(self.cards+1))
+            else:
+                self.place_cards(card, len(self.cards)+1)
