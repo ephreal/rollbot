@@ -52,9 +52,22 @@ class Deck():
         Deck.cut(position: int):
             Cuts the deck at the index specified by position - 1.
 
-        Deck.discard(card: str or list):
-            places cards in self.discarded when, for example, cards are
-            given back.
+        Deck.discard_from_bottom(amount: int):
+            Places cards in the discard pile directly from the bottom of the
+            deck.
+
+        Deck.discard_from_deck_randomly(amount: int):
+            Places cards in the discard pile randomly from the deck.
+
+        Deck.discard_from_top(amount: int):
+            Places cards in the discard pile directly from the middle of the
+            deck.
+
+        Deck.discard_from_top(amount: int):
+            Places cards in the discard pile directly from the top of the deck.
+
+        Deck.discard_from_hand(card: str or list):
+            places cards in self.discarded when cards are given back.
 
         Deck.draw(amount: int):
             Draws a specified amount of cards from the deck
@@ -105,7 +118,7 @@ class Deck():
         """
 
         random.shuffle(self.discarded)
-        self.cards.append(self.discarded)
+        self.cards.extend(self.discarded)
         self.discarded = []
 
     def cut(self, position=0):
@@ -122,14 +135,23 @@ class Deck():
         self.cards = self.cards[:position]
         self.cards = back.extend(self.cards)
 
-    def discard(self, card):
+    def discard_from_bottom(self, amount):
+        """
+        Discards cards from the bottom of the deck.
+        """
+
+        discard = self.cards[-amount:]
+        self.cards = [card for card in self.cards if card not in discard]
+        self.discarded.extend(discard)
+
+    def discard_from_hand(self, card):
         """
         Takes cards and checks if they are in self.in_hands. If they are, moves
         them into self.discarded.
         """
 
         if isinstance(card, str):
-            card = list(card)
+            card = [card]
 
         cards = [x for x in self.in_hand if x in card]
 
@@ -138,6 +160,34 @@ class Deck():
 
         self.discarded.extend(cards)
         self.in_hand = [x for x in self.in_hand if x not in cards]
+
+    def discard_from_middle(self, amount):
+        """
+        Discards cards from the middle of the deck.
+        """
+
+        discard_position = int(len(self.cards) / 2)
+        discard = self.cards[discard_position: discard_position + amount]
+        self.cards = [card for card in self.cards if card not in discard]
+        self.discarded.extend(discard)
+
+    def discard_from_deck_randomly(self, amount):
+        """
+        Discards cards from the deck randomly.
+        """
+
+        discard = [self.random_card() for _ in range(amount)]
+        self.cards = [card for card in self.cards if card not in discard]
+        self.discarded.extend(discard)
+
+    def discard_from_top(self, amount):
+        """
+        Discards the specified amount of cards from the top of the deck.
+        """
+
+        discard = self.cards[:amount]
+        self.cards = [card for card in self.cards if card not in discard]
+        self.discarded.extend(discard)
 
     def draw(self, amount=1):
         """
@@ -198,7 +248,6 @@ class Deck():
         Calls place_cards() for all insertion.
         """
 
-        self.in_hand = [x for x in self.in_hand if x not in cards]
         for i in range(0, len(cards)):
             self.place_card(cards[i], position + i)
 
@@ -213,6 +262,7 @@ class Deck():
 
         card = random.choice(self.cards)
         self.cards.remove(card)
+        self.in_hand.append(card)
         return card
 
     def reset(self):
