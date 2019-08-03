@@ -181,6 +181,37 @@ class TestDeckMethods(unittest.TestCase):
         self.assertEqual(drawn, self.deck.cards[-1])
         self.assertEqual(len(self.deck.cards), len(self.deck.clean_deck))
 
+    def test_standard_deck(self):
+        """
+        Makes sure that a standard deck is able to be created from the base
+        deck class.
+        """
+        standard_deck = deck.StandardDeck()
+
+        y = standard_deck.random_card()
+        self.assertTrue(y not in standard_deck.cards)
+        self.assertTrue(y in standard_deck.in_hand)
+
+        standard_deck.discard_from_hand(y)
+        self.assertTrue(y in standard_deck.discarded)
+        self.assertTrue(y not in standard_deck.in_hand)
+
+    def test_uno_deck(self):
+        """
+        Verifies that the uno deck can be created from the base deck class
+        without any issues.
+        """
+
+        uno_deck = deck.UnoDeck()
+
+        y = uno_deck.random_card()
+        self.assertTrue(uno_deck.cards.count(y) == 1)
+        self.assertTrue(y in uno_deck.in_hand)
+
+        uno_deck.discard_from_hand(y)
+        self.assertTrue(y in uno_deck.discarded)
+        self.assertTrue(y not in uno_deck.in_hand)
+
 
 if __name__ == "__main__":
     unittest.main()

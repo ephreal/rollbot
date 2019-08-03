@@ -312,3 +312,46 @@ class Deck():
                 self.place_card(card, len(self.cards+1))
             else:
                 self.place_cards(card, len(self.cards)+1)
+
+
+class StandardDeck(Deck):
+    def __init__(self):
+        cards = ["ace of hearts", "two of hearts", "three of hearts",
+                 "four of hearts", "five of hearts", "six of hearts",
+                 "seven of hearts", "eight of hearts", "nine of hearts",
+                 "ten of hearts", "jack of hearts", "queen of hearts",
+                 "king of hearts", "ace of diamonds", "two of diamonds",
+                 "three of diamonds", "four of diamonds", "five of diamonds",
+                 "six of diamonds", "seven of diamonds", "eight of diamonds",
+                 "nine of diamonds", "ten of diamonds", "jack of diamonds",
+                 "queen of diamonds", "king of diamonds", "ace of spades",
+                 "two of spades", "three of spades", "four of spades",
+                 "five of spades", "six of spades", "seven of spades",
+                 "eight of spades", "nine of spades", "ten of spades",
+                 "jack of spades", "queen of spades", "king of spades",
+                 "ace of clubs", "two of clubs", "three of clubs",
+                 "four of clubs", "five of clubs", "six of clubs",
+                 "seven of clubs", "eight of clubs", "nine of clubs",
+                 "ten of clubs", "jack of clubs", "queen of clubs",
+                 "king of clubs"]
+
+        super().__init__(cards)
+
+
+class UnoDeck(Deck):
+    def __init__(self):
+        double_cards = ["zero", "one", "two", "three" "four", "five", "six",
+                        "seven", "eight", "nine", "draw_two", "reverse",
+                        "skip"]
+        colors = ["blue", "green", "red", "yellow"]
+        quad_cards = ["draw four", "wild"]
+        quad_cards = [[card, card, card, card] for card in quad_cards]
+        cards = quad_cards[0]
+        cards.extend(quad_cards[1])
+
+        for card in double_cards:
+            for color in colors:
+                cards.append(f"{card} {color}")
+                cards.append(f"{card} {color}")
+
+        super().__init__(cards)
