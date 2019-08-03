@@ -49,6 +49,13 @@ class Deck():
         Deck.add_discarded():
             Places all discarded card back into self.cards
 
+        Deck.check_cards(amount: int)
+            Check the amount of cards remaining in the deck against the
+            amount of cards to be drawn from the deck. If more cards need to
+            be drawn than are in the deck, and discarded cards exist,
+            it places the discarded cards back into the deck with
+            Deck.add_discarded().
+
         Deck.cut(position: int):
             Cuts the deck at the index specified by position - 1.
 
@@ -77,7 +84,7 @@ class Deck():
             position specified is greater than the remaining cards, it places
             the cards at the end.
 
-        Deck.place_cards(cards: lins[str], position: int):
+        Deck.place_cards(cards: list[str], position: int):
             Places cards in at a given point. If the position specified
             specified is greater than the remaining cards, it places the cards
             at the end.
@@ -121,6 +128,18 @@ class Deck():
         self.cards.extend(self.discarded)
         self.discarded = []
 
+    def check_cards(self, amount):
+        """
+        Checks to make sure that the deck enough cards to accomodate drawing
+        <amount> of cards. If not, and card exist in the discard pile, it'll
+        add those cards back into the deck.
+
+        amount: int
+        """
+
+        if (len(self.cards) < amount) and self.discarded:
+            self.add_discarded()
+
     def cut(self, position=0):
         """
         Cuts the deck at position - 1. The second half of the deck is placed
@@ -138,6 +157,7 @@ class Deck():
     def discard_from_bottom(self, amount):
         """
         Discards cards from the bottom of the deck.
+            amount: int
         """
 
         discard = self.cards[-amount:]
@@ -197,21 +217,18 @@ class Deck():
         no cards can be drawn, it will return an empty list.
 
         draw(amount: int)
-            Returns a str list.
+
+        Returns a str list.
         """
 
-        if not self.cards and self.discarded:
-            self.add_discarded()
+        self.check_cards(amount)
 
-        elif not self.cards:
+        if not self.cards:
             return []
 
         # Check if we need more cards than are available
         if len(self.cards) < amount and not self.discarded:
             drawn_cards = self.cards
-
-        elif len(self.cards) < amount and self.discarded:
-            self.add_discarded()
 
         drawn_cards = self.cards[0:amount]
         self.in_hand.extend(drawn_cards)
@@ -257,7 +274,9 @@ class Deck():
         an empty string.
         """
 
-        if len(self.cards) == 0:
+        self.check_cards(1)
+
+        if not self.cards:
             return ""
 
         card = random.choice(self.cards)

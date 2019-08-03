@@ -19,6 +19,19 @@ class TestDeckMethods(unittest.TestCase):
         self.assertTrue(not self.deck.discarded)
         self.assertTrue(len(self.deck.cards) == len(self.cards))
 
+    def test_check_cards(self):
+        """
+        Checks to make sure that check_cards adds cards back to the deck
+        from the discard pile when more cards need to be taken from the
+        deck than exist.
+        """
+
+        self.deck.discard_from_top(10)
+        self.deck.check_cards(8)
+
+        self.assertTrue(not self.deck.discarded)
+        self.assertTrue(len(self.deck.cards) == len(self.cards))
+
     def test_clean_deck(self):
         """
         Verifies that clean_deck remains unchanged after the deck is
@@ -180,6 +193,38 @@ class TestDeckMethods(unittest.TestCase):
         self.deck.up_last(drawn)
         self.assertEqual(drawn, self.deck.cards[-1])
         self.assertEqual(len(self.deck.cards), len(self.deck.clean_deck))
+
+    def test_draw_all_cards(self):
+        """
+        Tests to make sure that Deck.draw() works sanely when cards run out.
+        """
+        cards = self.deck.draw(13)
+        self.assertTrue(self.deck.cards == [])
+        self.assertTrue(len(cards) == len(self.cards))
+
+        new_card = self.deck.draw(1)
+        self.assertTrue(self.deck.cards == [])
+        self.assertTrue(new_card == [])
+
+        self.deck.discard_from_hand(cards)
+        self.deck.draw(5)
+        self.assertTrue(len(self.deck.cards) == len(self.cards) - 5)
+        self.assertTrue(self.deck.discarded == [])
+
+    def test_random_draw_all_cards(self):
+        """
+        Tests to make sure that Deck.random_card() works properly when no
+        cards remain to be drawn.
+        """
+
+        self.deck.discard_from_top(len(self.cards)-1)
+        cards = []
+        cards.append(self.deck.random_card())
+        self.assertFalse(self.deck.cards)
+
+        cards.append(self.deck.random_card())
+        self.assertTrue(cards == self.deck.in_hand)
+        self.assertTrue(len(self.deck.cards) == len(self.cards)-2)
 
     def test_standard_deck(self):
         """
