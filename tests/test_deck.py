@@ -5,19 +5,26 @@ from classes import deck
 class TestDeckMethods(unittest.TestCase):
 
     def setUp(self):
-        cards = ["ace", "two", "three", "four", "five", "six", "seven",
-                 "eight", "nine", "jack", "queen", "king"]
+        self.cards = ["ace", "two", "three", "four", "five", "six", "seven",
+                      "eight", "nine", "ten", "jack", "queen", "king"]
 
-        self.deck = deck.Deck(cards)
+        self.deck = deck.Deck(self.cards)
+
+    def test_add_discarded(self):
+        """
+        Verifies that all discarded cards are added back to the deck.
+        """
+        self.deck.discard_from_top(5)
+        self.deck.add_discarded()
+        self.assertTrue(not self.deck.discarded)
+        self.assertTrue(len(self.deck.cards) == len(self.cards))
 
     def test_clean_deck(self):
         """
         Verifies that clean_deck remains unchanged after the deck is
         initialized
         """
-        cards = ["ace", "two", "three", "four", "five", "six", "seven",
-                 "eight", "nine", "jack", "queen", "king"]
-        self.assertEqual(self.deck.clean_deck, cards)
+        self.assertEqual(self.deck.clean_deck, self.cards)
 
     def test_cut_deck(self):
         """
