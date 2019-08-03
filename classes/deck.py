@@ -79,8 +79,8 @@ class Deck():
             Special alias for Deck.place_card() and Deck.place_cards(). Places
             the card(s) back into the deck at the very end.
     """
-    def __init__(self, cards: list[str]):
-        self.clean_deck = cards
+    def __init__(self, cards):
+        self.clean_deck = cards[:]
 
         # prepare deck for first use
         random.shuffle(cards)
@@ -98,7 +98,7 @@ class Deck():
         self.cards.append(self.discarded)
         self.discarded = []
 
-    def cut(self, position: int) -> None:
+    def cut(self, position) -> None:
         """
         Cuts the deck at position - 1. The second half of the deck is placed
         on top on the deck. If the position is too high or too low, the deck
@@ -115,7 +115,7 @@ class Deck():
         self.cards = self.cards[:position]
         self.cards = back.extend(self.cards)
 
-    def draw(self, amount: int) -> list[str]:
+    def draw(self, amount=1):
         """
         Draws a specified amount of cards from the deck. If the deck would run
         out of cards and cards exist in self.discarded, it will call
@@ -145,7 +145,7 @@ class Deck():
 
         return drawn_cards
 
-    def place_card(self, card: str, position: int) -> None:
+    def place_card(self, card, position):
         """
         Places a card at a given point in the deck. If you need to place
         multiple cards in at a point, use place_cards instead.
@@ -164,7 +164,7 @@ class Deck():
             # That position does not exist, place the card at the end
             self.cards.append(card)
 
-    def place_cards(self, cards: list[str], position: int) -> None:
+    def place_cards(self, cards, position):
         """
         Places multiple cards in the deck, starting with the first card
         in cards inserted at position, the second card in cards inserted at
@@ -173,10 +173,10 @@ class Deck():
         Calls place_cards() for all insertion.
         """
 
-        for i in range(0, len(cards)-1):
+        for i in range(0, len(cards)):
             self.place_card(cards[i], position + i)
 
-    def random_card(self) -> str:
+    def random_card(self):
         """
         Returns a random card from the deck. If the deck is empty, it returns
         an empty string.
@@ -189,7 +189,7 @@ class Deck():
         self.cards.remove(card)
         return card
 
-    def reset(self) -> None:
+    def reset(self):
         """
         Resets the deck to a clean state and prepares cards for use by
         shuffling the cards.
@@ -199,14 +199,14 @@ class Deck():
         self.discarded = []
         self.shuffle()
 
-    def shuffle(self) -> None:
+    def shuffle(self):
         """
         Shuffles all cards in self.cards.
         """
 
-        self.cards = random.shuffle(self.cards)
+        random.shuffle(self.cards)
 
-    def up_next(self, card) -> None:
+    def up_next(self, card):
         """
         Places the card(s) at the front of the deck. If a list is passed in,
         it places the cards into the deck in the order specified.
@@ -216,9 +216,12 @@ class Deck():
             self.place_card(card, 1)
 
         elif isinstance(card, list):
-            self.place_cards(card, 1)
+            if len(card) == 1:
+                self.place_card(card[0], 1)
+            else:
+                self.place_cards(card, 1)
 
-    def up_last(self, card) -> None:
+    def up_last(self, card):
         """
         Places the card(s) at the end of the deck.If a list is passed in, it
         places the cards into the deck in the same order.
