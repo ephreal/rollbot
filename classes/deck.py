@@ -41,6 +41,9 @@ class Deck():
         discarded (str list):
                 A list of all cards in the discard pile
 
+        in_hands (str list)
+                A list of all cards currently in player's hands
+
     Class Functions
 
         Deck.add_discarded():
@@ -48,6 +51,10 @@ class Deck():
 
         Deck.cut(position: int):
             Cuts the deck at the index specified by position - 1.
+
+        Deck.discard(card: str or list):
+            places cards in self.discarded when, for example, cards are
+            given back.
 
         Deck.draw(amount: int):
             Draws a specified amount of cards from the deck
@@ -80,14 +87,17 @@ class Deck():
             the card(s) back into the deck at the very end.
     """
     def __init__(self, cards):
+        # And today I learned a lesson about why taking a copy of a list is
+        # a GoodThing.
         self.clean_deck = cards[:]
 
         # prepare deck for first use
-        random.shuffle(cards)
-        self.cards = cards
+        self.cards = cards[:]
+        self.shuffle()
         self.discarded = []
+        self.in_hand = []
 
-    def add_discarded(self) -> None:
+    def add_discarded(self):
         """
         Adds cards from the discarded pile back into the main card deck.
 
@@ -98,22 +108,36 @@ class Deck():
         self.cards.append(self.discarded)
         self.discarded = []
 
-    def cut(self, position) -> None:
+    def cut(self, position=0):
         """
         Cuts the deck at position - 1. The second half of the deck is placed
         on top on the deck. If the position is too high or too low, the deck
         will be cut in half.
         """
 
-        if not position:
-            position = len(self.cards / 2)
-
-        if position <= 0 or position >= len(self.cards)-1:
+        if position == 0 or position <= 0 or position >= len(self.cards)-1:
             position = len(self.cards / 2)
 
         back = self.cards[position:]
         self.cards = self.cards[:position]
         self.cards = back.extend(self.cards)
+
+    def discard(self, card):
+        """
+        Takes cards and checks if they are in self.in_hands. If they are, moves
+        them into self.discarded.
+        """
+
+        if isinstance(card, str):
+            card = list(card)
+
+        cards = [x for x in self.in_hand if x in card]
+
+        if not cards:
+            return
+
+        self.discarded.extend(cards)
+        self.in_hand = [x for x in self.in_hand if x not in cards]
 
     def draw(self, amount=1):
         """
@@ -140,7 +164,7 @@ class Deck():
             self.add_discarded()
 
         drawn_cards = self.cards[0:amount]
-        self.discarded.append(drawn_cards)
+        self.in_hand.extend(drawn_cards)
         self.cards = self.cards[amount:]
 
         return drawn_cards
@@ -157,9 +181,10 @@ class Deck():
 
         returns None
         """
+
         try:
             self.cards.insert(position-1, card)
-
+            self.in_hand.remove(card)
         except IndexError:
             # That position does not exist, place the card at the end
             self.cards.append(card)
@@ -173,6 +198,7 @@ class Deck():
         Calls place_cards() for all insertion.
         """
 
+        self.in_hand = [x for x in self.in_hand if x not in cards]
         for i in range(0, len(cards)):
             self.place_card(cards[i], position + i)
 
@@ -197,6 +223,7 @@ class Deck():
 
         self.cards = self.clean_deck[:]
         self.discarded = []
+        self.in_hand = []
         self.shuffle()
 
     def shuffle(self):
