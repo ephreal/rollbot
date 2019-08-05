@@ -102,7 +102,7 @@ git clone https://github.com/ephreal/rollbot
 
 Once the bot has been downloaded, it's necessary to modify the configuation file and add in your bot token. You can also modify the bot description, bot command prefix, or allowed rolling channels if you desire.
 
-I recommend running the setup.py by double clicking it. It will bring up a windows that asks for the required information. Simply fill out the items, click "Save Config", and you are ready to move on. If, for some reason, the setup.py does nothing, continue on in this section.
+I recommend running the bot_setup.py by double clicking it. It will bring up a window that asks for the required information. Simply fill out the items, click "Save Config", and you are ready to move on. If, for some reason, the setup.py does nothing, continue on in this section.
 
 Inside of the downloaded folder, you'll see a folder called "config". Inside here, you'll find a file called "config.json". Open this in notepad/notepad++/sublime/vim/etc. Overwrite YOUR\_TOKEN\_HERE with your bot token. This is necessary to have the bot run.
 
@@ -112,9 +112,9 @@ If you do not have a token yet, refer to here: <https://github.com/reactiflux/di
 
 ### Running the bot
 
-There are three ways to run the bot, with the setup.py run button, with python commands, or with docker.
+There are three ways to run the bot, with the bot_setup.py run button, with python commands, or with docker.
 
-#### Running the bot with setup.py
+#### Running the bot with bot_setup.py
 
 Once your configuration has been saved, click the "Run Bot" button. The setup window will not allow any more use until you turn off the bot from discord with the halt command.
 
