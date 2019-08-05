@@ -365,15 +365,6 @@ class StandardDeck(Deck):
         super().__init__(cards)
 
 
-class TestDeck(Deck):
-    """
-    A deck where all the cards have the same worth.
-    """
-    cards = [Card(name="test_deck", worth=1) for i in range(0, 52)]
-
-    super().__init__(cards)
-
-
 class UnoDeck(Deck):
     def __init__(self):
         # this will need to be redone to work with the actual card objects
