@@ -26,7 +26,6 @@ DEALINGS IN THE SOFTWARE.
 import unittest
 from classes.games import game_handler
 from classes.games import player
-from classes.games import deck
 
 
 class TestBlackjackHandler(unittest.TestCase):
