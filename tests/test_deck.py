@@ -1,12 +1,26 @@
 import unittest
-from classes import deck
+from classes.games import deck
+from classes.games import card
 
 
 class TestDeckMethods(unittest.TestCase):
 
     def setUp(self):
-        self.cards = ["ace", "two", "three", "four", "five", "six", "seven",
-                      "eight", "nine", "ten", "jack", "queen", "king"]
+        self.cards = [
+            card.Card(name="ace", worth=1),
+            card.Card(name="two", worth=2),
+            card.Card(name="three", worth=3),
+            card.Card(name="four", worth=4),
+            card.Card(name="five", worth=5),
+            card.Card(name="six", worth=6),
+            card.Card(name="seven", worth=7),
+            card.Card(name="eight", worth=8),
+            card.Card(name="nine", worth=9),
+            card.Card(name="ten", worth=10),
+            card.Card(name="jack", worth=10),
+            card.Card(name="queen", worth=10),
+            card.Card(name="king", worth=10)
+        ]
 
         self.deck = deck.Deck(self.cards)
 
@@ -182,7 +196,7 @@ class TestDeckMethods(unittest.TestCase):
         """
         drawn = self.deck.random_card()
         self.deck.up_next(drawn)
-        self.assertEqual(drawn, self.deck.cards[0])
+        self.assertEqual(drawn.worth, self.deck.cards[0].worth)
         self.assertEqual(len(self.deck.cards), len(self.deck.clean_deck))
 
     def test_up_last(self):
@@ -191,7 +205,7 @@ class TestDeckMethods(unittest.TestCase):
         """
         drawn = self.deck.random_card()
         self.deck.up_last(drawn)
-        self.assertEqual(drawn, self.deck.cards[-1])
+        self.assertEqual(drawn.worth, self.deck.cards[-1].worth)
         self.assertEqual(len(self.deck.cards), len(self.deck.clean_deck))
 
     def test_draw_all_cards(self):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Copyright 2018 Ephreal
+Copyright 2019 Ephreal
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
@@ -23,6 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import random
+from .card import Card
 
 
 class Deck():
@@ -32,7 +33,7 @@ class Deck():
 
     Class Variables
 
-        cards (str list):
+        cards (list[card.Card]):
                 A list of all cards in the deck.
 
         clean_deck (str list):
@@ -170,7 +171,7 @@ class Deck():
         them into self.discarded.
         """
 
-        if isinstance(card, str):
+        if isinstance(card, Card):
             card = [card]
 
         cards = [x for x in self.in_hand if x in card]
@@ -308,7 +309,7 @@ class Deck():
         it places the cards into the deck in the order specified.
         """
 
-        if isinstance(card, str):
+        if isinstance(card, Card):
             self.place_card(card, 1)
 
         elif isinstance(card, list):
@@ -323,7 +324,7 @@ class Deck():
         places the cards into the deck in the same order.
         """
 
-        if isinstance(card, str):
+        if isinstance(card, Card):
             self.place_card(card, len(self.cards)+1)
 
         elif isinstance(card, list):
@@ -335,30 +336,33 @@ class Deck():
 
 class StandardDeck(Deck):
     def __init__(self):
-        cards = ["ace of hearts", "two of hearts", "three of hearts",
-                 "four of hearts", "five of hearts", "six of hearts",
-                 "seven of hearts", "eight of hearts", "nine of hearts",
-                 "ten of hearts", "jack of hearts", "queen of hearts",
-                 "king of hearts", "ace of diamonds", "two of diamonds",
-                 "three of diamonds", "four of diamonds", "five of diamonds",
-                 "six of diamonds", "seven of diamonds", "eight of diamonds",
-                 "nine of diamonds", "ten of diamonds", "jack of diamonds",
-                 "queen of diamonds", "king of diamonds", "ace of spades",
-                 "two of spades", "three of spades", "four of spades",
-                 "five of spades", "six of spades", "seven of spades",
-                 "eight of spades", "nine of spades", "ten of spades",
-                 "jack of spades", "queen of spades", "king of spades",
-                 "ace of clubs", "two of clubs", "three of clubs",
-                 "four of clubs", "five of clubs", "six of clubs",
-                 "seven of clubs", "eight of clubs", "nine of clubs",
-                 "ten of clubs", "jack of clubs", "queen of clubs",
-                 "king of clubs"]
+        cards = ["ace", "two", "three", "four", "five", "six", "seven",
+                 "eight", "nine", "ten", "jack", "queen", "king"]
+
+        hearts = [f"{card} of hearts" for card in cards]
+        diamonds = [f"{card} of diamonds" for card in cards]
+        clubs = [f"{card} of clubs" for card in cards]
+        spades = [f"{card} of spades" for card in cards]
+
+        cards = []
+        for i in range(13):
+            if i + 1 > 10:
+                worth = 10
+            else:
+                worth = i + 1
+
+            cards.append(Card(name=hearts[i], worth=worth))
+            cards.append(Card(name=diamonds[i], worth=worth))
+            cards.append(Card(name=clubs[i], worth=worth))
+            cards.append(Card(name=spades[i], worth=worth))
 
         super().__init__(cards)
 
 
 class UnoDeck(Deck):
     def __init__(self):
+        # this will need to be redone to work with the actual card objects
+        # before I use this.
         double_cards = ["zero", "one", "two", "three" "four", "five", "six",
                         "seven", "eight", "nine", "draw_two", "reverse",
                         "skip"]
