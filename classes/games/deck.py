@@ -118,6 +118,12 @@ class Deck():
         self.discarded = []
         self.in_hand = []
 
+    def __len__(self):
+        """
+        Returns the amount of cards in the deck
+        """
+        return len(self.cards)
+
     def add_discarded(self):
         """
         Adds cards from the discarded pile back into the main card deck.
@@ -357,6 +363,15 @@ class StandardDeck(Deck):
             cards.append(Card(name=spades[i], worth=worth))
 
         super().__init__(cards)
+
+
+class TestDeck(Deck):
+    """
+    A deck where all the cards have the same worth.
+    """
+    cards = [Card(name="test_deck", worth=1) for i in range(0, 52)]
+
+    super().__init__(cards)
 
 
 class UnoDeck(Deck):

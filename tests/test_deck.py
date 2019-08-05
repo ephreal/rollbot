@@ -24,6 +24,15 @@ class TestDeckMethods(unittest.TestCase):
 
         self.deck = deck.Deck(self.cards)
 
+    def test_len(self):
+        """
+        Makes sure that the __len__ function returns the correct amount
+        """
+
+        self.assertEqual(len(self.deck), 13)
+        self.deck.draw(5)
+        self.assertEqual(len(self.deck), 8)
+
     def test_add_discarded(self):
         """
         Verifies that all discarded cards are added back to the deck.

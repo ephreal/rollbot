@@ -270,10 +270,22 @@ class BlackjackHandler(CardGameHandler):
     """
     Class Variables
 
+        current_winner(int):
+            An integer pointing to the current highest (but below 22) player
+
+        current_ties(player.BlackjackPlayer):
+            A list of players with the same total score as self.highest_score
+
         dealer (player.BlackjackPlayer):
             The dealer of cards. Always goes last.
 
+        highest_score (int):
+            An int that is the largest tally seen so far
+
     Class Functions
+
+        check_tally(player: player.BlackjackPlayer):
+            Checks the player's tally against the high score.
 
         dealer_play():
             The super simple ruleset that the dealer will play by. This will
@@ -301,6 +313,31 @@ class BlackjackHandler(CardGameHandler):
 
         # dealer always goes last, so point this at the next player
         self.current_player += 1
+        self.highest_score = 0
+        self.current_winner = None
+        self.current_ties = []
+
+    def check_tally(self, card_player):
+        """
+        Checks to make sure that the card_player's tally isn't above or equal
+        to the current high score.
+        """
+
+        if card_player.tally > self.highest_score and card_player.tally < 22:
+            self.current_winner = self.players.index(card_player)
+            self.highest_score = card_player.tally
+            self.current_ties = [card_player]
+
+        elif card_player.tally == self.highest_score:
+            self.current_ties.append(card_player)
+
+    def construct_and_add_player(self, name, id, hand=[]):
+        """
+        Overriding the base class function to use player.BlackjackPlayer
+        """
+
+        new_player = player.BlackjackPlayer(name=name, id=id, hand=hand)
+        self.add_player(new_player)
 
     def dealer_play(self):
         """
@@ -314,7 +351,8 @@ class BlackjackHandler(CardGameHandler):
         if self.dealer.tally < 9:
             self.double_hit(self.dealer)
         else:
-            self.hit(self.dealer)
+            while self.dealer.tally < 17:
+                self.hit(self.dealer)
 
     def double_hit(self, card_player):
         """
@@ -326,6 +364,10 @@ class BlackjackHandler(CardGameHandler):
         cards = self.deal(2, card_player)
         card_player.receive_cards(cards)
 
+        self.check_tally(card_player)
+
+        return cards
+
     def hit(self, card_player):
         """
         Gives a single card to a player. Wrapper for deal function.
@@ -334,7 +376,9 @@ class BlackjackHandler(CardGameHandler):
         """
 
         card = self.deal(1, card_player)
-        card_player.receive_card(card)
+        card_player.receive_card(card[0])
+
+        self.check_tally(card_player)
 
         return card
 
@@ -347,8 +391,7 @@ class BlackjackHandler(CardGameHandler):
         players will be added in the future.
         """
 
-        self.deal(2, self.dealer)
-        self.deal(2, self.players[1])
+        [self.double_hit(card_player) for card_player in self.players]
 
     def stand(self):
         """
