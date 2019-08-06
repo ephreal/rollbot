@@ -1,0 +1,187 @@
+{
+    "character_name" : "character_name",
+    "class" : "class",
+    "background" : "background",
+    "player_name" : "player_name",
+    "race" : "race",
+    "alignment" : "alignment",
+    "experience" : "experience",
+    "proficiency" : 0,
+    "armor_class" : 0,
+    "initiative" : 0,
+    "speed" : 0,
+    "max_hp" : 0,
+    "cur_hp" : 0,
+    "tmp_hp" : 0,
+    "hit_dice" : [],
+    "death_saves" : {
+        "successes" : 0,
+        "failures" : 0
+    },
+    "personality_traits" : [],
+    "ideals" : [],
+    "bonds" : [],
+    "flaws" : [],
+    "attacks" : {},
+    "equipment" : {},
+    "proficiencies" : [],
+    "features" : [],
+    "character_description" : {
+        "age" : 0,
+        "eye_color" : "eye_color",
+        "hair_color" : "hair_color",
+        "height" : "height",
+        "skin" : "skin",
+        "weight" : "weight",
+        "backstory" : "backstory",
+        "appearance" : "appearance"
+    },
+    "attributes" : {
+        "strength" : {
+            "value" : 0,
+            "mod" : 0
+        },
+        "dexterity" : {
+            "value" : 0,
+            "mod" : 0
+        },
+        "constitution" : {
+            "value" : 0,
+            "mod" : 0
+        },
+        "intelligence" : {
+            "value" : 0,
+            "mod" : 0
+        },
+        "wisdom" : {
+            "value" : 0,
+            "mod" : 0
+        },
+        "charisma" : {
+            "value" : 0,
+            "mod" : 0
+        }
+    },
+    "saving_throws" : {
+        "strength" : {
+            "proficient" : false
+        },
+        "dexterity" : {
+            "proficient" : false
+        },
+        "constitution" : {
+            "proficient" : false
+        },
+        "intelligence" : {
+            "proficient" : false
+        },
+        "wisdom" : {
+            "proficient" : false
+        },
+        "charisma" : {
+            "proficient" : false
+        }
+    },
+    "skills" : {
+        "acrobatics" : {
+            "proficient" : false
+        },
+        "animal_handling" : {
+            "proficient" : false
+        },
+        "arcana" : {
+            "proficient" : false
+        },
+        "athletics" : {
+            "proficient" : false
+        },
+        "deception" : {
+            "proficient" : false
+        },
+        "history" : {
+            "proficient" : false
+        },
+        "insight" : {
+            "proficient" : false
+        },
+        "intimidation" : {
+            "proficient" : false
+        },
+        "investigation" : {
+            "proficient" : false
+        },
+        "medicine" : {
+            "proficient" : false
+        },
+        "nature" : {
+            "proficient" : false
+        },
+        "perception" : {
+            "proficient" : false
+        },
+        "performance" : {
+            "proficient" : false
+        },
+        "persuasion" : {
+            "proficient" : false
+        },
+        "religion" : {
+            "proficient" : false
+        },
+        "sleight_of_hand" : {
+            "proficient" : false
+        },
+        "stealth" : {
+            "proficient" : false
+        },
+        "survival" : {
+            "proficient" : false
+        }
+    },
+    "spellcasting_class" : "spellcasting_class",
+    "spellcasting_ability" : "spellcasting_ability",
+    "spell_save_dc" : 0,
+    "spell_attack_bonus" : 0,
+    "spells_slots" : {
+        0 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        },
+        1 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        },
+        2 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        },
+        3 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        },
+        4 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        },
+        5 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        },
+        6 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        },
+        7 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        },
+        8 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        },
+        9 : {
+            "available_slots" : 0,
+            "known_spells" : {}
+        }
+    }
+}
