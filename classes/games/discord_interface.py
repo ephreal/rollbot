@@ -64,12 +64,13 @@ class DiscordInterface():
                 ease of session mapping if they accept. Their active state
                 will be set to false.
 
-            add_player_to_current(player: ctx.member):
+            add_player_to_current_players(player: ctx.member, sid: int):
                 Adds a player to the current_players dict. If they are
                 already in the list and not in_game, their session_id will
                 be overwritten with the new one.
 
-            add_players_to_current(players: list[ctx.member]):
+            add_players_to_current_players(players: list[ctx.member],
+                                           sid: int):
                 Adds the players in the players list to the current_players
                 dictionary. If a player is already in the list and not in_game,
                 their current session_id will be overwritten with the new one.
@@ -92,7 +93,7 @@ class DiscordInterface():
         self.current_players = {}
         self.current_sessions = {}
 
-    def add_game_handler(self, handler, players):
+    def add_game_handler(self, handler, players=None):
         """
         Generates a game_session_id and adds the handler to the
         current_sessions dict. The players will be added to the current_players
@@ -106,10 +107,53 @@ class DiscordInterface():
             ctx.guild.get_member()
         """
 
+        if not players:
+            return
+
         session_id = self.generate_session()
         self.current_sessions[session_id] = handler
 
-        self.add_players_to_current(players)
+        self.add_players_to_current(players, session_id)
+
+    def add_player_to_current_players(new_player, sid):
+        """
+        Adds a player to the session passed in.
+
+        new_player: player.*
+
+        sid: int
+        """
+
+        pass
+
+    def add_players_to_game_current_players(players, sid):
+        """
+        Adds a list of players to a game session
+
+        players: list[player.*]
+
+        sid: int
+        """
+
+        pass
+
+    def add_player_to_game(new_player):
+        """
+        Sets a player as active in the session the session they are mapped to.
+
+        new_player: player.*
+        """
+
+        pass
+
+    def add_players_to_game(players):
+        """
+        Sets a list of players as active in the game session they are mapped to
+
+        players: list[player.*]
+        """
+
+        pass
 
     def create_game_handler(self, game_type):
         """
