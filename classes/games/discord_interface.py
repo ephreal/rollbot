@@ -41,9 +41,10 @@ class DiscordInterface():
 
         Class Variables:
 
-            current_players ( {ctx.member : [game_session_id,
-                                             active,
-                                             in_game}  )
+            current_players ( { name : { ctx.member,
+                                         session_id,
+                                         active,
+                                         in_game} }  )
                 A dictionary of all currently playing members and the session
                 id. If they are active, they have responded to the request to
                 play the game. If the player is currently playing a game,
@@ -57,12 +58,9 @@ class DiscordInterface():
 
         Class Functions
 
-            add_game_handler(handler: game_handler,
-                             players: list[ctx.member]):
-                Generates a game_session_id and adds it to the current_sessions
-                list. It'll add the players to the "current_players" dict for
-                ease of session mapping if they accept. Their active state
-                will be set to false.
+            add_game_handler(game_type: str):
+                Generates a game_session_id and adds the handler to the
+                current_sessions list. game_type is a string name of the game.
 
             add_player_to_current_players(player: ctx.member, sid: int):
                 Adds a player to the current_players dict. If they are
@@ -82,7 +80,7 @@ class DiscordInterface():
                 Adds multiple players to the game_handler their session_id
                 points to.
 
-            create_game_handler(game_type: str) -> game_handler.*:
+            create_game_handler(game_type: str, session_id: int):
                 Create a game handler based on the contents of game_type.
                 Defaults to game_handler.BlackjackHandler
 
@@ -93,7 +91,7 @@ class DiscordInterface():
         self.current_players = {}
         self.current_sessions = {}
 
-    def add_game_handler(self, handler, players=None):
+    def add_game_handler(self, game_type):
         """
         Generates a game_session_id and adds the handler to the
         current_sessions dict. The players will be added to the current_players
@@ -101,21 +99,12 @@ class DiscordInterface():
 
         handler: game_handler
             Can be any valid game handler from gane_handler.py
-
-        players: list[ctx.member]
-            A list of member objects resolved from ctx.guild.members or
-            ctx.guild.get_member()
         """
 
-        if not players:
-            return
-
         session_id = self.generate_session()
-        self.current_sessions[session_id] = handler
+        self.create_game_handler(game_type, session_id)
 
-        self.add_players_to_current(players, session_id)
-
-    def add_player_to_current_players(new_player, sid):
+    def add_player_to_current_players(self, new_player, sid):
         """
         Adds a player to the session passed in.
 
@@ -124,9 +113,13 @@ class DiscordInterface():
         sid: int
         """
 
-        pass
+        self.current_players[new_player.id] = {"member": new_player,
+                                               "session_id": sid,
+                                               "active": False,
+                                               "in_game": False,
+                                               }
 
-    def add_players_to_game_current_players(players, sid):
+    def add_players_to_current_players(self, players, sid):
         """
         Adds a list of players to a game session
 
@@ -135,9 +128,14 @@ class DiscordInterface():
         sid: int
         """
 
-        pass
+        for new_player in players:
+            self.current_players[new_player.id] = {"member": new_player,
+                                                   "session_id": sid,
+                                                   "active": False,
+                                                   "in_game": False,
+                                                   }
 
-    def add_player_to_game(new_player):
+    def add_player_to_game(self, new_player):
         """
         Sets a player as active in the session the session they are mapped to.
 
@@ -146,7 +144,7 @@ class DiscordInterface():
 
         pass
 
-    def add_players_to_game(players):
+    def add_players_to_game(self, players):
         """
         Sets a list of players as active in the game session they are mapped to
 
@@ -155,7 +153,7 @@ class DiscordInterface():
 
         pass
 
-    def create_game_handler(self, game_type):
+    def create_game_handler(self, game_type, session_id):
         """
         Creates a game handler for use in add_game_handler based on the content
         of game_type.
@@ -164,7 +162,7 @@ class DiscordInterface():
 
         game_type: str
 
-        returns a game_handler.* object.
+        session_id: int
         """
 
         if game_type.lower().startswith("b"):
@@ -174,7 +172,7 @@ class DiscordInterface():
         else:
             handler = game_handler.BlackjackHandler()
 
-        return handler
+        self.current_sessions[session_id] = handler
 
     def generate_session(self):
         """
