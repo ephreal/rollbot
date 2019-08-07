@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Copyright 2018 Ephreal
+Copyright 2018-2019 Ephreal
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
@@ -76,6 +76,18 @@ author id:  {info['author_id']}
 ```
 """
         await ctx.send(message)
+
+
+    @commands.command()
+    async def get_roles(self, ctx):
+        await ctx.send(ctx.guild.roles)
+
+    @commands.command()
+    async def get_guilds(self, ctx):
+        guilds = [guild.name for guild in self.bot.guilds]
+        guilds = "\n".join(guilds)
+        await ctx.send(f"I am currently in {len(self.bot.guilds)} guilds.\n"
+                       f"The guilds are {guilds}\n")
 
     @commands.command(description="Get a large amount of useful "
                       "server channel/user info")
