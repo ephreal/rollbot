@@ -143,43 +143,43 @@
     "spell_save_dc" : 0,
     "spell_attack_bonus" : 0,
     "spells_slots" : {
-        0 : {
+        "0" : {
             "available_slots" : 0,
             "known_spells" : {}
         },
-        1 : {
+        "1" : {
             "available_slots" : 0,
             "known_spells" : {}
         },
-        2 : {
+        "2" : {
             "available_slots" : 0,
             "known_spells" : {}
         },
-        3 : {
+        "3" : {
             "available_slots" : 0,
             "known_spells" : {}
         },
-        4 : {
+        "4" : {
             "available_slots" : 0,
             "known_spells" : {}
         },
-        5 : {
+        "5" : {
             "available_slots" : 0,
             "known_spells" : {}
         },
-        6 : {
+        "6" : {
             "available_slots" : 0,
             "known_spells" : {}
         },
-        7 : {
+        "7" : {
             "available_slots" : 0,
             "known_spells" : {}
         },
-        8 : {
+        "8" : {
             "available_slots" : 0,
             "known_spells" : {}
         },
-        9 : {
+        "9" : {
             "available_slots" : 0,
             "known_spells" : {}
         }
