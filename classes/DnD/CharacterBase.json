@@ -144,43 +144,53 @@
     "spell_attack_bonus" : 0,
     "spells_slots" : {
         "0" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         },
         "1" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         },
         "2" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         },
         "3" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         },
         "4" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         },
         "5" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         },
         "6" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         },
         "7" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         },
         "8" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         },
         "9" : {
-            "available_slots" : 0,
+            "max_slots" : 0,
+            "used_slots" : 0,
             "known_spells" : {}
         }
     }
