@@ -1,6 +1,6 @@
 {
     "character_name" : "character_name",
-    "class" : "class",
+    "class" : {},
     "background" : "background",
     "player_name" : "player_name",
     "race" : "race",
@@ -25,7 +25,7 @@
     "attacks" : {},
     "equipment" : {},
     "proficiencies" : [],
-    "features" : [],
+    "features" : {},
     "character_description" : {
         "age" : 0,
         "eye_color" : "eye_color",
@@ -37,91 +37,107 @@
         "appearance" : "appearance"
     },
     "attributes" : {
-        "strength" : 0,
-        "dexterity" : 0,
-        "constitution" : 0,
-        "intelligence" : 0,
-        "wisdom" : 0,
-        "charisma" : 0
-    },
-    "saving_throws" : {
         "strength" : {
+            "value" : 0,
             "proficient" : false
         },
         "dexterity" : {
+            "value" : 0,
             "proficient" : false
         },
         "constitution" : {
+            "value" : 0,
             "proficient" : false
         },
         "intelligence" : {
+            "value" : 0,
             "proficient" : false
         },
         "wisdom" : {
+            "value" : 0,
             "proficient" : false
         },
         "charisma" : {
+            "value" : 0,
             "proficient" : false
         }
     },
-    "skills" : {
-        "acrobatics" : {
-            "proficient" : false
+        "skills" : {
+            "acrobatics" : {
+                "proficient" : false,
+                "attribute" : "dexterity"
+            },
+            "animal_handling" : {
+                "proficient" : false,
+                "attribute" : "wisdom"
+            },
+            "arcana" : {
+                "proficient" : false,
+                "attribute" : "intelligence"
+            },
+            "athletics" : {
+                "proficient" : false,
+                "attribute" : "strength"
+            },
+            "deception" : {
+                "proficient" : false,
+                "attribute" : "charisma"
+            },
+            "history" : {
+                "proficient" : false,
+                "attribute" : "intelligence"
+            },
+            "insight" : {
+                "proficient" : false,
+                "attribute" : "wisdom"
+            },
+            "intimidation" : {
+                "proficient" : false,
+                "attribute" : "charisma"
+            },
+            "investigation" : {
+                "proficient" : false,
+                "attribute" : "intelligence"
+            },
+            "medicine" : {
+                "proficient" : false,
+                "attribute" : "wisdom"
+            },
+            "nature" : {
+                "proficient" : false,
+                "attribute" : "intelligence"
+            },
+            "perception" : {
+                "proficient" : false,
+                "attribute" : "wisdom"
+            },
+            "performance" : {
+                "proficient" : false,
+                "attribute" : "charisma"
+            },
+            "persuasion" : {
+                "proficient" : false,
+                "attribute" : "charisma"
+            },
+            "religion" : {
+                "proficient" : false,
+                "attribute" : "intelligence"
+            },
+            "sleight_of_hand" : {
+                "proficient" : false,
+                "attribute" : "dexterity"
+            },
+            "stealth" : {
+                "proficient" : false,
+                "attribute" : "dexterity"
+            },
+            "survival" : {
+                "proficient" : false,
+                "attribute" : "wisdom"
+            }
         },
-        "animal_handling" : {
-            "proficient" : false
-        },
-        "arcana" : {
-            "proficient" : false
-        },
-        "athletics" : {
-            "proficient" : false
-        },
-        "deception" : {
-            "proficient" : false
-        },
-        "history" : {
-            "proficient" : false
-        },
-        "insight" : {
-            "proficient" : false
-        },
-        "intimidation" : {
-            "proficient" : false
-        },
-        "investigation" : {
-            "proficient" : false
-        },
-        "medicine" : {
-            "proficient" : false
-        },
-        "nature" : {
-            "proficient" : false
-        },
-        "perception" : {
-            "proficient" : false
-        },
-        "performance" : {
-            "proficient" : false
-        },
-        "persuasion" : {
-            "proficient" : false
-        },
-        "religion" : {
-            "proficient" : false
-        },
-        "sleight_of_hand" : {
-            "proficient" : false
-        },
-        "stealth" : {
-            "proficient" : false
-        },
-        "survival" : {
-            "proficient" : false
-        }
-    },
-    "spellcasting_class" : "spellcasting_class",
-    "spellcasting_ability" : "spellcasting_ability",
+    "spellcasting_class" : {},
+    "spellcasting_ability" : {},
     "spell_save_dc" : 0,
     "spell_attack_bonus" : 0,
     "spells_slots" : {
