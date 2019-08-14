@@ -213,7 +213,8 @@ class CardGameHandler():
         """
 
         self.players = [
-            player for player in self.players if not player.id == player_id
+            player for player in self.players
+            if not player.player_id == player_id
         ]
 
     def remove_player_by_index(self, index):

@@ -35,7 +35,7 @@ class TestBlackjackHandler(unittest.TestCase):
 
         self.player = player.BlackjackPlayer(
             name="Freido",
-            id=314,
+            player_id=314,
             hand=[]
         )
         self.handler.add_player(self.player)

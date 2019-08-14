@@ -37,7 +37,8 @@ class TestGameHandler(unittest.TestCase):
             players=[]
         )
 
-        self.player = player.CardPlayer(name="gorlog", hand=[], id=1234567890)
+        self.player = player.CardPlayer(name="gorlog", hand=[],
+                                        player_id=1234567890)
 
     def test_add_players(self):
         """
@@ -62,7 +63,7 @@ class TestGameHandler(unittest.TestCase):
         """
 
         self.standard_handler.construct_and_add_player(name="gorlog",
-                                                       id=1234567890,
+                                                       player_id=1234567890,
                                                        hand=[])
 
         self.assertTrue(len(self.standard_handler.players) == 1)
@@ -82,7 +83,8 @@ class TestGameHandler(unittest.TestCase):
         Verifies that get_next_player returns the correct player
         """
 
-        new_player = player.CardPlayer(name="gorlog", id=1234567890, hand=[])
+        new_player = player.CardPlayer(name="gorlog", player_id=1234567890,
+                                       hand=[])
         [
             self.standard_handler.add_player(new_player) for _ in range(0, 10)
         ]
@@ -97,7 +99,7 @@ class TestGameHandler(unittest.TestCase):
 
     def test_remove_player_by_id(self):
         """
-        Tests removing a player by their id
+        Tests removing a player by their player_id
         """
         self.standard_handler.add_player(self.player)
         self.standard_handler.remove_player_by_id(1234567890)
@@ -126,7 +128,7 @@ class TestGameHandler(unittest.TestCase):
         """
         Tests that the current player can be set by id
         """
-        challenger = player.CardPlayer(name="zippy", id=20, hand=[])
+        challenger = player.CardPlayer(name="zippy", player_id=20, hand=[])
         self.standard_handler.add_player(self.player)
         self.standard_handler.add_player(challenger)
 
@@ -141,7 +143,7 @@ class TestGameHandler(unittest.TestCase):
         Tests setting the current player by index.
         """
 
-        challenger = player.CardPlayer(name="zippy", id=20, hand=[])
+        challenger = player.CardPlayer(name="zippy", player_id=20, hand=[])
         self.standard_handler.add_player(self.player)
         self.standard_handler.add_player(challenger)
 
@@ -156,7 +158,7 @@ class TestGameHandler(unittest.TestCase):
         Tests the setting of current players by name
         """
 
-        challenger = player.CardPlayer(name="zippy", id=20, hand=[])
+        challenger = player.CardPlayer(name="zippy", player_id=20, hand=[])
         self.standard_handler.add_player(self.player)
         self.standard_handler.add_player(challenger)
 

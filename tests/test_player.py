@@ -49,11 +49,11 @@ class TestPlayersMethods(unittest.TestCase):
 
         self.player = player.Player("test_player", 1234567890)
         self.card_player = player.CardPlayer(name="card_player",
-                                             id=9876543210,
+                                             player_id=9876543210,
                                              hand=[])
 
         self.blackjack_player = player.BlackjackPlayer(name="liggan",
-                                                       id=1336,
+                                                       player_id=1336,
                                                        hand=[])
 
     def test_player_variables(self):
@@ -62,10 +62,10 @@ class TestPlayersMethods(unittest.TestCase):
         """
 
         self.assertTrue(self.player.name == "test_player")
-        self.assertTrue(self.player.id == 1234567890)
+        self.assertTrue(self.player.player_id == 1234567890)
 
         self.assertTrue(self.card_player.name == "card_player")
-        self.assertTrue(self.card_player.id == 9876543210)
+        self.assertTrue(self.card_player.player_id == 9876543210)
         self.assertTrue(self.card_player.hand == [])
 
     def test_card_player_add_card(self):
