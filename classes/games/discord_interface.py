@@ -193,6 +193,6 @@ class DiscordInterface():
         new_player = player.CardPlayer(
                                         name=member.name,
                                         id=member,
-                                        hane=[]
+                                        hand=[]
         )
         return new_player
