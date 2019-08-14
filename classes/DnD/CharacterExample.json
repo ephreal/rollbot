@@ -1,6 +1,6 @@
 {
     "character_name" : "Bran Dullmetal",
-    "class" : {"paladin" : 2},
+    "char_class" : {"paladin" : 2},
     "background" : "Bran was a barbarian leader until one day he was hit on the head REALLY HARD by a rock falling off of a cliff. This rock was apparently magical and he was blessed by the gods to be their champion.",
     "player_name" : "Glom of Nit",
     "race" : "Half-Orc",
@@ -196,7 +196,7 @@
             }
         },
     "spellcasting" : {"paladin" : "cha"},
-    "spells_slots" : {
+    "spell_slots" : {
         "0" : {
             "max_slots" : 0,
             "used_slots" : 0,
