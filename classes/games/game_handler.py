@@ -158,7 +158,7 @@ class CardGameHandler():
         """
 
         player_id = [
-            player for players in self.players if player.player_id == player_id
+            player for players in self.players if player.id == player_id
         ]
         player_id = player_id[0]
 
@@ -214,7 +214,7 @@ class CardGameHandler():
 
         self.players = [
             player for player in self.players
-            if not player.player_id == player_id
+            if not player.id == player_id
         ]
 
     def remove_player_by_index(self, index):
@@ -246,7 +246,7 @@ class CardGameHandler():
         """
 
         player = [player for player in self.players if
-                  player.player_id == player_id]
+                  player.id == player_id]
 
         self.current_player = self.players.index(player[0])
 
@@ -335,12 +335,13 @@ class BlackjackHandler(CardGameHandler):
         elif card_player.tally == self.highest_score:
             self.current_ties.append(card_player)
 
-    def construct_and_add_player(self, name, id, hand=[]):
+    def construct_and_add_player(self, name, player_id, hand=[]):
         """
         Overriding the base class function to use player.BlackjackPlayer
         """
 
-        new_player = player.BlackjackPlayer(name=name, id=id, hand=hand)
+        new_player = player.BlackjackPlayer(name=name, player_id=player_id,
+                                            hand=hand)
         self.add_player(new_player)
 
     def dealer_play(self):

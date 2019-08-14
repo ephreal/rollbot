@@ -22,40 +22,16 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import unittest
-from classes.games import discord_interface
-from mock import MockUsers
 
+class DiscordUser():
+    """
+    Mock user to test the discord interface with
 
-class TestDiscordInterface(unittest.TestCase):
+    Class Variables
+        id (int):
+            represents the member.id from discord.member
+    """
 
-    def setUp(self):
-
-        self.interface = discord_interface.DiscordInterface()
-        self.test_user = MockUsers.DiscordUser(userid=10, name="Glaxion")
-
-    def test_add_game_handler(self):
-
-        self.interface.add_game_handler("blackjack")
-        self.assertEqual(len(self.interface.current_sessions), 1)
-
-        self.interface.add_game_handler("BLACKJACK")
-        self.assertEqual(len(self.interface.current_sessions), 2)
-
-    def test_generate_id(self):
-
-        session_id = self.interface.generate_session()
-
-        self.assertTrue(isinstance(session_id, int))
-
-        session_id = str(session_id)
-        self.assertEqual(len(session_id), 11)
-
-    def test_make_player(self):
-        """
-        Tests the make player portion of the discord interface.
-        """
-
-        player = self.interface.make_player(self.test_user)
-        self.assertEqual(player.id, 10)
-        self.assertEqual(player.name, "Glaxion")
+    def __init__(self, userid=None, name=None):
+        self.id = userid
+        self.name = name

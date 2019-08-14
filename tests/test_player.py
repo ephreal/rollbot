@@ -62,10 +62,10 @@ class TestPlayersMethods(unittest.TestCase):
         """
 
         self.assertTrue(self.player.name == "test_player")
-        self.assertTrue(self.player.player_id == 1234567890)
+        self.assertTrue(self.player.id == 1234567890)
 
         self.assertTrue(self.card_player.name == "card_player")
-        self.assertTrue(self.card_player.player_id == 9876543210)
+        self.assertTrue(self.card_player.id == 9876543210)
         self.assertTrue(self.card_player.hand == [])
 
     def test_card_player_add_card(self):

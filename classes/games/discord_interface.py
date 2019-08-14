@@ -32,9 +32,10 @@ class DiscordInterface():
     Provides an interface to rapptz discord.py to allow for
 
         - Automatic mapping of disord users to an ongoing game
-            + (Assuming they are playing a game, of course)
+          (Assuming they are playing a game, of course)
         - Simultaneous games on the same server/multiple servers
-        - Use of discord.py context object to access correct game session
+        - Use of discord.py context/member objects to access correct game
+          session
 
         All this is made possible by using the discord.py context object.
 
@@ -65,16 +66,16 @@ class DiscordInterface():
                 already in the list and not in_game, their session_id will
                 be overwritten with the new one.
 
-            add_players_to_current_players(players: list[ctx.member],
+            add_players_to_current_players(players: list[member],
                                            sid: int):
                 Adds the players in the players list to the current_players
                 dictionary. If a player is already in the list and not in_game,
                 their current session_id will be overwritten with the new one.
 
-            add_player_to_game(player: ctx.member):
+            add_player_to_game(player: member):
                 Adds a player to the game_handler their session_id points to.
 
-            add_players_to_game(players: list[ctx.member]):
+            add_players_to_game(players: list[member]):
                 Adds multiple players to the game_handler their session_id
                 points to.
 
@@ -106,22 +107,23 @@ class DiscordInterface():
         """
         Adds a player to the session passed in.
 
-        new_player: player.*
+        new_player: member
 
         sid: int
         """
 
-        new_player = self.make_player(new_player)
-        self.current_players[new_player.player_id] = {"member": new_player,
-                                                      "session_id": sid,
-                                                      "in_game": False,
-                                                      }
+        player_obj = self.make_player(new_player)
+        self.current_players[new_player.id] = {"player": player_obj,
+                                               "session_id": sid,
+                                               "in_game": False,
+                                               "member": new_player
+                                               }
 
     def add_players_to_current_players(self, players, sid):
         """
         Adds a list of players to a game session
 
-        players: list[player.*]
+        players: list[member]
 
         sid: int
         """
@@ -136,7 +138,11 @@ class DiscordInterface():
         new_player: discord member
         """
 
-        pass
+        player_session = self.current_players[new_player.id]["session_id"]
+        player_obj = self.current_players[new_player.id]["player_obj"]
+
+        self.current_sessions[player_session].add_player(player_obj)
+        self.current_players[new_player.id]["in_game"] = True
 
     def add_players_to_game(self, players):
         """
@@ -145,7 +151,8 @@ class DiscordInterface():
         players: list[discord member]
         """
 
-        pass
+        for member in players:
+            self.add_player_to_game(member)
 
     def create_game_handler(self, game_type, session_id):
         """
@@ -192,7 +199,7 @@ class DiscordInterface():
 
         new_player = player.CardPlayer(
                                         name=member.name,
-                                        player_id=member,
+                                        player_id=member.id,
                                         hand=[]
         )
         return new_player

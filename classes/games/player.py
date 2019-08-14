@@ -37,7 +37,7 @@ class Player():
 
     def __init__(self, name=None, player_id=None):
         self.name = name
-        self.player_id = player_id
+        self.id = player_id
 
 
 class CardPlayer(Player):
