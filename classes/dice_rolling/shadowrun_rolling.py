@@ -55,7 +55,7 @@ class Shadowrun5Roller():
 
         dice_pool: int
 
-        returns: (hits, misses, ones)
+        returns: ([rolls].sorted(), hits, misses, ones)
         """
 
         rolls = await self.roller.roll(dice_pool=dice_pool, sides=6)
