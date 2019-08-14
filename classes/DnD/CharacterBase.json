@@ -30,7 +30,7 @@
         "silver"   : 0,
         "gold"     : 0,
         "electrum" : 0,
-        "platinum" : 0,
+        "platinum" : 0
     },
     "proficiencies" : [],
     "features" : {},
