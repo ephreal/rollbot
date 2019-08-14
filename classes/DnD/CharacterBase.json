@@ -13,7 +13,7 @@
     "max_hp" : 0,
     "cur_hp" : 0,
     "tmp_hp" : 0,
-    "hit_dice" : [],
+    "hit_dice" : {},
     "death_saves" : {
         "successes" : 0,
         "failures" : 0
