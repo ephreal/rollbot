@@ -97,7 +97,7 @@ class DiscordInterface():
         dict with an active state of False.
 
         handler: game_handler
-            Can be any valid game handler from gane_handler.py
+            Can be any valid game handler from game_handler.py
         """
 
         session_id = self.generate_session()
