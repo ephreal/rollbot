@@ -110,7 +110,7 @@ class CardGameHandler():
         """
         self.players.append(new_player)
 
-    def construct_and_add_player(self, name, id, hand=[]):
+    def construct_and_add_player(self, name, player_id, hand=[]):
         """
         They always said I couldn't make my own friends to play with. Well I'll
         show THEM!
@@ -127,7 +127,8 @@ class CardGameHandler():
             A list of cards that will be placed in the player's hand
         """
 
-        new_player = player.CardPlayer(name=name, id=id, hand=hand)
+        new_player = player.CardPlayer(name=name, player_id=player_id,
+                                       hand=hand)
 
         self.players.append(new_player)
 
@@ -157,7 +158,7 @@ class CardGameHandler():
         """
 
         player_id = [
-            player for players in self.players if player.id == player_id
+            player for players in self.players if player.player_id == player_id
         ]
         player_id = player_id[0]
 
@@ -204,15 +205,15 @@ class CardGameHandler():
 
         return (next_player, self.players[next_player])
 
-    def remove_player_by_id(self, id):
+    def remove_player_by_id(self, player_id):
         """
         Removes a player based on their id
 
-        id: Unique ID.
+        player_id: Unique ID.
         """
 
         self.players = [
-            player for player in self.players if not player.id == id
+            player for player in self.players if not player.id == player_id
         ]
 
     def remove_player_by_index(self, index):
@@ -243,7 +244,8 @@ class CardGameHandler():
         Sets the current player based on the player id
         """
 
-        player = [player for player in self.players if player.id == player_id]
+        player = [player for player in self.players if
+                  player.player_id == player_id]
 
         self.current_player = self.players.index(player[0])
 
@@ -308,7 +310,8 @@ class BlackjackHandler(CardGameHandler):
             stand.
     """
     def __init__(self):
-        self.dealer = player.BlackjackPlayer(name="dealer", hand=[], id=0)
+        self.dealer = player.BlackjackPlayer(name="dealer", hand=[],
+                                             player_id=0)
         super().__init__(deck=deck.StandardDeck(), players=[self.dealer])
 
         # dealer always goes last, so point this at the next player

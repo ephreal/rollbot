@@ -112,10 +112,10 @@ class DiscordInterface():
         """
 
         new_player = self.make_player(new_player)
-        self.current_players[new_player.id] = {"member": new_player,
-                                               "session_id": sid,
-                                               "in_game": False,
-                                               }
+        self.current_players[new_player.player_id] = {"member": new_player,
+                                                      "session_id": sid,
+                                                      "in_game": False,
+                                                      }
 
     def add_players_to_current_players(self, players, sid):
         """
@@ -192,7 +192,7 @@ class DiscordInterface():
 
         new_player = player.CardPlayer(
                                         name=member.name,
-                                        id=member,
+                                        player_id=member,
                                         hand=[]
         )
         return new_player
