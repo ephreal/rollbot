@@ -5,7 +5,7 @@
     "player_name" : "player_name",
     "race" : "race",
     "alignment" : "alignment",
-    "experience" : "experience",
+    "experience" : 0,
     "proficiency" : 0,
     "armor_class" : 0,
     "initiative" : 0,
@@ -37,30 +37,12 @@
         "appearance" : "appearance"
     },
     "attributes" : {
-        "strength" : {
-            "value" : 0,
-            "mod" : 0
-        },
-        "dexterity" : {
-            "value" : 0,
-            "mod" : 0
-        },
-        "constitution" : {
-            "value" : 0,
-            "mod" : 0
-        },
-        "intelligence" : {
-            "value" : 0,
-            "mod" : 0
-        },
-        "wisdom" : {
-            "value" : 0,
-            "mod" : 0
-        },
-        "charisma" : {
-            "value" : 0,
-            "mod" : 0
-        }
+        "strength" : 0,
+        "dexterity" : 0,
+        "constitution" : 0,
+        "intelligence" : 0,
+        "wisdom" : 0,
+        "charisma" : 0
     },
     "saving_throws" : {
         "strength" : {
