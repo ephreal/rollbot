@@ -41,7 +41,8 @@ class TestDndCharacter(unittest.TestCase):
         """
 
         for key in self.char_info.keys():
-            self.assertEqual(self.char_info[key], getattr(self.example_char, key))
+            self.assertEqual(self.char_info[key],
+                             getattr(self.example_char, key))
 
 
 if __name__ == "__main__":
