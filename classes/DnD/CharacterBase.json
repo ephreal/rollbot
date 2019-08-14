@@ -24,6 +24,7 @@
     "flaws" : [],
     "weapons" : {},
     "armor" : {},
+    "items" : {},
     "inventory" : {},
     "money" : {
         "copper"   : 0,
