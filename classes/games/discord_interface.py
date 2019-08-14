@@ -190,6 +190,7 @@ class DiscordInterface():
 
         return session_id
 
+    @classmethod
     def make_player(self, member):
         """
         Makes a player object for adding a player to the current players list.

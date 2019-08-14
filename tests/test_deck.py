@@ -297,7 +297,7 @@ class TestDeckMethods(unittest.TestCase):
         uno_deck = deck.UnoDeck()
 
         y = uno_deck.random_card()
-        self.assertTrue(uno_deck.cards.count(y) == 1)
+        self.assertEqual(uno_deck.cards.count(y), 1)
         self.assertTrue(y in uno_deck.in_hand)
 
         uno_deck.discard_from_hand(y)
