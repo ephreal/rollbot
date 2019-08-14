@@ -23,6 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 from . import game_handler
+from . import player
 import random
 
 
@@ -43,12 +44,9 @@ class DiscordInterface():
 
             current_players ( { name : { ctx.member,
                                          session_id,
-                                         active,
                                          in_game} }  )
                 A dictionary of all currently playing members and the session
-                id. If they are active, they have responded to the request to
-                play the game. If the player is currently playing a game,
-                in_game returns True.
+                id. If the player is currently playing a game, in_game is True.
 
             current_sessions ({game_session_id : [game_handler,
                                                   game_channel] })
@@ -113,9 +111,9 @@ class DiscordInterface():
         sid: int
         """
 
+        new_player = self.make_player(new_player)
         self.current_players[new_player.id] = {"member": new_player,
                                                "session_id": sid,
-                                               "active": False,
                                                "in_game": False,
                                                }
 
@@ -129,17 +127,13 @@ class DiscordInterface():
         """
 
         for new_player in players:
-            self.current_players[new_player.id] = {"member": new_player,
-                                                   "session_id": sid,
-                                                   "active": False,
-                                                   "in_game": False,
-                                                   }
+            self.add_player_to_current_players(new_player)
 
     def add_player_to_game(self, new_player):
         """
         Sets a player as active in the session the session they are mapped to.
 
-        new_player: player.*
+        new_player: discord member
         """
 
         pass
@@ -148,7 +142,7 @@ class DiscordInterface():
         """
         Sets a list of players as active in the game session they are mapped to
 
-        players: list[player.*]
+        players: list[discord member]
         """
 
         pass
@@ -188,3 +182,17 @@ class DiscordInterface():
             session_id = random.randint(10000000000, 99999999999)
 
         return session_id
+
+    def make_player(self, member):
+        """
+        Makes a player object for adding a player to the current players list.
+
+        member: discord member object
+        """
+
+        new_player = player.CardPlayer(
+                                        name=member.name,
+                                        id=member,
+                                        hane=[]
+        )
+        return new_player
