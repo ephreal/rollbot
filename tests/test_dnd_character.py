@@ -44,6 +44,16 @@ class TestDndCharacter(unittest.TestCase):
             self.assertEqual(self.char_info[key],
                              getattr(self.example_char, key))
 
+    def test_jsonify(self):
+        """
+        Tests to make sure that the dictionary returned from jsonify_data has
+        all the required attributes
+        """
+
+        char_data = self.example_char.jsonify_data()
+        for key in char_data:
+            self.assertEqual(self.char_info[key], char_data[key])
+
 
 if __name__ == "__main__":
     unittest.main()

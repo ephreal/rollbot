@@ -110,6 +110,7 @@ class DndCharacter():
     """
     def __init__(self, char_data):
 
+        self.json_keys = char_data.keys()
         self.alignment = char_data["alignment"]
         self.armor_class = char_data["armor_class"]
         self.armor = char_data["armor"]
@@ -141,3 +142,17 @@ class DndCharacter():
         self.spellcasting = char_data["spellcasting"]
         self.tmp_hp = char_data["tmp_hp"]
         self.weapons = char_data["weapons"]
+
+    def jsonify_data(self):
+        """
+        Places all class attributes in a single dictionary and returns that
+        dictionary.
+
+        returns dict
+        """
+
+        class_attributes = {}
+        for i in self.json_keys:
+            class_attributes[i] = getattr(self, i)
+
+        return class_attributes
