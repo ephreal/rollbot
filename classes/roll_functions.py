@@ -27,6 +27,9 @@ import random
 
 class roller():
 
+    # This particular roll functions script will be removed when all commands
+    # refer to the new location in dice_rolling.
+
     def __init__(self):
         pass
 
