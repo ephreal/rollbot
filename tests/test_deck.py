@@ -278,6 +278,7 @@ class TestDeckMethods(unittest.TestCase):
         Makes sure that a standard deck is able to be created from the base
         deck class.
         """
+        self.deck_type = "standard"
         standard_deck = deck.StandardDeck()
 
         y = standard_deck.random_card()
@@ -297,7 +298,7 @@ class TestDeckMethods(unittest.TestCase):
         uno_deck = deck.UnoDeck()
 
         y = uno_deck.random_card()
-        self.assertEqual(uno_deck.cards.count(y), 1)
+        self.assertEqual(uno_deck.cards.count(y) % 2, 1)
         self.assertTrue(y in uno_deck.in_hand)
 
         uno_deck.discard_from_hand(y)

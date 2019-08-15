@@ -24,12 +24,14 @@ DEALINGS IN THE SOFTWARE.
 
 from . import game_handler
 from . import player
+from . import states
+
 import random
 
 
 class DiscordInterface():
     """
-    Provides an interface to rapptz discord.py to allow for
+    Provides an interface to rapptz's discord.py to allow for
 
         - Automatic mapping of disord users to an ongoing game
           (Assuming they are playing a game, of course)
@@ -85,6 +87,9 @@ class DiscordInterface():
 
             generate_session() -> int:
                 Generates a game_session_id for use with add_game_handler.
+
+            get_game_state_by_member(discord.member) -> states.GameState:
+                returns a game state object for ease of use in discord
 
             make_player(member: discord.member object):
                 Creates and returns a CardPlayer object
@@ -196,6 +201,20 @@ class DiscordInterface():
             session_id = random.randint(10000000000, 99999999999)
 
         return session_id
+
+    def get_game_state_by_member(self, member):
+        """
+        Builds and returns a states.GameState object for discord.
+
+        returns states.GameState
+        """
+
+        session = self.current_players[member.id]["session_id"]
+        handler = self.current_sessions[session]
+
+        game_state = states.GameState(session, handler)
+
+        return game_state
 
     @classmethod
     def make_player(self, member):

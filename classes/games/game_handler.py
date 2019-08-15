@@ -43,6 +43,9 @@ class CardGameHandler():
             A deck object that represents a deck to pull cards from, place
             cards into, etc.
 
+        game_type (str):
+            The type of game that is being played
+
         players (list[player.CardPlayer]):
             A list of players in the game. Entry into this list also determines
             turn order.
@@ -102,9 +105,10 @@ class CardGameHandler():
             A dictionary of player names to player_info mapping.
             {"player_name" : player.CardPlayer}
         """
-        self.deck = deck
-        self.players = players
         self.current_player = 0
+        self.deck = deck
+        self.game_type = "base"
+        self.players = players
         self.reverse = False
 
     def add_player(self, new_player):
@@ -341,9 +345,10 @@ class BlackjackHandler(CardGameHandler):
 
         # dealer always goes last, so point this at the next player
         self.current_player += 1
-        self.highest_score = 0
-        self.current_winner = None
         self.current_ties = []
+        self.current_winner = None
+        self.game_type = "blackjack"
+        self.highest_score = 0
 
     def check_commands(self, command):
         """

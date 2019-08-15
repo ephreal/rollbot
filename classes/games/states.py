@@ -23,14 +23,25 @@ DEALINGS IN THE SOFTWARE.
 """
 
 
-def GameState():
+class GameState():
     """
     Allows for easy use of all game state on discord.
 
     Class Variables
 
+        These variables are all stored in other classes, the game state makes
+        running the game in discord far easier, ie, this way you don't need
+        to do a long twisted discord_handler.current_sessions[session].......
+        in order to have a player draw a card.
+
+        cards_in_hand (list[card]):
+            A list of all cards currently in player's hands
+
         current_player (player.*):
             The current player in this game
+
+        handler (game_handler.*):
+            The handler for this particular game
 
         session_id (int):
             The ssession ID the game is part of
@@ -39,7 +50,10 @@ def GameState():
             A list of valid commands for this game
     """
 
-    def __init__(self, session_id, game_handler):
-        self.session_id = session_id
-        self.game_handler = game_handler
-        self.current_player = self.game_handler.get_current_player()
+    def __init__(self, session, game_handler):
+        self.session_id = session
+        self.handler = game_handler
+
+        self.cards_in_hand = self.handler.deck.in_hand
+        self.current_player = self.handler.get_current_player()
+        self.valid_commands = self.handler.expose_commands()

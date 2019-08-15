@@ -42,7 +42,7 @@ class Deck():
         discarded (str list):
                 A list of all cards in the discard pile
 
-        in_hands (str list)
+        in_hand (str list)
                 A list of all cards currently in player's hands
 
     Class Functions
