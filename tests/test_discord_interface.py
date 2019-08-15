@@ -42,7 +42,32 @@ class TestDiscordInterface(unittest.TestCase):
         self.interface.add_game_handler("BLACKJACK")
         self.assertEqual(len(self.interface.current_sessions), 2)
 
+    def test_add_player_to_current_players(self):
+        """
+        Tests adding a player to the current players
+        """
+        player = self.interface.make_player(self.test_user)
+        session = self.interface.add_game_handler("blackjack")
+
+        self.interface.add_player_to_current_players(player, session)
+        self.assertTrue(self.interface.current_players[player.id])
+
+    def test_add_player_to_game(self):
+        """
+        Tests adding a player to a game
+        """
+        player = self.interface.make_player(self.test_user)
+        session = self.interface.add_game_handler("blackjack")
+
+        self.interface.add_player_to_current_players(player, session)
+        self.interface.add_player_to_game(player)
+        self.assertTrue(self.interface.current_players[player.id]["in_game"])
+        self.assertTrue(self.interface.current_sessions[session].players)
+
     def test_generate_id(self):
+        """
+        Tests the ability to generate a session ID
+        """
 
         session_id = self.interface.generate_session()
 

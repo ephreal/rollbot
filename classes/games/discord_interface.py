@@ -85,6 +85,9 @@ class DiscordInterface():
 
             generate_session() -> int:
                 Generates a game_session_id for use with add_game_handler.
+
+            make_player(member: discord.member object):
+                Creates and returns a CardPlayer object
     """
     def __init__(self):
         self.current_players = {}
@@ -98,10 +101,14 @@ class DiscordInterface():
 
         handler: game_handler
             Can be any valid game handler from game_handler.py
+
+        return: session_id (int)
         """
 
         session_id = self.generate_session()
         self.create_game_handler(game_type, session_id)
+
+        return session_id
 
     def add_player_to_current_players(self, new_player, sid):
         """
@@ -139,7 +146,7 @@ class DiscordInterface():
         """
 
         player_session = self.current_players[new_player.id]["session_id"]
-        player_obj = self.current_players[new_player.id]["player_obj"]
+        player_obj = self.current_players[new_player.id]["player"]
 
         self.current_sessions[player_session].add_player(player_obj)
         self.current_players[new_player.id]["in_game"] = True
