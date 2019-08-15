@@ -78,6 +78,22 @@ class TestGameHandler(unittest.TestCase):
         self.assertEqual(self.standard_handler.players[0].hand, cards)
         self.assertEqual(self.player.hand, cards)
 
+    def test_get_current_player(self):
+        """
+        Verifies that the correct player is returned
+        """
+        second_player = player.CardPlayer(name="draxx", hand=[],
+                                          player_id=1234567890)
+
+        self.standard_handler.add_player(self.player)
+        self.standard_handler.add_player(second_player)
+        self.assertEqual(self.standard_handler.get_current_player(),
+                         self.standard_handler.players[0])
+
+        self.standard_handler.advance_to_next_player()
+        self.assertEqual(self.standard_handler.get_current_player(),
+                         self.standard_handler.players[1])
+
     def test_get_next_player(self):
         """
         Verifies that get_next_player returns the correct player

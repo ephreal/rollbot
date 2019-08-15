@@ -56,11 +56,17 @@ class CardGameHandler():
         add_player(player.CardPlayer):
             Add a player to the game by using a players.CardPlayer object
 
+        advance_to_next_player():
+            Advances the current_player to the next player
+
         construct_and_add_player(name: str, id: unique_id, hand: list[str]):
             Creates a player object to add to self.players
 
         deal(amount : int, player: player.CardPlayer)
             Deals the specified amount of cards to the player
+
+        get_current_player() -> player.*:
+            Returns the current player for use elsewhere
 
         get_next_player(skip: int) -> (int, player.CardPlayer):
             Gets the next player and returns a player.CardPlayer object. Skip
@@ -109,6 +115,14 @@ class CardGameHandler():
         new_player: players.CardPlayer
         """
         self.players.append(new_player)
+
+    def advance_to_next_player(self):
+        """
+        Sets self.current_player to the next player.
+        """
+
+        next_player = self.get_next_player()
+        self.current_player = next_player[0]
 
     def construct_and_add_player(self, name, player_id, hand=[]):
         """
@@ -177,6 +191,15 @@ class CardGameHandler():
         """
         pass
 
+    def get_current_player(self):
+        """
+        Returns the current player for use elsewhere
+
+        returns player.* object
+        """
+
+        return self.players[self.current_player]
+
     def get_next_player(self, skip=0):
         """
         Gets the next player. If skip is defined, skip will be added to the
@@ -198,9 +221,7 @@ class CardGameHandler():
             next_player = 1
 
         next_player += skip
-
         next_player += self.current_player
-
         next_player %= len(self.players)
 
         return (next_player, self.players[next_player])
