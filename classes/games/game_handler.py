@@ -297,6 +297,9 @@ class BlackjackHandler(CardGameHandler):
         double_hit(card_player: player.BlackjackPlayer):
             Gives the player "card_player" 2 more cards to their hand.
 
+        expose_commands():
+            Returns a list of valid commands for discord
+
         hit(card_player: player.BlackjackPlayer):
             Give the player "card_player" 1 more card to their hand.
 
@@ -320,6 +323,14 @@ class BlackjackHandler(CardGameHandler):
         self.highest_score = 0
         self.current_winner = None
         self.current_ties = []
+
+    def check_commands(self, command):
+        """
+        Checks a command to see if it's valid in the context of the game.
+        If not, returns False
+
+        return: Boolean
+        """
 
     def check_tally(self, card_player):
         """
@@ -372,6 +383,16 @@ class BlackjackHandler(CardGameHandler):
         self.check_tally(card_player)
 
         return cards
+
+    def expose_commands(self):
+        """
+        Returns a list of valid commands for discord.
+
+        returns: list[str]
+        """
+
+        commands = ["hit", "double hit", "stand", "stay"]
+        return commands
 
     def hit(self, card_player):
         """
