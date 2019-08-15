@@ -22,8 +22,6 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import json
-
 
 class DndCharacter():
     """
@@ -43,7 +41,7 @@ class DndCharacter():
             The character's background
         bonds (list):
             A string list of bonds the character has.
-        char_class (str):
+        char_class (dict):
             The character's class
         character_description (dict):
             A dictionary containing descriptions of the character as eye color,
@@ -107,7 +105,24 @@ class DndCharacter():
             Any temporary hitpoints the character has
         weapons (dict):
             A dictionary of any weapons the character has.
+
+    Class Methods
+
+        jsonify_data():
+            Returns a dict of all class attributes for easy file writing
     """
+    __slots__ = [
+                 "alignment", "armor_class", "armor", "attributes",
+                 "background", "bonds", "char_class", "character_description",
+                 "character_name", "cur_hp", "death_saves", "experience",
+                 "features", "flaws", "hit_dice", "ideals", "initiative",
+                 "items", "max_hp", "money", "personality_traits",
+                 "player_name", "proficiencies", "proficiency", "race",
+                 "skills", "speed", "spell_slots", "spellcasting", "tmp_hp",
+                 "weapons",
+                 "json_keys"
+                 ]
+
     def __init__(self, char_data):
 
         self.json_keys = char_data.keys()
