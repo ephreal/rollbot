@@ -283,8 +283,10 @@ class shadowrun(commands.Cog):
             commands, exploding = await self.check_exploding(commands)
             roll = await self.handler.roll(dice_pool, exploding=exploding)
             checked = await self.handler.check_roll(roll, prime=prime)
+            glitch = await self.handler.sr5_is_glitch(roll, checked['hits'])
 
-        return await self.handler.format_roll(roll, checked, verbose=verbose)
+        return await self.handler.format_roll(roll, checked, verbose=verbose,
+                                              glitch=glitch)
 
     async def quote(self, quote_type):
 
