@@ -110,8 +110,10 @@ class TestShadowrunHandler(unittest.TestCase):
 
         checked_5e = self.handler.check_roll(roll)
         checked_5e = self.__run(checked_5e)
+        glitch = self.__run(self.handler.sr5_is_glitch(roll, 2))
 
-        formatted_5e = self.handler.format_roll(roll, checked_5e)
+        formatted_5e = self.handler.format_roll(roll, checked_5e,
+                                                glitch=glitch)
         formatted_5e = self.__run(formatted_5e)
 
         self.__run(self.handler.set_sr_edition(1))
@@ -123,6 +125,19 @@ class TestShadowrunHandler(unittest.TestCase):
         formatted_1e = self.__run(formatted_1e)
 
         self.assertFalse(formatted_1e == formatted_5e)
+
+    def test_is_glitch(self):
+        """
+        Verifies the handler is capable of checking for glitches.
+        """
+
+        roll = [1, 1, 1, 5]
+        hits = 1
+
+        glitch = self.__run(self.handler.sr5_is_glitch(roll, hits))
+
+        self.assertTrue(glitch['glitch'])
+        self.assertEqual('normal', glitch['type'])
 
     def test_roll_initiative(self):
         """

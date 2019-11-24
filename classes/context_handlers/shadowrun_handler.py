@@ -99,7 +99,7 @@ class ShadowrunHandler():
         formatted_test = self.formatter.format_extended_test(extended_test)
         return await formatted_test
 
-    async def format_roll(self, roll, checked, verbose=False):
+    async def format_roll(self, roll, checked, verbose=False, glitch=None):
         """
         Returns a formatted string for discord using the currently
         active roll handler.
@@ -112,7 +112,7 @@ class ShadowrunHandler():
             -> formatted_roll: str
         """
 
-        return await self.formatter.format_roll(roll, checked, verbose)
+        return await self.formatter.format_roll(roll, checked, verbose, glitch)
 
     async def roll(self, dice_pool, exploding=False):
         """
@@ -155,3 +155,15 @@ class ShadowrunHandler():
         """
 
         return await self.formatter.format_initiative(initiative)
+
+    async def sr5_is_glitch(self, rolls, hits):
+        """
+        Gets whether or not a roll is a glitch according to sr5 rules
+
+        rolls: list[int]
+        hits: int
+
+            -> {glitch: bool, type: str}
+        """
+
+        return await self.roller.is_glitch(rolls, hits)

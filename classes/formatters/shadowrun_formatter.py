@@ -28,7 +28,7 @@ class Shadowrun1Formatter():
     def __init__(self):
         pass
 
-    async def format_roll(self, rolls, checked, verbose=False):
+    async def format_roll(self, rolls, checked, verbose=False, glitch=None):
         """
         Formats 1E rolls to easily identify successes and failures.
         """
@@ -64,20 +64,29 @@ class Shadowrun5Formatter():
     def __init__(self):
         pass
 
-    async def format_roll(self, rolls, counted, verbose=False):
+    async def format_roll(self, rolls, counted, verbose=False, glitch=None):
         """
-        Formats 5E rolls to easily identify hits, misses, and ones in discord.
+        Formats 5E rolls to easily identify hits, misses, and ones, and
+        glitches in discord.
         If verbose is True, the dice rolls are added to the result.
 
         rolls: list[int]
+        counted: {hits: int, misses: int, ones: int}
+        glitch: {glitch: bool, type: str}
 
             -> formatter_rolls: str
         """
 
-        formatted_rolls = f"You rolled {len(rolls)} dice.\n"\
-                          f"hits   : {counted['hits']}\n"\
-                          f"misses : {counted['misses']}\n"\
-                          f"ones   : {counted['ones']}"
+        formatted_rolls = ""
+
+        if glitch is not None:
+            if glitch['glitch']:
+                formatted_rolls += f"A {glitch['type']} glitch occured!"
+
+        formatted_rolls += f"You rolled {len(rolls)} dice.\n"\
+                           f"hits   : {counted['hits']}\n"\
+                           f"misses : {counted['misses']}\n"\
+                           f"ones   : {counted['ones']}"
 
         if verbose:
             formatted_rolls += f"\nRolls  : {rolls}"

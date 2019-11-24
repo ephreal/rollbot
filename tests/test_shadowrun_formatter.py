@@ -139,8 +139,10 @@ class TestShadowrun5Formatter(unittest.TestCase):
 
         rolls = [1, 2, 3, 4, 5, 6]
         counted = {"hits": 2, "misses": 3, "ones": 1}
+        glitch = self.__run(self.roller.is_glitch(rolls, counted['hits']))
 
-        formatted_hits = self.formatter.format_roll(rolls, counted)
+        formatted_hits = self.formatter.format_roll(rolls, counted,
+                                                    glitch=glitch)
         formatted_hits = self.__run(formatted_hits)
 
         expected_format = "You rolled 6 dice.\n"\
@@ -158,7 +160,10 @@ class TestShadowrun5Formatter(unittest.TestCase):
         counted = self.roller.count_hits(rolls)
         counted = self.__run(counted)
 
-        formatted_hits = self.formatter.format_roll(rolls, counted)
+        glitch = self.__run(self.roller.is_glitch(rolls, counted['hits']))
+
+        formatted_hits = self.formatter.format_roll(rolls, counted,
+                                                    )
         formatted_hits = self.__run(formatted_hits)
 
         expected_format = f"You rolled {len(rolls)} dice.\n"\
