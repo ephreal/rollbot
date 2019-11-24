@@ -139,6 +139,20 @@ class TestShadowrunHandler(unittest.TestCase):
         self.assertTrue(glitch['glitch'])
         self.assertEqual('normal', glitch['type'])
 
+    def test_reroll(self):
+        """
+        Verifies that rerolling is working correctly
+        """
+
+        roll = [1, 2, 3, 4, 5, 6]
+        checked = self.__run(self.handler.check_roll(roll))
+        self.__run(self.handler.add_roll("test", roll, checked))
+
+        reroll = self.__run(self.handler.reroll('test'))
+        roll = reroll['reroll']
+
+        self.assertEqual(self.handler.past_rolls['test']['roll'], roll)
+
     def test_roll_initiative(self):
         """
         Verifies the formatter is able to roll initiative

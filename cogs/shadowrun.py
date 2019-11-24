@@ -104,16 +104,18 @@ class shadowrun(commands.Cog):
                                       " examples.")
         message = f"```CSS\nRan by {author}\n"
 
-        if command[0].startswith("ro"):
-            message += await self.roll(author, command[1:])
-        elif command[0].startswith("i"):
-            message += await self.roll_initiative(command[1:])
+        if command[0].startswith("e"):
+            message += await self.extended(command[1:])
         elif command[0].startswith("h"):
             message += await self.sr_help(command[1:])
-        elif command[0].startswith("e"):
-            message += await self.extended(command[1:])
+        elif command[0].startswith("i"):
+            message += await self.roll_initiative(command[1:])
         elif command[0].startswith("q"):
             message += await self.quote(command[1:])
+        elif command[0].startswith("re"):
+            message += await self.reroll(ctx, command[1:])
+        elif command[0].startswith("ro"):
+            message += await self.roll(author, command[1:])
 
         message += "```"
 
@@ -256,6 +258,32 @@ class shadowrun(commands.Cog):
                    "example:  .sr initiative 5 3\n"\
                    "For more help, run .sr help initiative."
 
+    async def reroll(self, ctx, commands):
+        """
+        Rerolls a past roll (specific to SR5E).
+
+        author: str
+        """
+
+        author = ctx.author.name
+
+        commands, prime = await self.check_prime(commands)
+        commands, verbose = await self.check_verbose(commands)
+
+        reroll = await self.handler.reroll(author)
+
+        await ctx.send(reroll)
+
+        returned_text = f"original_roll: {reroll['old']['roll']}\n"
+        glitch = await self.handler.sr5_is_glitch(reroll['reroll'],
+                                                  reroll['checked']['hits'])
+        returned_text += await self.handler.format_roll(reroll['reroll'],
+                                                        reroll['checked'],
+                                                        verbose=verbose,
+                                                        glitch=glitch)
+
+        return returned_text
+
     async def roll(self, author, commands):
         """
         Rolls dice for shadowrun. Each edition will return slightly different
@@ -283,6 +311,8 @@ class shadowrun(commands.Cog):
             roll = await self.handler.roll(dice_pool, exploding=exploding)
             checked = await self.handler.check_roll(roll, prime=prime)
             glitch = await self.handler.sr5_is_glitch(roll, checked['hits'])
+
+        await self.handler.add_roll(author, roll, checked)
 
         return await self.handler.format_roll(roll, checked, verbose=verbose,
                                               glitch=glitch)

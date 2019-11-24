@@ -32,6 +32,21 @@ class ShadowrunHandler():
         self.edition = 5
         self.roller = sr.Shadowrun5Roller()
         self.formatter = sf.Shadowrun5Formatter()
+        self.past_rolls = {}
+
+    async def add_roll(self, author, roll, checked):
+        """
+        Adds a roll from an author to self.past_rolls for use if a reroll is
+        needed. Any old rolls are overwritten.
+
+        author: str
+        roll: list[int]
+        checked: dict{hits, misses, ones}
+
+            -> None
+        """
+
+        self.past_rolls[author] = {"roll": roll, "checked": checked}
 
     async def set_sr_edition(self, edition):
         """
@@ -113,6 +128,28 @@ class ShadowrunHandler():
         """
 
         return await self.formatter.format_roll(roll, checked, verbose, glitch)
+
+    async def reroll(self, author, prime=False):
+        """
+        Allows rerolling of a past roll as per sr5 rules (all dice that did
+        not make a hit)
+
+        author: string
+
+            -> {old: list[int], reroll: list[int],
+                checked: {hits, misses, ones}
+               }
+        """
+
+        old = self.past_rolls[author]
+        reroll_dice = old['checked']['misses'] + old['checked']['ones']
+        reroll = await self.roll(reroll_dice)
+        reroll.extend(old['roll'][reroll_dice:])
+
+        checked = await self.check_roll(reroll, prime=prime)
+        await self.add_roll(author, reroll, checked)
+
+        return {'old': old, "reroll": reroll, 'checked': checked}
 
     async def roll(self, dice_pool, exploding=False):
         """
