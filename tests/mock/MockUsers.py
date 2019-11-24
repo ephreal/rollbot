@@ -22,16 +22,16 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import random
 
+class DiscordUser():
+    """
+    Mock user to test the discord interface with
 
-class roller():
+    Class Variables
+        id (int):
+            represents the member.id from discord.member
+    """
 
-    # This particular roll functions script will be removed when all commands
-    # refer to the new location in dice_rolling.
-
-    def __init__(self):
-        pass
-
-    async def roll(self, dice_pool=1, sides=6):
-        return [random.randint(1, sides) for _ in range(0, dice_pool)]
+    def __init__(self, userid=None, name=None):
+        self.id = userid
+        self.name = name

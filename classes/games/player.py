@@ -35,9 +35,9 @@ class Player():
             will be a discord.member object to allow direct messaging.
     """
 
-    def __init__(self, name=None, id=None):
+    def __init__(self, name=None, player_id=None):
         self.name = name
-        self.id = id
+        self.id = player_id
 
 
 class CardPlayer(Player):
@@ -64,8 +64,8 @@ class CardPlayer(Player):
             Removes the given cards from the CardPlayer's hand
     """
 
-    def __init__(self, hand=[], name=None, id=None):
-        super().__init__(name, id)
+    def __init__(self, hand=[], name=None, player_id=None):
+        super().__init__(name, player_id)
         self.hand = hand
 
     def __str__(self):
@@ -131,8 +131,8 @@ class BlackjackPlayer(CardPlayer):
         receive_cards(cards: list[card.Card]):
             Increases tally by both cards' worth
     """
-    def __init__(self, hand=[], name=None, id=None):
-        super().__init__(hand=hand, name=name, id=id)
+    def __init__(self, hand=[], name=None, player_id=None):
+        super().__init__(hand=hand, name=name, player_id=player_id)
 
         self.bust = False
         self.tally = 0

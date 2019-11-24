@@ -22,16 +22,38 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import random
+import json
+import unittest
+from classes.DnD import Character
 
 
-class roller():
+class TestDndCharacter(unittest.TestCase):
 
-    # This particular roll functions script will be removed when all commands
-    # refer to the new location in dice_rolling.
+    def setUp(self):
+        with open("classes/DnD/CharacterExample.json", "r") as f:
+            self.char_info = json.loads(f.read())
 
-    def __init__(self):
-        pass
+        self.example_char = Character.DndCharacter(self.char_info)
 
-    async def roll(self, dice_pool=1, sides=6):
-        return [random.randint(1, sides) for _ in range(0, dice_pool)]
+    def test_setup(self):
+        """
+        Checks to make sure all data is readable and setup properly
+        """
+
+        for key in self.char_info.keys():
+            self.assertEqual(self.char_info[key],
+                             getattr(self.example_char, key))
+
+    def test_jsonify(self):
+        """
+        Tests to make sure that the dictionary returned from jsonify_data has
+        all the required attributes
+        """
+
+        char_data = self.example_char.jsonify_data()
+        for key in char_data:
+            self.assertEqual(self.char_info[key], char_data[key])
+
+
+if __name__ == "__main__":
+    unittest.main()

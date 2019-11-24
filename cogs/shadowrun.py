@@ -254,7 +254,7 @@ class shadowrun(commands.Cog):
         except ValueError:
             return "Invalid input. Please give two numbers indicating dice "\
                    "and modifications.\nie: .sr initiative <dp> <mod>\n"\
-                   "example: .sr initiative 5 3\n"\
+                   "example:  .sr initiative 5 3\n"\
                    "For more help, run .sr help initiative."
 
     async def roll(self, author, commands):

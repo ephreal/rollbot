@@ -49,11 +49,11 @@ class TestPlayersMethods(unittest.TestCase):
 
         self.player = player.Player("test_player", 1234567890)
         self.card_player = player.CardPlayer(name="card_player",
-                                             id=9876543210,
+                                             player_id=9876543210,
                                              hand=[])
 
         self.blackjack_player = player.BlackjackPlayer(name="liggan",
-                                                       id=1336,
+                                                       player_id=1336,
                                                        hand=[])
 
     def test_player_variables(self):

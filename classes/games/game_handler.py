@@ -43,6 +43,9 @@ class CardGameHandler():
             A deck object that represents a deck to pull cards from, place
             cards into, etc.
 
+        game_type (str):
+            The type of game that is being played
+
         players (list[player.CardPlayer]):
             A list of players in the game. Entry into this list also determines
             turn order.
@@ -56,11 +59,17 @@ class CardGameHandler():
         add_player(player.CardPlayer):
             Add a player to the game by using a players.CardPlayer object
 
+        advance_to_next_player():
+            Advances the current_player to the next player
+
         construct_and_add_player(name: str, id: unique_id, hand: list[str]):
             Creates a player object to add to self.players
 
         deal(amount : int, player: player.CardPlayer)
             Deals the specified amount of cards to the player
+
+        get_current_player() -> player.*:
+            Returns the current player for use elsewhere
 
         get_next_player(skip: int) -> (int, player.CardPlayer):
             Gets the next player and returns a player.CardPlayer object. Skip
@@ -96,9 +105,10 @@ class CardGameHandler():
             A dictionary of player names to player_info mapping.
             {"player_name" : player.CardPlayer}
         """
-        self.deck = deck
-        self.players = players
         self.current_player = 0
+        self.deck = deck
+        self.game_type = "base"
+        self.players = players
         self.reverse = False
 
     def add_player(self, new_player):
@@ -110,7 +120,15 @@ class CardGameHandler():
         """
         self.players.append(new_player)
 
-    def construct_and_add_player(self, name, id, hand=[]):
+    def advance_to_next_player(self):
+        """
+        Sets self.current_player to the next player.
+        """
+
+        next_player = self.get_next_player()
+        self.current_player = next_player[0]
+
+    def construct_and_add_player(self, name, player_id, hand=[]):
         """
         They always said I couldn't make my own friends to play with. Well I'll
         show THEM!
@@ -127,7 +145,8 @@ class CardGameHandler():
             A list of cards that will be placed in the player's hand
         """
 
-        new_player = player.CardPlayer(name=name, id=id, hand=hand)
+        new_player = player.CardPlayer(name=name, player_id=player_id,
+                                       hand=hand)
 
         self.players.append(new_player)
 
@@ -176,6 +195,15 @@ class CardGameHandler():
         """
         pass
 
+    def get_current_player(self):
+        """
+        Returns the current player for use elsewhere
+
+        returns player.* object
+        """
+
+        return self.players[self.current_player]
+
     def get_next_player(self, skip=0):
         """
         Gets the next player. If skip is defined, skip will be added to the
@@ -197,22 +225,21 @@ class CardGameHandler():
             next_player = 1
 
         next_player += skip
-
         next_player += self.current_player
-
         next_player %= len(self.players)
 
         return (next_player, self.players[next_player])
 
-    def remove_player_by_id(self, id):
+    def remove_player_by_id(self, player_id):
         """
         Removes a player based on their id
 
-        id: Unique ID.
+        player_id: Unique ID.
         """
 
         self.players = [
-            player for player in self.players if not player.id == id
+            player for player in self.players
+            if not player.id == player_id
         ]
 
     def remove_player_by_index(self, index):
@@ -243,7 +270,8 @@ class CardGameHandler():
         Sets the current player based on the player id
         """
 
-        player = [player for player in self.players if player.id == player_id]
+        player = [player for player in self.players if
+                  player.id == player_id]
 
         self.current_player = self.players.index(player[0])
 
@@ -294,6 +322,9 @@ class BlackjackHandler(CardGameHandler):
         double_hit(card_player: player.BlackjackPlayer):
             Gives the player "card_player" 2 more cards to their hand.
 
+        expose_commands():
+            Returns a list of valid commands for discord
+
         hit(card_player: player.BlackjackPlayer):
             Give the player "card_player" 1 more card to their hand.
 
@@ -308,14 +339,24 @@ class BlackjackHandler(CardGameHandler):
             stand.
     """
     def __init__(self):
-        self.dealer = player.BlackjackPlayer(name="dealer", hand=[], id=0)
+        self.dealer = player.BlackjackPlayer(name="dealer", hand=[],
+                                             player_id=0)
         super().__init__(deck=deck.StandardDeck(), players=[self.dealer])
 
         # dealer always goes last, so point this at the next player
         self.current_player += 1
-        self.highest_score = 0
-        self.current_winner = None
         self.current_ties = []
+        self.current_winner = None
+        self.game_type = "blackjack"
+        self.highest_score = 0
+
+    def check_commands(self, command):
+        """
+        Checks a command to see if it's valid in the context of the game.
+        If not, returns False
+
+        return: Boolean
+        """
 
     def check_tally(self, card_player):
         """
@@ -331,12 +372,13 @@ class BlackjackHandler(CardGameHandler):
         elif card_player.tally == self.highest_score:
             self.current_ties.append(card_player)
 
-    def construct_and_add_player(self, name, id, hand=[]):
+    def construct_and_add_player(self, name, player_id, hand=[]):
         """
         Overriding the base class function to use player.BlackjackPlayer
         """
 
-        new_player = player.BlackjackPlayer(name=name, id=id, hand=hand)
+        new_player = player.BlackjackPlayer(name=name, player_id=player_id,
+                                            hand=hand)
         self.add_player(new_player)
 
     def dealer_play(self):
@@ -367,6 +409,16 @@ class BlackjackHandler(CardGameHandler):
         self.check_tally(card_player)
 
         return cards
+
+    def expose_commands(self):
+        """
+        Returns a list of valid commands for discord.
+
+        returns: list[str]
+        """
+
+        commands = ["hit", "double hit", "stand", "stay"]
+        return commands
 
     def hit(self, card_player):
         """

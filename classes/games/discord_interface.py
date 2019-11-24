@@ -23,17 +23,21 @@ DEALINGS IN THE SOFTWARE.
 """
 
 from . import game_handler
+from . import player
+from . import states
+
 import random
 
 
 class DiscordInterface():
     """
-    Provides an interface to rapptz discord.py to allow for
+    Provides an interface to rapptz's discord.py to allow for
 
         - Automatic mapping of disord users to an ongoing game
-            + (Assuming they are playing a game, of course)
+          (Assuming they are playing a game, of course)
         - Simultaneous games on the same server/multiple servers
-        - Use of discord.py context object to access correct game session
+        - Use of discord.py context/member objects to access correct game
+          session
 
         All this is made possible by using the discord.py context object.
 
@@ -43,12 +47,9 @@ class DiscordInterface():
 
             current_players ( { name : { ctx.member,
                                          session_id,
-                                         active,
                                          in_game} }  )
                 A dictionary of all currently playing members and the session
-                id. If they are active, they have responded to the request to
-                play the game. If the player is currently playing a game,
-                in_game returns True.
+                id. If the player is currently playing a game, in_game is True.
 
             current_sessions ({game_session_id : [game_handler,
                                                   game_channel] })
@@ -67,16 +68,16 @@ class DiscordInterface():
                 already in the list and not in_game, their session_id will
                 be overwritten with the new one.
 
-            add_players_to_current_players(players: list[ctx.member],
+            add_players_to_current_players(players: list[member],
                                            sid: int):
                 Adds the players in the players list to the current_players
                 dictionary. If a player is already in the list and not in_game,
                 their current session_id will be overwritten with the new one.
 
-            add_player_to_game(player: ctx.member):
+            add_player_to_game(player: member):
                 Adds a player to the game_handler their session_id points to.
 
-            add_players_to_game(players: list[ctx.member]):
+            add_players_to_game(players: list[member]):
                 Adds multiple players to the game_handler their session_id
                 points to.
 
@@ -86,6 +87,12 @@ class DiscordInterface():
 
             generate_session() -> int:
                 Generates a game_session_id for use with add_game_handler.
+
+            get_game_state_by_member(discord.member) -> states.GameState:
+                returns a game state object for ease of use in discord
+
+            make_player(member: discord.member object):
+                Creates and returns a CardPlayer object
     """
     def __init__(self):
         self.current_players = {}
@@ -98,60 +105,66 @@ class DiscordInterface():
         dict with an active state of False.
 
         handler: game_handler
-            Can be any valid game handler from gane_handler.py
+            Can be any valid game handler from game_handler.py
+
+        return: session_id (int)
         """
 
         session_id = self.generate_session()
         self.create_game_handler(game_type, session_id)
 
+        return session_id
+
     def add_player_to_current_players(self, new_player, sid):
         """
         Adds a player to the session passed in.
 
-        new_player: player.*
+        new_player: member
 
         sid: int
         """
 
-        self.current_players[new_player.id] = {"member": new_player,
+        player_obj = self.make_player(new_player)
+        self.current_players[new_player.id] = {"player": player_obj,
                                                "session_id": sid,
-                                               "active": False,
                                                "in_game": False,
+                                               "member": new_player
                                                }
 
     def add_players_to_current_players(self, players, sid):
         """
         Adds a list of players to a game session
 
-        players: list[player.*]
+        players: list[member]
 
         sid: int
         """
 
         for new_player in players:
-            self.current_players[new_player.id] = {"member": new_player,
-                                                   "session_id": sid,
-                                                   "active": False,
-                                                   "in_game": False,
-                                                   }
+            self.add_player_to_current_players(new_player)
 
     def add_player_to_game(self, new_player):
         """
         Sets a player as active in the session the session they are mapped to.
 
-        new_player: player.*
+        new_player: discord member
         """
 
-        pass
+        player_session = self.current_players[new_player.id]["session_id"]
+        player_obj = self.current_players[new_player.id]["player"]
+
+        self.current_sessions[player_session].add_player(player_obj)
+        self.current_players[new_player.id]["in_game"] = True
 
     def add_players_to_game(self, players):
         """
         Sets a list of players as active in the game session they are mapped to
 
-        players: list[player.*]
+        players: list[discord member]
         """
 
-        pass
+        for member in players:
+            self.add_player_to_game(member)
 
     def create_game_handler(self, game_type, session_id):
         """
@@ -188,3 +201,32 @@ class DiscordInterface():
             session_id = random.randint(10000000000, 99999999999)
 
         return session_id
+
+    def get_game_state_by_member(self, member):
+        """
+        Builds and returns a states.GameState object for discord.
+
+        returns states.GameState
+        """
+
+        session = self.current_players[member.id]["session_id"]
+        handler = self.current_sessions[session]
+
+        game_state = states.GameState(session, handler)
+
+        return game_state
+
+    @classmethod
+    def make_player(self, member):
+        """
+        Makes a player object for adding a player to the current players list.
+
+        member: discord member object
+        """
+
+        new_player = player.CardPlayer(
+                                        name=member.name,
+                                        player_id=member.id,
+                                        hand=[]
+        )
+        return new_player
