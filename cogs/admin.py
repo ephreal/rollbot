@@ -196,7 +196,7 @@ class admin(commands.Cog):
 
     @commands.command(hidden=True,
                       description="Reloads bot cogs")
-    @commands.has_permissions(administrator=True)
+    @commands.is_owner()
     async def reload(self, ctx, pull=None):
         """
         Reloads all bot cogs so updates can be performed while the bot is
