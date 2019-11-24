@@ -298,16 +298,8 @@ class TestDeckMethods(unittest.TestCase):
         uno_deck = deck.UnoDeck()
 
         y = uno_deck.random_card()
-<<<<<<< HEAD
-<<<<<<< HEAD
         # There should always be an odd number of cards of that type remaining
         self.assertTrue(uno_deck.cards.count(y) % 2 == 1)
-=======
-        self.assertEqual(uno_deck.cards.count(y) % 2, 1)
->>>>>>> 68173db0ef9685c7d7e72c87ed400bb7563871e8
-=======
-        self.assertEqual(uno_deck.cards.count(y) % 2, 1)
->>>>>>> 68173db0ef9685c7d7e72c87ed400bb7563871e8
         self.assertTrue(y in uno_deck.in_hand)
 
         uno_deck.discard_from_hand(y)
