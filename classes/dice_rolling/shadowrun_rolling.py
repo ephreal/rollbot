@@ -282,6 +282,31 @@ class Shadowrun5Roller():
                                     "total_hits": total_hits,
                                     "running_total": totals}}
 
+    async def is_glitch(self, rolls, hits):
+        """
+        Checks whether or not a roll is a glitch.
+
+        rolls: list[int]
+        hits: int
+
+            -> dict{glitch: bool, type: str or None}
+        """
+
+        glitch = False
+        glitch_type = None
+
+        ones = [x for x in rolls if x == 1]
+
+        if len(ones) > (len(rolls) // 2) and not hits:
+            glitch = True
+            glitch_type = "critical"
+
+        elif len(ones) > (len(rolls) // 2) and hits:
+            glitch = True
+            glitch_type = "normal"
+
+        return {"glitch": glitch, "type": glitch_type}
+
     async def roll_initiative(self, dice_pool, modifier=0):
         """
         Rolls initiative for shadowrun 5E.

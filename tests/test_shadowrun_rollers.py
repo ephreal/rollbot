@@ -197,6 +197,49 @@ class TestShadowrun5ERolling(unittest.TestCase):
         self.assertTrue(extended_test["success"])
         self.assertTrue(len(extended_test["rolls"]) < 10)
 
+    def test_is_glitch(self):
+        """
+        Ensures that the glitch counter is counting glitches properly
+        """
+
+        # Check for obvious glitch first
+        glitch = [1, 1, 1, 5]
+        hits = 1
+
+        glitch_check = self.sr5_roller.is_glitch(glitch, hits)
+        glitch_check = self.__run(glitch_check)
+
+        self.assertTrue(glitch_check["glitch"])
+        self.assertEqual('normal', glitch_check['type'])
+
+        # Check for obvious critical glitch
+        glitch = [1, 1, 1, 3]
+        hits = 0
+
+        glitch_check = self.sr5_roller.is_glitch(glitch, hits)
+        glitch_check = self.__run(glitch_check)
+
+        self.assertTrue(glitch_check["glitch"])
+        self.assertEqual('critical', glitch_check['type'])
+
+        # Check for edge case of exactly half dice are ones with some hits
+        glitch = [1, 1, 5, 5]
+        hits = 2
+
+        glitch_check = self.sr5_roller.is_glitch(glitch, hits)
+        glitch_check = self.__run(glitch_check)
+
+        self.assertFalse(glitch_check["glitch"])
+        self.assertEqual(None, glitch_check['type'])
+
+        # Verify that this works with roll/ount_hits functions
+        # Note, the results are randomize so testing exact values is not
+        # possible
+        roll = self.__run(self.sr5_roller.roll(6))
+        checked = self.__run(self.sr5_roller.count_hits(roll))
+
+        glitch = self.__run(self.sr5_roller.is_glitch(roll, checked["hits"]))
+
     def test_roll_initiative(self):
         """
         Verifies that initiative rolling returns sane results.
