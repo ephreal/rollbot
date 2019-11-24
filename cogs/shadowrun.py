@@ -27,6 +27,7 @@ import aiohttp
 
 from classes.roll_functions import roller
 from classes.bot_utils import utils
+from classes.context_handlers import shadowrun_handler as sh
 from .cog_command_usage.helptext import shadowrun_help as sr_help
 
 from discord.ext import commands
@@ -37,6 +38,7 @@ class shadowrun(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.handler = sh.ShadowrunHandler()
         self.roller = roller()
         self.utils = utils(self.bot)
         self.previous_rolls = []
@@ -102,39 +104,75 @@ class shadowrun(commands.Cog):
         if len(command) == 0:
             return await channel.send("please run '.help sr' or .sr help for"
                                       " examples.")
-
-        # Given that I've changed how this is done, I might be able to remove
-        # the available commands portion.
-        available_commands = {
-                              "extended":   self.extended,
-                              "help":       self.sr_help,
-                              "initiative": self.roll_initiative,
-                              "quote":      self.quote,
-                              "reroll":     self.reroll,
-                              "roll":       self.roll,
-                             }
-
         message = f"```CSS\nRan by {author}\n"
 
         if command[0].startswith("ro"):
-            message += await available_commands["roll"](author,
-                                                        command[1:],
-                                                        ctx)
+            message += await self.roll(author, command[1:])
         elif command[0].startswith("i"):
-            message += await available_commands["initiative"](command[1:])
+            message += await self.roll_initiative(command[1:])
         elif command[0].startswith("h"):
-            message = f"```CSS\n"
-            message += await available_commands["help"](command[1:])
+            message += await self.sr_help(command[1:])
         elif command[0].startswith("e"):
-            message += await available_commands["extended"](command[1:])
+            message += await self.extended(command[1:])
         elif command[0].startswith("q"):
-            message += await available_commands["quote"](command[1:])
-        elif command[0].startswith("re"):
-            message += await available_commands["reroll"](author, command[1:])
+            message += await self.quote(command[1:])
 
         message += "```"
 
         await channel.send(message)
+
+    async def check_exploding(self, commands):
+        """
+        Checks shadowrun 5E commands to see if the dice are supposed to be
+        re-rolled on 6's.
+        """
+
+        exploding = False
+        exploding_commands = ["explode", "-ex", "edge", "-edge"]
+
+        for i in exploding_commands:
+            if i in commands:
+                exploding = True
+                commands.pop(commands.index(i))
+
+        return commands, exploding
+
+    async def check_prime(self, commands):
+        """
+        Checks to see if 'prime' is in the commands list.
+
+        commands: list[str]
+
+            -> commands: list[str], prime: boolean
+        """
+
+        prime = False
+        prime_commands = ['prime', '-p', 'primer']
+
+        for i in prime_commands:
+            if i in commands:
+                commands.pop(commands.index(i))
+                prime = True
+
+        return commands, prime
+
+    async def check_verbose(self, commands):
+        """
+        Checks to see if a command is supposed to be verbose.
+        commands: list[str]
+
+            -> commands: list[str], verbose: bool
+        """
+
+        verbose = False
+        verbose_commands = ['show', 'verbose', '-v']
+
+        for i in verbose_commands:
+            if i in commands:
+                verbose = True
+                commands.pop(commands.index(i))
+
+        return commands, verbose
 
     async def sr_help(self, command):
         """
@@ -171,286 +209,82 @@ class shadowrun(commands.Cog):
 
     async def extended(self, commands):
         """
-        Rolls extended tests for shadowrun, checks for
-        glitches that may or may not occur, and returns the
-        result.
-
-        If glitch_fails_extended is true, a normal glitch
-        will cause the extended test to fail. If it is not
-        true, a normal glitch will allow the test to finish.
-        glitch_fails_extended is off by default.
-
-        If critical_glitch_fails_extended is true, then a
-        critical glitch will cause the extended test to fail
-        automatically. This is turned on by default.
+        Gives the context handler the required information to run an extended
+        test. See classes.dice_rolling.shadowrun_rolling.py for more
+        information.
         """
 
-        if len(commands) < 2:
-            return "Invalid extended test. Please try again.\n" \
-                   "See '.sr help extended' for help."
+        if len(commands) < 2 or (len(commands) < 3 and 'prime' in commands):
+            return "I need more information to run an extended test.\n"\
+                   "Please give me both a dice pool and a threshold.\n"\
+                   "ex: .sr extended 5 10\n"\
+                   "run\n.sr help extended\nfor more help."
+
+        commands, prime = await self.check_prime(commands)
 
         dice_pool = int(commands[0])
         threshold = int(commands[1])
-        rolls = []
-        total_hits = 0
-        glitch = False
 
-        while total_hits < threshold and dice_pool > 0:
-            roll = await self.roller.roll(dice_pool)
-            hits = await self.get_hits(roll)
-            total_hits += hits[0]
-            glitch = await self.check_glitch(dice_pool, hits[0], hits[2])
-            roll = [
-                    f"total hits: {total_hits}",
-                    f"hits: {hits[0]}",
-                    f"rolls: {roll[0:]}"
-                    ]
+        extended_test = self.handler.extended_test(dice_pool, threshold, prime)
+        extended_test = await extended_test
+        extended_test = self.handler.format_extended_test(extended_test)
+        extended_test = await extended_test
 
-            if glitch:
-                if glitch == "critical":
-                    roll.append("A critical glitch occured!")
-                else:
-                    roll.append("A glitch occured!")
+        return extended_test
 
-            rolls.append(roll)
-
-            if glitch and self.sr_tweaks["glitch_fails_extended"]:
-                break
-            elif glitch == "critical" and (
-                 self.sr_tweaks["critical_glitch_fails_extended"]):
-                break
-
-            dice_pool -= 1
-
-            glitch = False
-
-        message = ""
-        if total_hits < threshold:
-            message = "Extended test failed...\n"
-
-        message += await self.prettify_results(rolls=rolls,
-                                               roll_type="extended")
-
-        return message
-
-    async def roll_initiative(self, rolls):
+    async def roll_initiative(self, commands):
         """
-        Initiative rolling for shadowrun.
-
-        The initiative rolls have the amount of dice first,
-        and the amount to add to the roll result second.
-
-        1 +5 means roll one die and add 5 to the result.
+        Rolls initiative. Shadowrun 1E requries a dice pool and reaction.
+        Shadowrun 5E requires a dice pool and a modifier.
         """
 
-        initiative = 0
+        commands, prime = await self.check_prime(commands)
+
         try:
-            dice_pool = int(rolls[0])
-            to_add = int(rolls[1])
+            dice_pool = int(commands[0])
+            modifier = int(commands[0])
 
-            initiative_rolls = await self.roller.roll(dice_pool)
-            for x in initiative_rolls:
-                initiative += x
+            initiative = self.handler.roll_initiative(dice_pool, modifier)
+            initiative = await initiative
 
-            initiative += to_add
+            initiative = await self.handler.format_initiative(initiative)
 
-            initiative = await self.prettify_results(rolls=initiative_rolls,
-                                                     hits=initiative,
-                                                     roll_type="initiative")
             return initiative
 
-        except Exception as e:
-            return f"Invalid input, exception follows...\n{e}"
+        except ValueError:
+            return "Invalid input. Please give two numbers indicating dice "\
+                   "and modifications.\nie: .sr initiative <dp> <mod>\n"\
+                   "example: .sr initiative 5 3\n"\
+                   "For more help, run .sr help initiative."
 
-    async def roll(self, author, dice_pool, ctx):
+    async def roll(self, author, commands):
         """
-        Rolls dice for shadowrun.
+        Rolls dice for shadowrun. Each edition will return slightly different
+        results.
 
-        If all_info is passed it, this will try return the
-        rolls along with the other data. Bear in mind that
-        if you roll a ridiculous number of dice with this
-        enabled (ie: 1000), you probably won't get anything
-        back due to the 2000 character length limit.
-        """
-
-        # Check if this is to be considered a prime runner
-        message = ""
-        all_info = False
-        prime = False
-        if len(dice_pool) > 1:
-            if "prime" in dice_pool:
-                dice_pool.remove("prime")
-                prime = True
-
-            if "show" in dice_pool:
-                dice_pool.remove("show")
-                all_info = True
-
-        dice_pool = int(dice_pool[0])
-
-        if dice_pool > 1000000:
-            return await ctx.send("why are you trying to roll that much dice?"
-                                  "\nYou'll need to choose less dice to roll")
-
-        rolls = await self.roller.roll(dice_pool)
-        await self.utils.add_roll(author, (rolls, dice_pool))
-
-        if prime:
-            message += "\nPrime runner.\n\n"
-            hits = await self.get_hits(rolls, prime=True)
-        else:
-            hits = await self.get_hits(rolls)
-
-        glitch = await self.check_glitch(dice_pool, hits[0], hits[2])
-
-        message += await self.prettify_results(rolls=rolls, hits=hits,
-                                               glitch=glitch, roll_type="roll")
-
-        if all_info:
-            message += f"Rolls: {rolls}"
-        return message
-
-    async def reroll(self, author, commands):
-        """
-        Re-rolls dice. If the person calling the command has ran a roll command
-        at least once, then the reroll command will return the previous roll
-        and a new roll with the changes.
+        author: ctx.author
+        commands: list[str]
         """
 
-        past_roll, dice_pool = await self.utils.last_roll(author)
+        if not commands:
+            return "Please give a dice pool.\n"\
+                   "For help, run '.sr help roll'"
 
-        if past_roll is None:
-            return "No past rolls exist. Please try after using the shadowrun"\
-                   " roller"
+        commands, prime = await self.check_prime(commands)
+        commands, verbose = await self.check_verbose(commands)
+        dice_pool = int(commands[0])
 
-        if commands:
-            commands.append(dice_pool)
-        else:
-            # Needs to be in a list to make the roll function happy...
-            commands = [dice_pool]
+        if self.handler.edition == 1:
+            threshold = commands[1]
+            roll = await self.handler.roll(dice_pool)
+            checked = await self.handler.check_roll(roll, threshold=threshold)
 
-        message = f"Previous roll of {dice_pool}: {past_roll}\n"
-        message += await self.roll(author, commands)
-        return message
+        elif self.handler.edition == 5:
+            commands, exploding = await self.check_exploding(commands)
+            roll = await self.handler.roll(dice_pool, exploding=exploding)
+            checked = await self.handler.check_roll(roll, prime=prime)
 
-    async def get_hits(self, rolls, prime=False):
-        """
-        Returns a list of [hits, misses, ones] when give a
-        list of dice rolls.
-
-        prime determines if the runner is a prime runner. A
-        prime runner is allowed to have 4's count as hits.
-        """
-
-        hit = 5
-        if prime:
-            hit = 4
-
-        hits = 0
-        misses = 0
-        ones = 0
-
-        for roll in rolls:
-            if roll >= hit:
-                hits += 1
-            elif roll >= 2:
-                misses += 1
-            else:
-                ones += 1
-
-        return [hits, misses, ones]
-
-    async def check_glitch(self, dice_pool, hits, ones):
-        """
-        Checks a list of dice rolls to see if the roll has
-        glitched or not. Returns either False, True, or
-        critical depending on the glitch type.
-        """
-
-        glitch = False
-
-        # Rounds down for glitch tests
-        if self.sr_tweaks["glitch_more_than_half"]:
-            if ones > (dice_pool // 2):
-                glitch = True
-
-        else:
-            if ones >= (dice_pool // 2):
-                glitch = True
-
-        if glitch and (hits == 0):
-            glitch = "critical"
-
-        return glitch
-
-    async def extended_roller(self, dice, threshold):
-        """
-        Given the dice pool and the    limit to try reach, this
-        rolls until the required amount of hits has been
-        reached.
-        """
-        max_rolls = dice
-        rolls = []
-        success = False
-
-        for i in range(0, max_rolls):
-            rolls.append(roller.roll(dice, 6))
-
-            # Add in misses/ones variables if needed in the future
-            # Past self... WTF?? Why this check rolls? Now I must fix your code
-            # TODO: Figure out why check_rolls is here and fix this block.
-            hits, _, _ = check_rolls(rolls[i])
-            threshold -= hits
-            if threshold <= 0:
-                success = True
-                break
-
-            dice -= 1
-
-        return rolls, success
-
-    async def prettify_results(self, rolls=None, hits=None, glitch=None,
-                               roll_type=None, success=True):
-        """
-        A function to clean up the data and make the results look
-        nice before sending the result back to the user.
-
-        Currently knows about one type of roll: roll
-
-        If the roll was a failure (ie: critical glitch on an
-        extended test), success is passed in as False.
-        """
-
-        # TODO: Add in check for gremlins 1-4
-        message = ""
-
-        if roll_type == "roll":
-            if glitch:
-                if glitch == "critical":
-                    message += "A critical glitch occured!\n"
-                else:
-                    message += "A glitch occured!\n"
-
-            message += f"You rolled {len(rolls)} dice.\n"
-            message += f"Hits   : {hits[0]}\n"
-            message += f"Misses : {hits[1]}\n"
-            message += f"Ones   : {hits[2]}\n"
-
-        elif roll_type == "initiative":
-            message += f"Initiative score: {hits}\n"
-            message += f"Initiative rolls: {rolls}\n"
-
-        elif roll_type == "extended":
-
-            for roll in rolls:
-                for i in roll:
-                    message += f"{i} "
-                message += "\n"
-
-        message = message.replace("[", "")
-        message = message.replace("]", "")
-
-        return message
+        return await self.handler.format_roll(roll, checked, verbose=verbose)
 
     async def quote(self, quote_type):
 
