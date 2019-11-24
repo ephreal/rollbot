@@ -25,7 +25,6 @@ DEALINGS IN THE SOFTWARE.
 import json
 import aiohttp
 
-from classes.roll_functions import roller
 from classes.bot_utils import utils
 from classes.context_handlers import shadowrun_handler as sh
 from .cog_command_usage.helptext import shadowrun_help as sr_help
@@ -39,7 +38,6 @@ class shadowrun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.handler = sh.ShadowrunHandler()
-        self.roller = roller()
         self.utils = utils(self.bot)
         self.previous_rolls = []
         # I gotta admit... I chuckled a little writing down "self.help"
