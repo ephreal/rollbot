@@ -83,7 +83,7 @@ class TestShadowrun1ERolling(unittest.TestCase):
 
     def test_check_successes(self):
         """
-        Tests to verify that successes are being counted prooperly
+        Tests to verify that successes are being counted properly
         """
 
         target = 5
