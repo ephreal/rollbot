@@ -194,7 +194,11 @@ class Shadowrun5Roller():
         exploding: Boolean
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             -> list[int]
+=======
+        returns: ([rolls].sorted(), hits, misses, ones)
+>>>>>>> 68173db0ef9685c7d7e72c87ed400bb7563871e8
 =======
         returns: ([rolls].sorted(), hits, misses, ones)
 >>>>>>> 68173db0ef9685c7d7e72c87ed400bb7563871e8

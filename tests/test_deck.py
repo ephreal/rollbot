@@ -299,8 +299,12 @@ class TestDeckMethods(unittest.TestCase):
 
         y = uno_deck.random_card()
 <<<<<<< HEAD
+<<<<<<< HEAD
         # There should always be an odd number of cards of that type remaining
         self.assertTrue(uno_deck.cards.count(y) % 2 == 1)
+=======
+        self.assertEqual(uno_deck.cards.count(y) % 2, 1)
+>>>>>>> 68173db0ef9685c7d7e72c87ed400bb7563871e8
 =======
         self.assertEqual(uno_deck.cards.count(y) % 2, 1)
 >>>>>>> 68173db0ef9685c7d7e72c87ed400bb7563871e8
