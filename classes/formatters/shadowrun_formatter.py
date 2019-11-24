@@ -81,7 +81,7 @@ class Shadowrun5Formatter():
 
         if glitch is not None:
             if glitch['glitch']:
-                formatted_rolls += f"A {glitch['type']} glitch occured!"
+                formatted_rolls += f"A {glitch['type']} glitch occured!\n"
 
         formatted_rolls += f"You rolled {len(rolls)} dice.\n"\
                            f"hits   : {counted['hits']}\n"\

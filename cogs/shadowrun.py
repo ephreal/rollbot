@@ -219,6 +219,7 @@ class shadowrun(commands.Cog):
                    "run\n.sr help extended\nfor more help."
 
         commands, prime = await self.check_prime(commands)
+        commands, verbose = await self.check_verbose(commands)
 
         dice_pool = int(commands[0])
         threshold = int(commands[1])
