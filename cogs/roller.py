@@ -70,6 +70,8 @@ class roller(commands.Cog):
         if ctx.message.author.bot:
             return
 
+        message = f"```CSS\nRan by {ctx.author.name}\n"
+
         # Channel checks. Rolling is restricted to a few channels
         # on my discord server.
         channel = await self.utils.check_roll_channel(ctx)
@@ -78,9 +80,10 @@ class roller(commands.Cog):
 
             if len(roll) == 0:
                 # return 1d6 roll
-                rolls = await self.dice_roller.roll(1, 6)
+                dice_pool = 1
+                sides = 6
 
-            elif len(roll) >= 2:
+            elif len(roll) >= 1:
                 if "d" in roll:
                     roll = roll.split("d")
                     dice_pool = int(roll[0])
@@ -91,8 +94,14 @@ class roller(commands.Cog):
 
                 rolls = await self.dice_roller.roll(dice_pool, sides)
 
+            rolls = str(rolls)
+            rolls = rolls.replace("[", "")
+            rolls = rolls.replace("]", "")
 
-            await channel.send(rolls)
+            message += f"You rolled {dice_pool}D{sides}\n" \
+                       f"{rolls}\n```"
+
+            await channel.send(message)
 
         except Exception as e:
             await channel.send("Incorrect input. Run .help roll if you need "
