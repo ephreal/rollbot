@@ -155,12 +155,6 @@ class Shadowrun5Roller():
 
     class methods:
 
-        basic_rolling(dice_pool: int, exploding: Boolean) -> list[int]:
-            A dice roller that handles basic dice rolling. This allows for
-            exploding 6's with exploding=True
-            SR5E CORE pg. 44
-            SR5E CORE pg. 56 (EDGE) push the limit before/after rolling
-
         buy_hits(dice_pool: int) -> hits: int
             "buys" hits at a 1 hit : 4 dice ratio. Rounds down.
             SR5E CORE pg. 45
@@ -172,39 +166,30 @@ class Shadowrun5Roller():
             SR5E CORE pg. 44
 
         extended_test(dice_pool: int, threshold: int, prime: boolean)
-            -> {success: bool, hits: list[ {hits: int, list[int]} ]}
+            -> {success: bool, rolls: list[int], totals {total_hits: int,
+                running_total: list[int]}}
             Runs extended tests by shadowrun 5E rules. Stops as soon as
             the test has been completed rather than running through all
             iterations if not needed.
             SR5E CORE pg. 48
 
-        initiative_roll(dice_pool: int, modifier: int) -> initiative: int
+        is_glitch(rolls: list[int], hits: int)
+            -> {glitch: bool, type: str or None}
+            Checks whether or not a roll is a glitch.
+            SR5E CORE pg. 45-46
+
+        roll(dice_pool: int, exploding: Boolean) -> list[int]:
+            A dice roller that handles basic dice rolling. This allows for
+            exploding 6's with exploding=True
+            SR5E CORE pg. 44
+            SR5E CORE pg. 56 (Edge effects)
+
+        roll_initiative(dice_pool: int, modifier: int) -> initiative: int
             Rolls initiative for shadowrun 5E.
             SR5E CORE pg. 159
     """
     def __init__(self):
         self.roller = base_roll_functions.roller()
-
-    async def roll(self, dice_pool, exploding=False):
-        """
-        A dice roller that handles basic dice rolling. This allows for
-        exploding 6's with exploding=True
-
-        dice_pool: int
-        exploding: Boolean
-
-            -> list[int]
-        """
-
-        rolls = await self.roller.roll(dice_pool=dice_pool, sides=6)
-        if exploding:
-            sixes = [x for x in rolls if x == 6]
-            rolls.extend(await self.roll(len(sixes)))
-            rolls.sort()
-            return rolls
-
-        rolls.sort()
-        return rolls
 
     async def buy_hits(self, dice_pool=0):
         """
@@ -253,7 +238,7 @@ class Shadowrun5Roller():
         threshold: int
         prime: False
 
-            -> {success, list[ {hits: int, list[int]} ]}
+            -> {success, rolls, totals {total_hits, running_total}}
         """
 
         rolls = []
@@ -306,6 +291,27 @@ class Shadowrun5Roller():
             glitch_type = "normal"
 
         return {"glitch": glitch, "type": glitch_type}
+
+    async def roll(self, dice_pool, exploding=False):
+        """
+        A dice roller that handles basic dice rolling. This allows for
+        exploding 6's with exploding=True
+
+        dice_pool: int
+        exploding: Boolean
+
+            -> list[int]
+        """
+
+        rolls = await self.roller.roll(dice_pool=dice_pool, sides=6)
+        if exploding:
+            sixes = [x for x in rolls if x == 6]
+            rolls.extend(await self.roll(len(sixes)))
+            rolls.sort()
+            return rolls
+
+        rolls.sort()
+        return rolls
 
     async def roll_initiative(self, dice_pool, modifier=0):
         """
