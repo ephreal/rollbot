@@ -115,6 +115,8 @@ class shadowrun(commands.Cog):
             message += await self.reroll(ctx, command[1:])
         elif command[0].startswith("ro"):
             message += await self.roll(author, command[1:])
+        elif command[0].startswith("v"):
+            message += await self.set_version(command[1:])
 
         message += "```"
 
@@ -172,6 +174,20 @@ class shadowrun(commands.Cog):
                 commands.pop(commands.index(i))
 
         return commands, verbose
+
+    async def set_version(self, commands):
+        """
+        Sets the current shadowrun version.
+        """
+
+        try:
+            version = int(commands[0])
+            if version > 5 or version < 0:
+                version = 5
+            await self.handler.set_sr_edition(version)
+            return f"Shadowrun edition set to {version}"
+        except ValueError:
+            return "Please try again. That is not a valid shadowrun edition."
 
     async def sr_help(self, command):
         """
@@ -299,9 +315,10 @@ class shadowrun(commands.Cog):
         commands, prime = await self.check_prime(commands)
         commands, verbose = await self.check_verbose(commands)
         dice_pool = int(commands[0])
+        glitch = None
 
         if self.handler.edition == 1:
-            threshold = commands[1]
+            threshold = int(commands[1])
             roll = await self.handler.roll(dice_pool)
             checked = await self.handler.check_roll(roll, threshold=threshold)
 
