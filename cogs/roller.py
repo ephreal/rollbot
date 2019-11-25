@@ -81,10 +81,16 @@ class roller(commands.Cog):
                 rolls = await self.dice_roller.roll(1, 6)
 
             elif len(roll) >= 2:
-                roll = roll.split("d")
-                dice_pool = int(roll[0])
-                sides = int(roll[1])
+                if "d" in roll:
+                    roll = roll.split("d")
+                    dice_pool = int(roll[0])
+                    sides = int(roll[1])
+                else:
+                    dice_pool = int(roll)
+                    sides = 6
+
                 rolls = await self.dice_roller.roll(dice_pool, sides)
+
 
             await channel.send(rolls)
 
