@@ -24,6 +24,16 @@ DEALINGS IN THE SOFTWARE.
 
 
 class Shadowrun1Formatter():
+    """
+    class methods:
+        format_roll(rolls: list[int], checked: dict, verbose: bool,
+            glitch: dict or None)
+        -> formatted_roll: str
+            Formats 1E rolls to easily identify successes and failures.
+
+        format_initiative(initiative: int) -> formatted_initiative: str
+            Formats the initiative score to be easier to understand in discord.
+    """
 
     def __init__(self):
         pass
@@ -60,6 +70,23 @@ class Shadowrun1Formatter():
 
 
 class Shadowrun5Formatter():
+    """
+    class methods:
+        format_roll(rolls: list[int], counted: dict, verbose: bool,
+        glitch: bool) -> formatted_roll: str
+            Formats 5E rolls to easily identify hits, misses, and ones, and
+            glitches in discord.
+            If verbose is True, the dice rolls are added to the result.
+
+        format_buy_hits(bought_hits: int) -> formatted_hits: str
+            Formats bought hits to be easily understandable in discord.
+
+        format_extended_test(extended_test: dict) -> formatted_test: str
+            Formats an extended test to be easily understandable in discord.
+
+        format_initiative(initiative) -> formatted_initiative: str
+            Formats and initiative roll to be easily understandable in discord.
+    """
 
     def __init__(self):
         pass
