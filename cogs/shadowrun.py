@@ -30,7 +30,6 @@ from classes.context_handlers import shadowrun_handler as sh
 from .cog_command_usage.helptext import shadowrun_help as sr_help
 
 from discord.ext import commands
-# from discord import client
 
 
 class shadowrun(commands.Cog):
