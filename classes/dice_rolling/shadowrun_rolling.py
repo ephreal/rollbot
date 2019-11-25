@@ -31,54 +31,33 @@ class Shadowrun1Roller():
     The shadowrun roller for shadowrun 1E games.
 
     class methods:
+
+        check_successes(target: int, rolls: list[int])
+                -> dict(successes: int, rolls: list[int], failure: bool)
+            Checks how many integers in the rolls list exceed the target int.
+            Returns a dictionary with the amount of successes and the integers
+            that exceeded the target and whether or not the roll is a failure
+            SR1E CORE pg. 21-22
+
+        is_failure(rolls: list[int]) -> bool
+            Checks to see if the roll is a failure, which is all 1's by
+            shadowrun 1E rules. Returns True if the roll is a failure.
+            SR1E CORE pg. 20-21
+
         roll(dice_pool: int) -> list[int]
             Rolls and counts the dice according to shadowrun 1E rules. Does
             no checks for failures or successes. Returns a list of integers
             representing the totals.
             SR1E CORE pg. 20-21
 
-        check_successes(target: int, rolls: list[int])
-                -> dict(int, list[int], Boolern)
-            Checks how many integers in the rolls list exceed the target int.
-            Returns a dictionary with the amount of successes and the integers
-            that exceeded the target and whether or not the roll is a failure
-            SR1E CORE pg. 21-22
-
-        initiative(dice_pool: int, modifier: int) -> initiative: int
+        roll_initiative(dice_pool: int, modifier: int) -> initiative: int
             Rolls initiative dice and adds in reaction to give the initiative
             score.
             SR1E CORE pg. 62
-
-        is_failure(rolls: list[int]) -> Boolean
-            Checks to see if the roll is a failure, which is all 1's by
-            shadowrun 1E rules. Returns True if the roll is a failure.
-            SR1E CORE pg. 20-21
     """
 
     def __init__(self):
         self.roller = base_roll_functions.roller()
-
-    async def roll(self, dice_pool):
-        """
-        Rolls and counts the dice according to shadowrun 1E rules. This does
-        no checking for successes.
-
-        dice_pool : int
-
-            -> list[int]
-        """
-
-        rolls = await self.roller.roll(dice_pool)
-
-        if 6 in rolls:
-            # Get the sixes and remove them from the original list.
-            sixes = [x for x in rolls if x == 6]
-            rolls = [x for x in rolls if x != 6]
-            added = await self.roll(len(sixes))
-            sixes = [sixes[i] + added[i] for i in range(0, len(sixes))]
-            rolls.extend(sixes)
-
-        return rolls
 
     async def check_successes(self, target, rolls):
         """
@@ -103,6 +82,44 @@ class Shadowrun1Roller():
 
         return successes
 
+    async def is_failure(self, rolls):
+        """
+        Checks to see if the roll is a failure. This is only the case if all
+        items in the roll are a 1.
+
+        rolls : list[int]
+
+            -> bool
+        """
+
+        ones = [x for x in rolls if x == 1]
+        if len(ones) == len(rolls):
+            return True
+
+        return False
+
+    async def roll(self, dice_pool):
+        """
+        Rolls and counts the dice according to shadowrun 1E rules. This does
+        no checking for successes.
+
+        dice_pool : int
+
+            -> list[int]
+        """
+
+        rolls = await self.roller.roll(dice_pool)
+
+        if 6 in rolls:
+            # Get the sixes and remove them from the original list.
+            sixes = [x for x in rolls if x == 6]
+            rolls = [x for x in rolls if x != 6]
+            added = await self.roll(len(sixes))
+            sixes = [sixes[i] + added[i] for i in range(0, len(sixes))]
+            rolls.extend(sixes)
+
+        return rolls
+
     async def roll_initiative(self, dice_pool=1, modifier=1):
         """
         Rolls initiative dice and adds reaction in.
@@ -120,22 +137,6 @@ class Shadowrun1Roller():
             modifier += i
 
         return modifier
-
-    async def is_failure(self, rolls):
-        """
-        Checks to see if the roll is a failure. This is only the case if all
-        items in the roll are a 1.
-
-        rolls : list[int]
-
-            -> bool
-        """
-
-        ones = [x for x in rolls if x == 1]
-        if len(ones) == len(rolls):
-            return True
-
-        return False
 
 
 class Shadowrun5Roller():
