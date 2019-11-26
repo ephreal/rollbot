@@ -188,16 +188,6 @@ class TestShadowrunHandler(unittest.TestCase):
 
         self.assertEqual(self.handler.past_rolls['test']['roll'], roll)
 
-    def test_roll_initiative(self):
-        """
-        Verifies the formatter is able to roll initiative
-        """
-
-        initiative = self.handler.roll_initiative(5, 5)
-        _, initiative = self.__run(initiative)
-
-        self.assertTrue(initiative >= 10 and initiative <= 35)
-
 
 class TestShadowrun1Handler(unittest.TestCase):
 

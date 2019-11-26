@@ -203,53 +203,6 @@ class shadowrun(commands.Cog):
 
         return extended_test
 
-    async def set_version(self, commands):
-        """
-        Sets the current shadowrun version.
-        """
-
-        try:
-            version = int(commands[0])
-            if version > 5 or version < 0:
-                version = 5
-            await self.handler.set_sr_edition(version)
-            return f"Shadowrun edition set to {version}"
-        except ValueError:
-            return "Please try again. That is not a valid shadowrun edition."
-
-    async def sr_help(self, command):
-        """
-        Additional help for sr commands.
-
-        Added because the current help for sr is getting
-        a bit too long. This allows getting info for a
-        specific command without having to wade through
-        a bunch of extraneous info.
-        """
-
-        if len(command) == 0:
-            helptext = self.help.SR_GENERAL_USE
-
-        elif command[0].startswith("e"):
-            helptext = self.help.SR_EXTENDED
-
-        elif command[0].startswith("i"):
-            helptext = self.help.SR_INITIATIVE
-
-        elif command[0].startswith('re'):
-            helptext = self.help.SR_REROLL
-
-        elif command[0].startswith("ro"):
-            helptext = self.help.SR_ROLL
-
-        elif command[0].startswith("q"):
-            helptext = self.help.SR_QUOTE
-
-        else:
-            helptext = "Shadowrun command not found."
-
-        return helptext
-
     async def roll_initiative(self, commands):
         """
         Rolls initiative. Shadowrun 1E requries a dice pool and reaction.
@@ -336,6 +289,53 @@ class shadowrun(commands.Cog):
 
         return await self.handler.format_roll(roll, checked, verbose=verbose,
                                               glitch=glitch)
+
+    async def set_version(self, commands):
+        """
+        Sets the current shadowrun version.
+        """
+
+        try:
+            version = int(commands[0])
+            if version > 5 or version < 0:
+                version = 5
+            await self.handler.set_sr_edition(version)
+            return f"Shadowrun edition set to {version}"
+        except ValueError:
+            return "Please try again. That is not a valid shadowrun edition."
+
+    async def sr_help(self, command):
+        """
+        Additional help for sr commands.
+
+        Added because the current help for sr is getting
+        a bit too long. This allows getting info for a
+        specific command without having to wade through
+        a bunch of extraneous info.
+        """
+
+        if len(command) == 0:
+            helptext = self.help.SR_GENERAL_USE
+
+        elif command[0].startswith("e"):
+            helptext = self.help.SR_EXTENDED
+
+        elif command[0].startswith("i"):
+            helptext = self.help.SR_INITIATIVE
+
+        elif command[0].startswith('re'):
+            helptext = self.help.SR_REROLL
+
+        elif command[0].startswith("ro"):
+            helptext = self.help.SR_ROLL
+
+        elif command[0].startswith("q"):
+            helptext = self.help.SR_QUOTE
+
+        else:
+            helptext = "Shadowrun command not found."
+
+        return helptext
 
     async def quote(self, quote_type):
 

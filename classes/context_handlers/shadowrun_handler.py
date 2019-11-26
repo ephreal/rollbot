@@ -31,10 +31,36 @@ class BaseHandler():
     """
     A base handler that has common functions to all shadowrun games. Some will
     need to be overridden, but most should apply.
+
+    class methods:
+
+        add_roll(author: string, roll: list[int], checked: dict) -> None
+            Adds a roll from an author to past_rolls for use if a reroll is
+            needed. Any old rolls are overwritten.
+
+        format_initiative(initiative: int) -> formatted_initiative: str
+            Returns a formatted string for ease of reading in discord.
+
+        roll_initiative(dice_pool: int, modifier: int) -> initiative: int
+            Rolls initiative with the current handler and returns it.
     """
 
     def __init__(self):
         self.past_rolls = {}
+
+    async def add_roll(self, author, roll, checked):
+        """
+        Adds a roll from an author to self.past_rolls for use if a reroll is
+        needed. Any old rolls are overwritten.
+
+        author: str
+        roll: list[int]
+        checked: dict{hits, misses, ones}
+
+            -> None
+        """
+
+        self.past_rolls[author] = {"roll": roll, "checked": checked}
 
     async def format_initiative(self, initiative, roll, verbose=False):
         """
@@ -62,16 +88,12 @@ class BaseHandler():
         return await self.roller.roll_initiative(dice_pool, modifier)
 
 
-class ShadowrunHandler():
+class ShadowrunHandler(BaseHandler):
     """
     The shadowrun handler is the interface to discord for all shadowrun
     rolling.
 
     class methods:
-
-        add_roll(author: string, roll: list[int], checked: dict) -> None
-            Adds a roll from an author to past_rolls for use if a reroll is
-            needed. Any old rolls are overwritten.
 
         check_roll(roll: list[int], threshold: int, prime: bool)
         -> checked {} (content varies depending on SR edition)
@@ -88,9 +110,6 @@ class ShadowrunHandler():
             Formats an extended test and returns a formatted string for display
             in discord.
 
-        format_initiative(initiative: int) -> formatted_initiative: str
-            Returns a formatted string for ease of reading in discord.
-
         format_roll(roll: list[int], checked: {}, verbose: bool, glitch: bool)
         -> formatted_roll: str
             Returns a formatted string for discord using the currently
@@ -104,9 +123,6 @@ class ShadowrunHandler():
             Rolls dice_pool amount of dice with the currently active roller.
             Returns a list of ints represesenting the rolls.
 
-        roll_initiative(dice_pool: int, modifier: int) -> initiative: int
-            Rolls initiative with the current handler and returns it.
-
         set_sr_edition(edition: int) -> None
             Sets the current shadowrun edition to the specified edition. If the
             edition is not available, nothing changes.
@@ -115,24 +131,10 @@ class ShadowrunHandler():
             Gets whether or not a roll is a glitch according to sr5 rules
     """
     def __init__(self):
+        super().__init__()
         self.edition = 5
         self.roller = sr.Shadowrun5Roller()
         self.formatter = sf.Shadowrun5Formatter()
-        self.past_rolls = {}
-
-    async def add_roll(self, author, roll, checked):
-        """
-        Adds a roll from an author to self.past_rolls for use if a reroll is
-        needed. Any old rolls are overwritten.
-
-        author: str
-        roll: list[int]
-        checked: dict{hits, misses, ones}
-
-            -> None
-        """
-
-        self.past_rolls[author] = {"roll": roll, "checked": checked}
 
     async def check_roll(self, roll, threshold=2, prime=False):
         """
@@ -185,18 +187,6 @@ class ShadowrunHandler():
 
         formatted_test = self.formatter.format_extended_test(extended_test)
         return await formatted_test
-
-    async def format_initiative(self, roll, initiative, verbose=False):
-        """
-        Returns a formatted string for ease of reading in discord.
-
-        initiative: int
-
-            -> formatted_initiative: str
-        """
-
-        return await self.formatter.format_initiative(roll, initiative,
-                                                      verbose)
 
     async def format_roll(self, roll, checked, verbose=False, glitch=None):
         """
@@ -254,18 +244,6 @@ class ShadowrunHandler():
 
         return roll
 
-    async def roll_initiative(self, dice_pool, modifier):
-        """
-        Rolls initiative with the current handler and returns it.
-
-        dice_pool: int
-        modifier: int
-
-            -> initiative: list[int], int
-        """
-
-        return await self.roller.roll_initiative(dice_pool, modifier)
-
     async def set_sr_edition(self, edition):
         """
         Sets the current shadowrun edition to the specified edition. If that
@@ -280,7 +258,7 @@ class ShadowrunHandler():
             self.edition = 1
         elif edition == 5:
             self.roller = sr.Shadowrun5Roller()
-            self.formatter = sf.Shadowrun1Formatter()
+            self.formatter = sf.Shadowrun5Formatter()
             self.edition = 5
 
     async def sr5_is_glitch(self, rolls, hits):
