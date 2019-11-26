@@ -65,7 +65,9 @@ class TestShadowrun1Formatter(unittest.TestCase):
 
         expected_format = f"Test succeeded\n"\
                           f"You rolled {len(rolls)} dice\n"\
-                          f"You had {checked['successes']} successes."
+                          f"You had {checked['successes']} successes.\n\n"\
+                          f"successes: {checked['successes']}\n"\
+                          f"failures: 1"
 
         self.assertEqual(expected_format, non_verbose)
         self.assertTrue(len(expected_format) < len(verbose))
@@ -83,7 +85,9 @@ class TestShadowrun1Formatter(unittest.TestCase):
 
         expected_format = f"TEST FAILED\n"\
                           f"You rolled {len(rolls)} dice\n"\
-                          f"You had {checked['successes']} successes."
+                          f"You had {checked['successes']} successes.\n\n"\
+                          f"successes: {checked['successes']}\n"\
+                          f"failures: 9"
 
         self.assertEqual(expected_format, non_verbose)
         self.assertTrue(len(expected_format) < len(verbose))
@@ -93,7 +97,8 @@ class TestShadowrun1Formatter(unittest.TestCase):
         Verifies the initiave formatting is correct
         """
 
-        initiative = self.formatter.format_initiative(26)
+        rolls = [5, 5, 5, 5]
+        initiative = self.formatter.format_initiative(rolls, 26)
         initiative = self.__run(initiative)
 
         expected_format = f"Your initiative score is 26"
@@ -190,7 +195,8 @@ class TestShadowrun5Formatter(unittest.TestCase):
         Verifies the initiave formatting is correct
         """
 
-        initiative = self.formatter.format_initiative(26)
+        roll = [5, 5, 5, 5]
+        initiative = self.formatter.format_initiative(roll, 26)
         initiative = self.__run(initiative)
 
         expected_format = f"Your initiative score is 26"

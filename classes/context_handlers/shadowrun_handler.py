@@ -27,6 +27,41 @@ from classes.dice_rolling import shadowrun_rolling as sr
 from classes.formatters import shadowrun_formatter as sf
 
 
+class BaseHandler():
+    """
+    A base handler that has common functions to all shadowrun games. Some will
+    need to be overridden, but most should apply.
+    """
+
+    def __init__(self):
+        self.past_rolls = {}
+
+    async def format_initiative(self, initiative, roll, verbose=False):
+        """
+        Formats the initiative roll with the formatter used in the handler.
+        All formatters will accept the same format.
+
+        initiative: int
+        roll: list[int]
+
+            -> formatted_initiative: str
+        """
+
+        return await self.formatter.format_initiative(roll, initiative,
+                                                      verbose=verbose)
+
+    async def roll_initiative(self, dice_pool, modifier):
+        """
+        Rolls initiative according to shadowrun 1E rules.
+
+        dice_pool: int
+
+            -> list[int], int
+        """
+
+        return await self.roller.roll_initiative(dice_pool, modifier)
+
+
 class ShadowrunHandler():
     """
     The shadowrun handler is the interface to discord for all shadowrun
@@ -121,18 +156,21 @@ class ShadowrunHandler():
 
         return checked
 
-    async def extended_test(self, dice_pool, threshold, prime=False):
+    async def extended_test(self, dice_pool, threshold, prime=False,
+                            exploding=False):
         """
         Runs an extended test. Currently only available for 5E
 
         dice_pool: list[int]
         threshold: int
         prime: bool
+        exploding: bool
 
             -> extended_test{}
         """
 
-        extended_test = self.roller.extended_test(dice_pool, threshold, prime)
+        extended_test = self.roller.extended_test(dice_pool, threshold, prime,
+                                                  exploding)
         return await extended_test
 
     async def format_extended_test(self, extended_test):
@@ -148,7 +186,7 @@ class ShadowrunHandler():
         formatted_test = self.formatter.format_extended_test(extended_test)
         return await formatted_test
 
-    async def format_initiative(self, initiative):
+    async def format_initiative(self, roll, initiative, verbose=False):
         """
         Returns a formatted string for ease of reading in discord.
 
@@ -157,7 +195,8 @@ class ShadowrunHandler():
             -> formatted_initiative: str
         """
 
-        return await self.formatter.format_initiative(initiative)
+        return await self.formatter.format_initiative(roll, initiative,
+                                                      verbose)
 
     async def format_roll(self, roll, checked, verbose=False, glitch=None):
         """
@@ -222,7 +261,7 @@ class ShadowrunHandler():
         dice_pool: int
         modifier: int
 
-            -> initiative: int
+            -> initiative: list[int], int
         """
 
         return await self.roller.roll_initiative(dice_pool, modifier)
@@ -255,3 +294,53 @@ class ShadowrunHandler():
         """
 
         return await self.roller.is_glitch(rolls, hits)
+
+
+class Shadowrun1Handler(BaseHandler):
+    """
+    Shadowrun 1E handler that provides an interface to a discord bot for all
+    Shadowrun 1E rolling.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.roller = sr.Shadowrun1Roller()
+        self.formatter = sf.Shadowrun1Formatter()
+
+    async def check_roll(self, roll, threshold=2):
+        """
+        Checks the roll to see how many successes/failures are in the roll.
+
+        roll: list[int]
+        threshold: int
+
+            -> {successes, rolls, failure}
+        """
+
+        checked = await self.roller.check_successes(threshold, roll)
+        return checked
+
+    async def format_roll(self, roll, checked, verbose=True):
+        """
+        Returns a formatted string for discord using the currently
+        active roll handler.
+
+        roll: list[int]
+        checked: SR1: {successes, rolls, failure}
+        verbose: Bool
+
+            -> formatted_roll: str
+        """
+
+        return await self.formatter.format_roll(roll, checked, verbose=verbose)
+
+    async def roll(self, dice_pool):
+        """
+        Rolls dice according to shadowrun 1E rules.
+
+        dice_pool: int
+
+            -> list[int]
+        """
+
+        return await self.roller.roll(dice_pool)

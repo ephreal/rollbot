@@ -49,15 +49,16 @@ class Shadowrun1Formatter():
             formatted_rolls = "Test succeeded\n"
 
         formatted_rolls += f"You rolled {len(rolls)} dice\n"\
-                           f"You had {checked['successes']} successes."
+                           f"You had {checked['successes']} successes.\n\n" \
+                           f"successes: {checked['successes']}\n" \
+                           f"failures: {len([x for x in rolls if x == 1])}"
 
         if verbose:
             formatted_rolls += f"\n\nrolls: {rolls}\n"\
-                               f"Successes: {checked['rolls']}"
 
         return formatted_rolls
 
-    async def format_initiative(self, initiative):
+    async def format_initiative(self, roll, initiative, verbose=False):
         """
         Formats the initiative score to be easier to understand in discord.
 
@@ -66,7 +67,11 @@ class Shadowrun1Formatter():
             -> Formatted initiative: str
         """
 
-        return f"Your initiative score is {initiative}"
+        formatted = f"Your initiative score is {initiative}"
+        if verbose:
+            formatted += f"\nRolls: {roll}"
+
+        return formatted
 
 
 class Shadowrun5Formatter():
@@ -154,7 +159,7 @@ class Shadowrun5Formatter():
 
         return formatted
 
-    async def format_initiative(self, initiative):
+    async def format_initiative(self, roll, initiative, verbose=False):
         """
         Formats and initiative roll to be easily understandable in discord.
 
@@ -163,4 +168,8 @@ class Shadowrun5Formatter():
             -> formatted_initiative: str
         """
 
-        return f"Your initiative score is {initiative}"
+        formatted = f"Your initiative score is {initiative}"
+        if verbose:
+            formatted += f"\nRolls: {roll}"
+
+        return formatted

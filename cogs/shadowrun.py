@@ -175,6 +175,34 @@ class shadowrun(commands.Cog):
 
         return commands, verbose
 
+    async def extended(self, commands):
+        """
+        Gives the context handler the required information to run an extended
+        test. See classes.dice_rolling.shadowrun_rolling.py for more
+        information.
+        """
+
+        if len(commands) < 2 or (len(commands) < 3 and 'prime' in commands):
+            return "I need more information to run an extended test.\n"\
+                   "Please give me both a dice pool and a threshold.\n"\
+                   "ex: .sr extended 5 10\n"\
+                   "run\n.sr help extended\nfor more help."
+
+        commands, prime = await self.check_prime(commands)
+        commands, verbose = await self.check_verbose(commands)
+        commands, exploding = await self.check_exploding(commands)
+
+        dice_pool = int(commands[0])
+        threshold = int(commands[1])
+
+        extended_test = self.handler.extended_test(dice_pool, threshold, prime,
+                                                   exploding)
+        extended_test = await extended_test
+        extended_test = self.handler.format_extended_test(extended_test)
+        extended_test = await extended_test
+
+        return extended_test
+
     async def set_version(self, commands):
         """
         Sets the current shadowrun version.
@@ -222,32 +250,6 @@ class shadowrun(commands.Cog):
 
         return helptext
 
-    async def extended(self, commands):
-        """
-        Gives the context handler the required information to run an extended
-        test. See classes.dice_rolling.shadowrun_rolling.py for more
-        information.
-        """
-
-        if len(commands) < 2 or (len(commands) < 3 and 'prime' in commands):
-            return "I need more information to run an extended test.\n"\
-                   "Please give me both a dice pool and a threshold.\n"\
-                   "ex: .sr extended 5 10\n"\
-                   "run\n.sr help extended\nfor more help."
-
-        commands, prime = await self.check_prime(commands)
-        commands, verbose = await self.check_verbose(commands)
-
-        dice_pool = int(commands[0])
-        threshold = int(commands[1])
-
-        extended_test = self.handler.extended_test(dice_pool, threshold, prime)
-        extended_test = await extended_test
-        extended_test = self.handler.format_extended_test(extended_test)
-        extended_test = await extended_test
-
-        return extended_test
-
     async def roll_initiative(self, commands):
         """
         Rolls initiative. Shadowrun 1E requries a dice pool and reaction.
@@ -255,15 +257,17 @@ class shadowrun(commands.Cog):
         """
 
         commands, prime = await self.check_prime(commands)
+        commands, verbose = await self.check_verbose(commands)
 
         try:
             dice_pool = int(commands[0])
             modifier = int(commands[0])
 
             initiative = self.handler.roll_initiative(dice_pool, modifier)
-            initiative = await initiative
+            roll, initiative = await initiative
 
-            initiative = await self.handler.format_initiative(initiative)
+            initiative = await self.handler.format_initiative(roll, initiative,
+                                                              verbose=verbose)
 
             return initiative
 

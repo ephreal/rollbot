@@ -28,6 +28,41 @@ import unittest
 from classes.context_handlers import shadowrun_handler
 
 
+class TestBaseHandler(unittest.TestCase):
+
+    def setUp(self):
+        self.sr1_handler = shadowrun_handler.Shadowrun1Handler()
+
+    def __run(self, coroutine):
+        """
+        Runs and returns the data from the couroutine passed in. This is to
+        only be used in unittesting.
+
+        coroutine : asyncio coroutine
+
+            -> coroutine return
+        """
+
+        return asyncio.get_event_loop().run_until_complete(coroutine)
+
+    def test_format_initiative(self):
+        """
+        Verifies the base handler can format initiative with all handlers
+        """
+
+        roll = [3, 3, 3]
+        initiative = self.__run(self.sr1_handler.format_initiative(roll, 12))
+        self.assertTrue(isinstance(initiative, str))
+
+    def test_roll_initiative(self):
+        """
+        Verifies the base handler is able to roll initiative with all handlers.
+        """
+
+        _, initiative = self.__run(self.sr1_handler.roll_initiative(1, 5))
+        self.assertTrue(isinstance(initiative, int))
+
+
 class TestShadowrunHandler(unittest.TestCase):
 
     def setUp(self):
@@ -159,6 +194,57 @@ class TestShadowrunHandler(unittest.TestCase):
         """
 
         initiative = self.handler.roll_initiative(5, 5)
-        initiative = self.__run(initiative)
+        _, initiative = self.__run(initiative)
 
         self.assertTrue(initiative >= 10 and initiative <= 35)
+
+
+class TestShadowrun1Handler(unittest.TestCase):
+
+    def setUp(self):
+        self.handler = shadowrun_handler.Shadowrun1Handler()
+
+    def __run(self, coroutine):
+        """
+        Runs and returns the data from the couroutine passed in. This is to
+        only be used in unittesting.
+
+        coroutine : asyncio coroutine
+
+            -> coroutine return
+        """
+
+        return asyncio.get_event_loop().run_until_complete(coroutine)
+
+    def test_check_roll(self):
+        """
+        Verifies the handler can use the check_roll functionality
+        """
+
+        roll = [1, 2, 3, 4, 5, 6]
+        checked = self.__run(self.handler.check_roll(roll))
+
+        self.assertEqual(checked['successes'], 4)
+
+    def test_format_roll(self):
+        """
+        Verifies the handler is able to use the formatter to format rolls.
+        """
+
+        roll = [1, 2, 3, 4, 5, 6]
+        checked = self.__run(self.handler.check_roll(roll))
+
+        non_verbose = self.__run(self.handler.format_roll(roll, checked,
+                                 verbose=False))
+        verbose = self.__run(self.handler.format_roll(roll, checked,
+                             verbose=True))
+
+        self.assertTrue(len(verbose) > len(non_verbose))
+
+    def test_roll(self):
+        """
+        Verifies the handler is able to roll 1E dice and do so properly.
+        """
+
+        roll = self.__run(self.handler.roll(6))
+        self.assertEqual(len(roll), 6)

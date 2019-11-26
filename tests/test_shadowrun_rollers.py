@@ -63,7 +63,7 @@ class TestShadowrun1ERolling(unittest.TestCase):
         """
 
         initiative = self.sr1_roller.roll_initiative(1)
-        initiative = self.__run(initiative)
+        _, initiative = self.__run(initiative)
         self.assertTrue(initiative >= 1 and initiative < 8)
 
     def test_is_failure(self):
@@ -116,21 +116,6 @@ class TestShadowrun5ERolling(unittest.TestCase):
         """
 
         return asyncio.get_event_loop().run_until_complete(coroutine)
-
-    def test_roll(self):
-        """
-        Verifies that the roll function rolls as many dice as expected
-        """
-
-        rolls = self.sr5_roller.roll(10)
-        rolls = self.__run(rolls)
-        self.assertEqual(len(rolls), 10)
-
-        # Tests to make sure that 6's truly explode
-        # Put this to 50 dice to make 6's very likely to appear.
-        rolls = self.sr5_roller.roll(50, exploding=True)
-        rolls = self.__run(rolls)
-        self.assertTrue(len(rolls) > 50)
 
     def test_buy_hits(self):
         """
@@ -240,6 +225,21 @@ class TestShadowrun5ERolling(unittest.TestCase):
 
         glitch = self.__run(self.sr5_roller.is_glitch(roll, checked["hits"]))
 
+    def test_roll(self):
+        """
+        Verifies that the roll function rolls as many dice as expected
+        """
+
+        rolls = self.sr5_roller.roll(10)
+        rolls = self.__run(rolls)
+        self.assertEqual(len(rolls), 10)
+
+        # Tests to make sure that 6's truly explode
+        # Put this to 50 dice to make 6's very likely to appear.
+        rolls = self.sr5_roller.roll(50, exploding=True)
+        rolls = self.__run(rolls)
+        self.assertTrue(len(rolls) > 50)
+
     def test_roll_initiative(self):
         """
         Verifies that initiative rolling returns sane results.
@@ -247,24 +247,24 @@ class TestShadowrun5ERolling(unittest.TestCase):
 
         # Test what happens if no modifier is given
         initiative = self.sr5_roller.roll_initiative(1)
-        initiative = self.__run(initiative)
+        _, initiative = self.__run(initiative)
 
         self.assertTrue(initiative >= 1 and initiative <= 6)
 
         # Verify that adding a modifier works properly too
         initiative = self.sr5_roller.roll_initiative(1, 10)
-        initiative = self.__run(initiative)
+        _, initiative = self.__run(initiative)
 
         self.assertTrue(initiative >= 11 and initiative <= 16)
 
         # Verify that multiple dice don't cause issues
         initiative = self.sr5_roller.roll_initiative(5, 10)
-        initiative = self.__run(initiative)
+        _, initiative = self.__run(initiative)
 
         self.assertTrue(initiative >= 15)
 
         # Verify that massive amounts of dice don't cause issues
         initiative = self.sr5_roller.roll_initiative(1000, 10)
-        initiative = self.__run(initiative)
+        _, initiative = self.__run(initiative)
 
         self.assertTrue(initiative >= 1010)

@@ -50,6 +50,9 @@ occured.
 Critical glitches fail the exteded test by default. This can be changed in the
 config file.
 
+The prime and exploding dice flags both work with the extended test. See
+.sr help roll for more information.
+
 Examples:
     run an extended test with a pice pool of 10 and
     a threshold of 5
@@ -119,11 +122,12 @@ Shadowrun dice rolling.
 .sr roll allows you to roll dice using the rules for Shadowrun. This includes
 automatically counting hits, misses, and ones. In addition, the command
 accepts various flags to modify how hits, misses, ones, and glitches are
-handled.
+handled. You can use as many of the flags in one command as you want, but
+multiple of the same type (ie: prime runner) will have no additional effect.
 
 The roll command can be shortened to just "ro" for convenience.
 
-Accepted flags: prime, show
+Accepted flags: prime, primer, -p, show, verbose, -v, explode, -ex, edge, -edge
 
 Examples:
     roll 10 dice. Counts hits, checks for glitches.
@@ -132,13 +136,19 @@ Examples:
 
     roll 10 dice, count 4's as a hit (prime runner quality)
     .sr roll 10 prime
+    .sr roll 10 -p
 
     roll 10 dice, show the result of all rolls
     .sr roll 10 show
+    .sr roll 10 -v
+
+    roll 10 dice, reroll 6's and add them to the total dice pool.
+    .sr roll 10 explode
+    .sr roll 10 -ex
 
     roll 10 dice, count 4's as hits. Show all rolls.
     .sr roll 10 show prime
-    .sr ro prime show 10
+    .sr ro 10 -v -p
 """
 
         self.SR_QUOTE = \

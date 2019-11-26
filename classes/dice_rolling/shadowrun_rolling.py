@@ -132,11 +132,11 @@ class Shadowrun1Roller():
 
         # Adding 6's does not apply to initiative. Therefore use the general
         # roller.
-        initiative = await self.roller.roll(dice_pool)
-        for i in initiative:
+        initiative_roll = await self.roller.roll(dice_pool)
+        for i in initiative_roll:
             modifier += i
 
-        return modifier
+        return initiative_roll, modifier
 
 
 class Shadowrun5Roller():
@@ -228,7 +228,8 @@ class Shadowrun5Roller():
 
         return {"hits": hits, "misses": misses, "ones": ones}
 
-    async def extended_test(self, dice_pool, threshold, prime=False):
+    async def extended_test(self, dice_pool, threshold, prime=False,
+                            exploding=False):
         """
         Runs an extended test with a dice pool to see if it is possible to
         reach a threshold. Prime will lower the threshold when counting hits
@@ -237,7 +238,8 @@ class Shadowrun5Roller():
 
         dice_pool: int
         threshold: int
-        prime: False
+        prime: bool
+        exploding: bool
 
             -> {success, rolls, totals {total_hits, running_total}}
         """
@@ -247,7 +249,7 @@ class Shadowrun5Roller():
         success = False
         total_hits = 0
         while dice_pool > 0:
-            roll = await self.roll(dice_pool)
+            roll = await self.roll(dice_pool, exploding=exploding)
 
             if prime:
                 counted = await self.count_hits(roll, prime=True)
@@ -328,4 +330,4 @@ class Shadowrun5Roller():
         for i in initiative_roll:
             modifier += i
 
-        return modifier
+        return initiative_roll, modifier
