@@ -210,7 +210,7 @@ class shadowrun(commands.Cog):
                    "run\n.sr help extended\nfor more help."
 
         commands, prime = await self.check_prime(commands)
-        commands, verbose = await self.check_verbose(commands)
+        commands, _ = await self.check_verbose(commands)
         commands, exploding = await self.check_exploding(commands)
 
         dice_pool = int(commands[0])
