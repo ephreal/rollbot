@@ -231,6 +231,18 @@ class TestShadowrun1Handler(unittest.TestCase):
 
         self.assertTrue(len(verbose) > len(non_verbose))
 
+    def test_format_unchecked_roll(self):
+        """
+        Verifies the handler is able to call format_unchecked_roll without
+        issue
+        """
+
+        roll = [1, 2, 3, 4, 5, 6]
+        expected_format = f"You rolled {len(roll)} dice\nRoll: {roll}"
+        roll = self.__run(self.handler.format_unchecked_roll(roll))
+
+        self.assertEqual(roll, expected_format)
+
     def test_roll(self):
         """
         Verifies the handler is able to roll 1E dice and do so properly.

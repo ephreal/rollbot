@@ -73,6 +73,17 @@ class Shadowrun1Formatter():
 
         return formatted
 
+    async def format_unchecked_roll(self, roll):
+        """
+        Formats a roll that has not been checked.
+
+        roll: list[int]
+
+            -> formatted_roll: str
+        """
+
+        return f"You rolled {len(roll)} dice\nRoll: {roll}"
+
 
 class Shadowrun5Formatter():
     """

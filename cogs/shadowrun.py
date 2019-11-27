@@ -120,6 +120,12 @@ class shadowrun(commands.Cog):
 
         message += "```"
 
+        commands, gm_roll = await self.check_gm_roll(command[1:])
+
+        if gm_roll:
+            await ctx.message.delete()
+            return await ctx.author.send(message)
+
         await channel.send(message)
 
     async def check_exploding(self, commands):
@@ -137,6 +143,21 @@ class shadowrun(commands.Cog):
                 commands.pop(commands.index(i))
 
         return commands, exploding
+
+    async def check_gm_roll(self, commands):
+        """
+        Checks to see if the roll is a gm roll to be seen only in secret.
+        """
+
+        gm_roll = False
+        gm_commands = ["gm", "-gm", "secret"]
+
+        for i in gm_commands:
+            if i in commands:
+                gm_roll = True
+                commands.pop(commands.index(i))
+
+        return commands, gm_roll
 
     async def check_prime(self, commands):
         """
@@ -243,8 +264,6 @@ class shadowrun(commands.Cog):
         commands, verbose = await self.check_verbose(commands)
 
         reroll = await self.handler.reroll(author)
-
-        await ctx.send(reroll)
 
         returned_text = f"original_roll: {reroll['old']['roll']}\n"
         glitch = await self.handler.sr5_is_glitch(reroll['reroll'],

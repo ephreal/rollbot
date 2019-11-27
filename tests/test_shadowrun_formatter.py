@@ -105,6 +105,17 @@ class TestShadowrun1Formatter(unittest.TestCase):
 
         self.assertEqual(expected_format, initiative)
 
+    def test_format_unchecked_roll(self):
+        """
+        Verifies that formatting an unchecked roll is possible.
+        """
+
+        roll = [1, 2, 3, 4, 5, 6]
+        expected_format = f"You rolled {len(roll)} dice\nRoll: {roll}"
+        roll = self.__run(self.formatter.format_unchecked_roll(roll))
+
+        self.assertEqual(roll, expected_format)
+
 
 class TestShadowrun5Formatter(unittest.TestCase):
 

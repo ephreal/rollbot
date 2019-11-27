@@ -312,6 +312,16 @@ class Shadowrun1Handler(BaseHandler):
 
         return await self.formatter.format_roll(roll, checked, verbose=verbose)
 
+    async def format_unchecked_roll(self, roll):
+        """
+        Returns a formatted string for times when the roll in not checked.
+
+        roll: list[int]
+            -> formatted_roll: str
+        """
+
+        return await self.formatter.format_unchecked_roll(roll)
+
     async def roll(self, dice_pool):
         """
         Rolls dice according to shadowrun 1E rules.
