@@ -263,7 +263,7 @@ class shadowrun(commands.Cog):
         commands, prime = await self.check_prime(commands)
         commands, verbose = await self.check_verbose(commands)
 
-        reroll = await self.handler.reroll(author)
+        reroll = await self.handler.reroll(author, prime=prime)
 
         returned_text = f"original_roll: {reroll['old']['roll']}\n"
         glitch = await self.handler.sr5_is_glitch(reroll['reroll'],
