@@ -120,7 +120,7 @@ class shadowrun(commands.Cog):
 
         message += "```"
 
-        commands, gm_roll = await self.check_gm_roll(command[1:])
+        _, gm_roll = await self.check_gm_roll(command[1:])
 
         if gm_roll:
             await ctx.message.delete()
