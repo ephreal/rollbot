@@ -230,7 +230,7 @@ class shadowrun(commands.Cog):
         Shadowrun 5E requires a dice pool and a modifier.
         """
 
-        commands, prime = await self.check_prime(commands)
+        commands, _ = await self.check_prime(commands)
         commands, verbose = await self.check_verbose(commands)
 
         try:
