@@ -33,25 +33,13 @@ class TestBaseHandler(unittest.TestCase):
     def setUp(self):
         self.sr1_handler = shadowrun_handler.Shadowrun1Handler()
 
-    def __run(self, coroutine):
-        """
-        Runs and returns the data from the couroutine passed in. This is to
-        only be used in unittesting.
-
-        coroutine : asyncio coroutine
-
-            -> coroutine return
-        """
-
-        return asyncio.get_event_loop().run_until_complete(coroutine)
-
     def test_format_initiative(self):
         """
         Verifies the base handler can format initiative with all handlers
         """
 
         roll = [3, 3, 3]
-        initiative = self.__run(self.sr1_handler.format_initiative(roll, 12))
+        initiative = run(self.sr1_handler.format_initiative(roll, 12))
         self.assertTrue(isinstance(initiative, str))
 
     def test_roll_initiative(self):
@@ -59,7 +47,7 @@ class TestBaseHandler(unittest.TestCase):
         Verifies the base handler is able to roll initiative with all handlers.
         """
 
-        _, initiative = self.__run(self.sr1_handler.roll_initiative(1, 5))
+        _, initiative = run(self.sr1_handler.roll_initiative(1, 5))
         self.assertTrue(isinstance(initiative, int))
 
 
@@ -68,29 +56,17 @@ class TestShadowrunHandler(unittest.TestCase):
     def setUp(self):
         self.handler = shadowrun_handler.ShadowrunHandler()
 
-    def __run(self, coroutine):
-        """
-        Runs and returns the data from the couroutine passed in. This is to
-        only be used in unittesting.
-
-        coroutine : asyncio coroutine
-
-            -> coroutine return
-        """
-
-        return asyncio.get_event_loop().run_until_complete(coroutine)
-
     def test_set_edition(self):
         """
         Verifies the handler is able to set the shadowrun edition
         """
 
         edition = self.handler.set_sr_edition(1)
-        edition = self.__run(edition)
+        edition = run(edition)
         self.assertEqual(1, self.handler.edition)
 
         edition = self.handler.set_sr_edition(5)
-        edition = self.__run(edition)
+        edition = run(edition)
         self.assertEqual(5, self.handler.edition)
 
     def test_check_roll(self):
@@ -100,14 +76,14 @@ class TestShadowrunHandler(unittest.TestCase):
 
         roll = [1, 2, 3, 4, 5, 6]
         checked = self.handler.check_roll(roll)
-        checked = self.__run(checked)
+        checked = run(checked)
 
         self.assertEqual(checked['hits'], 2)
 
-        self.__run(self.handler.set_sr_edition(1))
+        run(self.handler.set_sr_edition(1))
 
         checked = self.handler.check_roll(roll)
-        checked = self.__run(checked)
+        checked = run(checked)
 
         self.assertEqual(checked['successes'], 4)
 
@@ -117,7 +93,7 @@ class TestShadowrunHandler(unittest.TestCase):
         """
 
         extended_test = self.handler.extended_test(8, 8)
-        extended_test = self.__run(extended_test)
+        extended_test = run(extended_test)
 
         self.assertTrue(isinstance(extended_test, dict))
 
@@ -128,10 +104,10 @@ class TestShadowrunHandler(unittest.TestCase):
         """
 
         extended_test = self.handler.extended_test(8, 8)
-        extended_test = self.__run(extended_test)
+        extended_test = run(extended_test)
 
         extended_test = self.handler.format_extended_test(extended_test)
-        extended_test = self.__run(extended_test)
+        extended_test = run(extended_test)
 
         self.assertTrue(isinstance(extended_test, str))
 
@@ -144,20 +120,20 @@ class TestShadowrunHandler(unittest.TestCase):
         roll = [1, 2, 3, 4, 5, 6]
 
         checked_5e = self.handler.check_roll(roll)
-        checked_5e = self.__run(checked_5e)
-        glitch = self.__run(self.handler.sr5_is_glitch(roll, 2))
+        checked_5e = run(checked_5e)
+        glitch = run(self.handler.sr5_is_glitch(roll, 2))
 
         formatted_5e = self.handler.format_roll(roll, checked_5e,
                                                 glitch=glitch)
-        formatted_5e = self.__run(formatted_5e)
+        formatted_5e = run(formatted_5e)
 
-        self.__run(self.handler.set_sr_edition(1))
+        run(self.handler.set_sr_edition(1))
 
         checked_1e = self.handler.check_roll(roll)
-        checked_1e = self.__run(checked_1e)
+        checked_1e = run(checked_1e)
 
         formatted_1e = self.handler.format_roll(roll, checked_1e)
-        formatted_1e = self.__run(formatted_1e)
+        formatted_1e = run(formatted_1e)
 
         self.assertFalse(formatted_1e == formatted_5e)
 
@@ -169,7 +145,7 @@ class TestShadowrunHandler(unittest.TestCase):
         roll = [1, 1, 1, 5]
         hits = 1
 
-        glitch = self.__run(self.handler.sr5_is_glitch(roll, hits))
+        glitch = run(self.handler.sr5_is_glitch(roll, hits))
 
         self.assertTrue(glitch['glitch'])
         self.assertEqual('normal', glitch['type'])
@@ -180,10 +156,10 @@ class TestShadowrunHandler(unittest.TestCase):
         """
 
         roll = [1, 2, 3, 4, 5, 6]
-        checked = self.__run(self.handler.check_roll(roll))
-        self.__run(self.handler.add_roll("test", roll, checked))
+        checked = run(self.handler.check_roll(roll))
+        run(self.handler.add_roll("test", roll, checked))
 
-        reroll = self.__run(self.handler.reroll('test'))
+        reroll = run(self.handler.reroll('test'))
         roll = reroll['reroll']
 
         self.assertEqual(self.handler.past_rolls['test']['roll'], roll)
@@ -194,25 +170,13 @@ class TestShadowrun1Handler(unittest.TestCase):
     def setUp(self):
         self.handler = shadowrun_handler.Shadowrun1Handler()
 
-    def __run(self, coroutine):
-        """
-        Runs and returns the data from the couroutine passed in. This is to
-        only be used in unittesting.
-
-        coroutine : asyncio coroutine
-
-            -> coroutine return
-        """
-
-        return asyncio.get_event_loop().run_until_complete(coroutine)
-
     def test_check_roll(self):
         """
         Verifies the handler can use the check_roll functionality
         """
 
         roll = [1, 2, 3, 4, 5, 6]
-        checked = self.__run(self.handler.check_roll(roll))
+        checked = run(self.handler.check_roll(roll))
 
         self.assertEqual(checked['successes'], 4)
 
@@ -222,12 +186,12 @@ class TestShadowrun1Handler(unittest.TestCase):
         """
 
         roll = [1, 2, 3, 4, 5, 6]
-        checked = self.__run(self.handler.check_roll(roll))
+        checked = run(self.handler.check_roll(roll))
 
-        non_verbose = self.__run(self.handler.format_roll(roll, checked,
-                                 verbose=False))
-        verbose = self.__run(self.handler.format_roll(roll, checked,
-                             verbose=True))
+        non_verbose = run(self.handler.format_roll(roll, checked,
+                          verbose=False))
+        verbose = run(self.handler.format_roll(roll, checked,
+                      verbose=True))
 
         self.assertTrue(len(verbose) > len(non_verbose))
 
@@ -239,7 +203,7 @@ class TestShadowrun1Handler(unittest.TestCase):
 
         roll = [1, 2, 3, 4, 5, 6]
         expected_format = f"You rolled {len(roll)} dice\nRoll: {roll}"
-        roll = self.__run(self.handler.format_unchecked_roll(roll))
+        roll = run(self.handler.format_unchecked_roll(roll))
 
         self.assertEqual(roll, expected_format)
 
@@ -248,5 +212,18 @@ class TestShadowrun1Handler(unittest.TestCase):
         Verifies the handler is able to roll 1E dice and do so properly.
         """
 
-        roll = self.__run(self.handler.roll(6))
+        roll = run(self.handler.roll(6))
         self.assertEqual(len(roll), 6)
+
+
+def run(coroutine):
+    """
+    Runs and returns the data from the couroutine passed in. This is to
+    only be used in unittesting.
+
+    coroutine : asyncio coroutine
+
+        -> coroutine return
+    """
+
+    return asyncio.get_event_loop().run_until_complete(coroutine)

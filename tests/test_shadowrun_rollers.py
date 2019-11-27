@@ -33,18 +33,6 @@ class TestShadowrun1ERolling(unittest.TestCase):
     def setUp(self):
         self.sr1_roller = sr.Shadowrun1Roller()
 
-    def __run(self, coroutine):
-        """
-        Runs and returns the data from the couroutine passed in. This is to
-        only be used in unittesting.
-
-        coroutine : asyncio coroutine
-
-            -> coroutine return
-        """
-
-        return asyncio.get_event_loop().run_until_complete(coroutine)
-
     def test_roll(self):
         """
         Verifies that the roll function returns a list of integers with numbers
@@ -52,7 +40,7 @@ class TestShadowrun1ERolling(unittest.TestCase):
         """
 
         rolls = self.sr1_roller.roll(10)
-        rolls = self.__run(rolls)
+        rolls = run(rolls)
 
         self.assertEqual(len(rolls), 10)
         self.assertTrue(6 not in rolls)
@@ -63,7 +51,7 @@ class TestShadowrun1ERolling(unittest.TestCase):
         """
 
         initiative = self.sr1_roller.roll_initiative(1)
-        _, initiative = self.__run(initiative)
+        _, initiative = run(initiative)
         self.assertTrue(initiative >= 1 and initiative < 8)
 
     def test_is_failure(self):
@@ -73,12 +61,12 @@ class TestShadowrun1ERolling(unittest.TestCase):
 
         rolls = [1, 1, 1, 1, 1]
         failure = self.sr1_roller.is_failure(rolls)
-        failure = self.__run(failure)
+        failure = run(failure)
         self.assertTrue(failure)
 
         rolls = [1, 1, 1, 1, 2]
         failure = self.sr1_roller.is_failure(rolls)
-        failure = self.__run(failure)
+        failure = run(failure)
         self.assertFalse(failure)
 
     def test_check_successes(self):
@@ -89,13 +77,13 @@ class TestShadowrun1ERolling(unittest.TestCase):
         target = 5
         rolls = [6, 5, 4, 3, 2, 1]
         successes = self.sr1_roller.check_successes(target, rolls)
-        successes = self.__run(successes)
+        successes = run(successes)
         self.assertEqual(successes["successes"], 1)
         self.assertEqual(successes["rolls"], [6])
 
         target = 3
         successes = self.sr1_roller.check_successes(target, rolls)
-        successes = self.__run(successes)
+        successes = run(successes)
         self.assertEqual(successes["successes"], 3)
         self.assertEqual(successes["rolls"], [6, 5, 4])
 
@@ -105,29 +93,17 @@ class TestShadowrun5ERolling(unittest.TestCase):
     def setUp(self):
         self.sr5_roller = sr.Shadowrun5Roller()
 
-    def __run(self, coroutine):
-        """
-        Runs and returns the data from the couroutine passed in. This is to
-        only be used in unittesting.
-
-        coroutine : asyncio coroutine
-
-            -> coroutine return
-        """
-
-        return asyncio.get_event_loop().run_until_complete(coroutine)
-
     def test_buy_hits(self):
         """
         Verifies that hits are bought in a 1 hit : 4 dice ratio
         """
 
         bought = self.sr5_roller.buy_hits(8)
-        bought = self.__run(bought)
+        bought = run(bought)
         self.assertEqual(2, bought)
 
         bought = self.sr5_roller.buy_hits(9)
-        bought = self.__run(bought)
+        bought = run(bought)
         self.assertEqual(2, bought)
 
     def count_hits(self):
@@ -137,14 +113,14 @@ class TestShadowrun5ERolling(unittest.TestCase):
 
         rolls = [1, 2, 3, 4, 4, 5, 5, 6, 6, 6]
         counted_hits = self.sr5_roller.count_hits(rolls)
-        counted_hits = self.__run(counted_hits)
+        counted_hits = run(counted_hits)
 
         self.assertEqual(5, counted_hits["hits"])
         self.assertEqual(4, counted_hits["misses"])
         self.assertEqual(1, counted_hits["ones"])
 
         counted_hits = self.sr5_roller.count_hits(rolls, prime=True)
-        counted_hits = self.__run(counted_hits)
+        counted_hits = run(counted_hits)
 
         self.assertEqual(7, counted_hits["hits"])
         self.assertEqual(2, counted_hits["misses"])
@@ -158,26 +134,26 @@ class TestShadowrun5ERolling(unittest.TestCase):
 
         # Test for failure of test
         extended_test = self.sr5_roller.extended_test(1, 4)
-        extended_test = self.__run(extended_test)
+        extended_test = run(extended_test)
 
         self.assertFalse(extended_test["success"])
 
         # Test for obvious success
         extended_test = self.sr5_roller.extended_test(50, 4)
-        extended_test = self.__run(extended_test)
+        extended_test = run(extended_test)
 
         self.assertTrue(extended_test["success"])
         self.assertTrue(len(extended_test["rolls"]) < 10)
 
         # Test for failure even as a prime runner
         extended_test = self.sr5_roller.extended_test(1, 4, prime=True)
-        extended_test = self.__run(extended_test)
+        extended_test = run(extended_test)
 
         self.assertFalse(extended_test["success"])
 
         # Test for obvious success as a prime runner
         extended_test = self.sr5_roller.extended_test(50, 4, prime=True)
-        extended_test = self.__run(extended_test)
+        extended_test = run(extended_test)
 
         self.assertTrue(extended_test["success"])
         self.assertTrue(len(extended_test["rolls"]) < 10)
@@ -192,7 +168,7 @@ class TestShadowrun5ERolling(unittest.TestCase):
         hits = 1
 
         glitch_check = self.sr5_roller.is_glitch(glitch, hits)
-        glitch_check = self.__run(glitch_check)
+        glitch_check = run(glitch_check)
 
         self.assertTrue(glitch_check["glitch"])
         self.assertEqual('normal', glitch_check['type'])
@@ -202,7 +178,7 @@ class TestShadowrun5ERolling(unittest.TestCase):
         hits = 0
 
         glitch_check = self.sr5_roller.is_glitch(glitch, hits)
-        glitch_check = self.__run(glitch_check)
+        glitch_check = run(glitch_check)
 
         self.assertTrue(glitch_check["glitch"])
         self.assertEqual('critical', glitch_check['type'])
@@ -212,7 +188,7 @@ class TestShadowrun5ERolling(unittest.TestCase):
         hits = 2
 
         glitch_check = self.sr5_roller.is_glitch(glitch, hits)
-        glitch_check = self.__run(glitch_check)
+        glitch_check = run(glitch_check)
 
         self.assertFalse(glitch_check["glitch"])
         self.assertEqual(None, glitch_check['type'])
@@ -220,10 +196,10 @@ class TestShadowrun5ERolling(unittest.TestCase):
         # Verify that this works with roll/ount_hits functions
         # Note, the results are randomize so testing exact values is not
         # possible
-        roll = self.__run(self.sr5_roller.roll(6))
-        checked = self.__run(self.sr5_roller.count_hits(roll))
+        roll = run(self.sr5_roller.roll(6))
+        checked = run(self.sr5_roller.count_hits(roll))
 
-        glitch = self.__run(self.sr5_roller.is_glitch(roll, checked["hits"]))
+        glitch = run(self.sr5_roller.is_glitch(roll, checked["hits"]))
 
     def test_roll(self):
         """
@@ -231,13 +207,13 @@ class TestShadowrun5ERolling(unittest.TestCase):
         """
 
         rolls = self.sr5_roller.roll(10)
-        rolls = self.__run(rolls)
+        rolls = run(rolls)
         self.assertEqual(len(rolls), 10)
 
         # Tests to make sure that 6's truly explode
         # Put this to 50 dice to make 6's very likely to appear.
         rolls = self.sr5_roller.roll(50, exploding=True)
-        rolls = self.__run(rolls)
+        rolls = run(rolls)
         self.assertTrue(len(rolls) > 50)
 
     def test_roll_initiative(self):
@@ -247,24 +223,37 @@ class TestShadowrun5ERolling(unittest.TestCase):
 
         # Test what happens if no modifier is given
         initiative = self.sr5_roller.roll_initiative(1)
-        _, initiative = self.__run(initiative)
+        _, initiative = run(initiative)
 
         self.assertTrue(initiative >= 1 and initiative <= 6)
 
         # Verify that adding a modifier works properly too
         initiative = self.sr5_roller.roll_initiative(1, 10)
-        _, initiative = self.__run(initiative)
+        _, initiative = run(initiative)
 
         self.assertTrue(initiative >= 11 and initiative <= 16)
 
         # Verify that multiple dice don't cause issues
         initiative = self.sr5_roller.roll_initiative(5, 10)
-        _, initiative = self.__run(initiative)
+        _, initiative = run(initiative)
 
         self.assertTrue(initiative >= 15)
 
         # Verify that massive amounts of dice don't cause issues
         initiative = self.sr5_roller.roll_initiative(1000, 10)
-        _, initiative = self.__run(initiative)
+        _, initiative = run(initiative)
 
         self.assertTrue(initiative >= 1010)
+
+
+def run(coroutine):
+    """
+    Runs and returns the data from the couroutine passed in. This is to
+    only be used in unittesting.
+
+    coroutine : asyncio coroutine
+
+        -> coroutine return
+    """
+
+    return asyncio.get_event_loop().run_until_complete(coroutine)
