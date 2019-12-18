@@ -55,5 +55,10 @@ class GameState():
         self.handler = game_handler
 
         self.cards_in_hand = self.handler.deck.in_hand
-        self.current_player = self.handler.get_current_player()
         self.valid_commands = self.handler.expose_commands()
+
+    async def set_current_player(self):
+        """
+        Sets the current player as __init__ can't have an async function in it
+        """
+        self.current_player = await self.handler.get_current_player()

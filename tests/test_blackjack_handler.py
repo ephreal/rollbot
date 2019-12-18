@@ -1,32 +1,23 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 
+from tests.asyncio_run import run
 import unittest
 from classes.games import game_handler
 from classes.games import player
 
+
+# methods still needing test coverage:
+#       check_tally
+#       check_commands
+#       expose_commands
 
 class TestBlackjackHandler(unittest.TestCase):
 
@@ -38,7 +29,7 @@ class TestBlackjackHandler(unittest.TestCase):
             player_id=314,
             hand=[]
         )
-        self.handler.add_player(self.player)
+        run(self.handler.add_player(self.player))
         self.dealer = self.handler.players[0]
 
     def test_initialization(self):
@@ -58,9 +49,9 @@ class TestBlackjackHandler(unittest.TestCase):
         the dealer can play well, however.
         """
 
-        self.handler.setup()
+        run(self.handler.setup())
         start = self.dealer.tally
-        self.handler.dealer_play()
+        run(self.handler.dealer_play())
 
         if start >= 17:
             self.assertEqual(start, self.dealer.tally)
@@ -71,7 +62,7 @@ class TestBlackjackHandler(unittest.TestCase):
         """
         tests taking two cards from the deck at once.
         """
-        self.handler.double_hit(self.player)
+        run(self.handler.double_hit(self.player))
 
         self.assertTrue(self.player.tally > 0)
         self.assertEqual(len(self.player.hand), 2)
@@ -81,7 +72,7 @@ class TestBlackjackHandler(unittest.TestCase):
         """
         Tests taking a card from the deck
         """
-        self.handler.hit(self.player)
+        run(self.handler.hit(self.player))
 
         self.assertTrue(self.player.tally > 0)
         self.assertEqual(len(self.player.hand), 1)
@@ -93,7 +84,7 @@ class TestBlackjackHandler(unittest.TestCase):
         to all players.
         """
 
-        self.handler.setup()
+        run(self.handler.setup())
 
         self.assertEqual(len(self.player.hand), 2)
         self.assertEqual(len(self.dealer.hand), 2)
@@ -103,7 +94,7 @@ class TestBlackjackHandler(unittest.TestCase):
         Makes sure that stand sets the correct player to play
         """
 
-        self.handler.stand()
+        run(self.handler.stand())
         self.assertEqual(self.handler.current_player, 0)
 
 

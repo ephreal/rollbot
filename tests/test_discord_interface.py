@@ -1,30 +1,19 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 import unittest
 from classes.games import discord_interface
 from mock import MockUsers
+from tests.asyncio_run import run
+
+print("Tests still need to be completed for "
+      "discord_interface.add_player_to_game")
 
 
 class TestDiscordInterface(unittest.TestCase):
@@ -45,6 +34,12 @@ class TestDiscordInterface(unittest.TestCase):
         self.interface.add_game_handler("BLACKJACK")
         self.assertEqual(len(self.interface.current_sessions), 2)
 
+    def test_add_player_to_game(self):
+        """
+        tests to make sure a player is added to the game properly
+        """
+        pass
+
     def test_generate_id(self):
         """
         Makes sure that generate_id returns a valid int
@@ -64,9 +59,10 @@ class TestDiscordInterface(unittest.TestCase):
 
         player = self.interface.make_player(self.test_user)
         session = self.interface.add_game_handler("blackjack")
-        self.interface.add_player_to_current_players(player, session)
-        self.interface.add_player_to_game(player)
-        state = self.interface.get_game_state_by_member(self.test_user)
+        run(self.interface.add_player_to_current_players(player, session))
+        run(self.interface.add_player_to_game(player))
+        state = run(self.interface.get_game_state_by_member(self.test_user))
+        print(state.current_player)
 
         self.assertEqual(state.current_player.name, "Glaxion")
         self.assertEqual(state.handler,
@@ -80,9 +76,3 @@ class TestDiscordInterface(unittest.TestCase):
         player = self.interface.make_player(self.test_user)
         self.assertEqual(player.id, 10)
         self.assertEqual(player.name, "Glaxion")
-
-    def test_add_player_to_game(self):
-        """
-        tests to make sure a player is added to the game properly
-        """
-        pass

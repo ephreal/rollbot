@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 
@@ -28,16 +13,32 @@ class Player():
     A base player class to be extended and made into something beautiful.
 
     Class Variables
+        discord_member:
+            The discord.py member object to allow direct messaging of a player
+        player_id (int):
+            The player's ID for the session.
         player_name (str):
             The player's name.
-        player_id (int):
-            The player's ID for the session. In the case of discord, this
-            will be a discord.member object to allow direct messaging.
+
+    Class Methods
+        send(message: str) -> None
+            Sends a private message to the player.
     """
 
-    def __init__(self, name=None, player_id=None):
-        self.name = name
+    def __init__(self, discord_member=None, name=None, player_id=None):
+        self.discord_member = discord_member
         self.id = player_id
+        self.name = name
+
+    def send(self, message):
+        """
+        Sends a private message to the player.
+
+        message: str
+            -> None
+        """
+
+        self.discord_member.send(message)
 
 
 class CardPlayer(Player):
@@ -64,8 +65,9 @@ class CardPlayer(Player):
             Removes the given cards from the CardPlayer's hand
     """
 
-    def __init__(self, hand=[], name=None, player_id=None):
-        super().__init__(name, player_id)
+    def __init__(self, discord_member=None, hand=[], name=None,
+                 player_id=None):
+        super().__init__(discord_member, name, player_id)
         self.hand = hand
 
     def __str__(self):
@@ -131,8 +133,10 @@ class BlackjackPlayer(CardPlayer):
         receive_cards(cards: list[card.Card]):
             Increases tally by both cards' worth
     """
-    def __init__(self, hand=[], name=None, player_id=None):
-        super().__init__(hand=hand, name=name, player_id=player_id)
+    def __init__(self, discord_member=None, hand=[], name=None,
+                 player_id=None):
+        super().__init__(discord_member=discord_member, hand=hand, name=name,
+                         player_id=player_id)
 
         self.bust = False
         self.tally = 0

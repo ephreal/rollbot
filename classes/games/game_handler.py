@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 
@@ -62,11 +47,18 @@ class CardGameHandler():
         advance_to_next_player():
             Advances the current_player to the next player
 
+        broadcast(message: string) -> None:
+            Send a message to all players.
+
         construct_and_add_player(name: str, id: unique_id, hand: list[str]):
             Creates a player object to add to self.players
 
         deal(amount : int, player: player.CardPlayer)
             Deals the specified amount of cards to the player
+
+        deal_by_id(amount: int, player_id: int) -> None:
+            Method slated for removal. Deals cards to the player with a
+            particular player id.
 
         get_current_player() -> player.*:
             Returns the current player for use elsewhere
@@ -108,10 +100,10 @@ class CardGameHandler():
         self.current_player = 0
         self.deck = deck
         self.game_type = "base"
-        self.players = players
+        self.players = players[:]
         self.reverse = False
 
-    def add_player(self, new_player):
+    async def add_player(self, new_player):
         """
         Adds a player to the game using a player.CardPlayer object.
         This inserts the player at the last point in the turn order.
@@ -120,15 +112,25 @@ class CardGameHandler():
         """
         self.players.append(new_player)
 
-    def advance_to_next_player(self):
+    async def advance_to_next_player(self):
         """
         Sets self.current_player to the next player.
         """
 
-        next_player = self.get_next_player()
+        next_player = await self.get_next_player()
         self.current_player = next_player[0]
 
-    def construct_and_add_player(self, name, player_id, hand=[]):
+    async def broadcast(self, message):
+        """
+        Sends a message to all players in self.players.
+
+        message: str
+            -> None
+        """
+
+        [await player.send(message) for player in self.players]
+
+    async def construct_and_add_player(self, name, player_id, hand=[]):
         """
         They always said I couldn't make my own friends to play with. Well I'll
         show THEM!
@@ -150,7 +152,7 @@ class CardGameHandler():
 
         self.players.append(new_player)
 
-    def deal(self, amount, to_player):
+    async def deal(self, amount, to_player):
         """
         Deals the specified amount of cards to the player.
 
@@ -165,6 +167,10 @@ class CardGameHandler():
         to_player.hand.extend(cards)
         return cards
 
+    ##########################################################################
+    # This method below is slated for removal unless I find a REALLY good
+    # reason to keep it.
+    ##########################################################################
     def deal_by_id(self, amount, player_id):
         """
         Deals the specified amount of cards via player id
@@ -174,6 +180,8 @@ class CardGameHandler():
 
         Returns a string list if the player exists, otherwise returns None
         """
+
+        print("Warning: deal_by_id may be removed in the near future.")
 
         player_id = [
             player for players in self.players if player.id == player_id
@@ -186,16 +194,7 @@ class CardGameHandler():
         else:
             return None
 
-    def deal_by_name(self, amount, player_name):
-        """
-        Deals the specified amount of cards to the player (by name):
-
-        amount: int
-        player_name: str
-        """
-        pass
-
-    def get_current_player(self):
+    async def get_current_player(self):
         """
         Returns the current player for use elsewhere
 
@@ -204,7 +203,7 @@ class CardGameHandler():
 
         return self.players[self.current_player]
 
-    def get_next_player(self, skip=0):
+    async def get_next_player(self, skip=0):
         """
         Gets the next player. If skip is defined, skip will be added to the
         calculation to determine who the next player is.
@@ -230,7 +229,7 @@ class CardGameHandler():
 
         return (next_player, self.players[next_player])
 
-    def remove_player_by_id(self, player_id):
+    async def remove_player_by_id(self, player_id):
         """
         Removes a player based on their id
 
@@ -242,7 +241,11 @@ class CardGameHandler():
             if not player.id == player_id
         ]
 
-    def remove_player_by_index(self, index):
+    ##########################################################################
+    # The below function is slated for removal unless I find a REALLY good
+    # reason to keep it.
+    ##########################################################################
+    async def remove_player_by_index(self, index):
         """
         Removes a player based on the index provided. Any number larger than
         len(self.players) will be modded down to fit.
@@ -254,7 +257,7 @@ class CardGameHandler():
 
         self.players.pop(index)
 
-    def remove_player_by_name(self, name):
+    async def remove_player_by_name(self, name):
         """
         Removes a player from the game based on their name
 
@@ -265,7 +268,7 @@ class CardGameHandler():
             player for player in self.players if not player.name == name
         ]
 
-    def set_current_player_by_id(self, player_id):
+    async def set_current_player_by_id(self, player_id):
         """
         Sets the current player based on the player id
         """
@@ -275,14 +278,18 @@ class CardGameHandler():
 
         self.current_player = self.players.index(player[0])
 
-    def set_current_player_by_index(self, player_index):
+    ##########################################################################
+    # The below method is slated for removal unless I can think of a REALLY
+    # good reason to keep it.
+    ##########################################################################
+    async def set_current_player_by_index(self, player_index):
         """
         Sets the current player based on the index in self.players
         """
 
         self.current_player = player_index % len(self.players)
 
-    def set_current_player_by_name(self, player_name):
+    async def set_current_player_by_name(self, player_name):
         """
         Sets the current player based on the player name
         """
@@ -357,8 +364,9 @@ class BlackjackHandler(CardGameHandler):
 
         return: Boolean
         """
+        pass
 
-    def check_tally(self, card_player):
+    async def check_tally(self, card_player):
         """
         Checks to make sure that the card_player's tally isn't above or equal
         to the current high score.
@@ -372,44 +380,47 @@ class BlackjackHandler(CardGameHandler):
         elif card_player.tally == self.highest_score:
             self.current_ties.append(card_player)
 
-    def construct_and_add_player(self, name, player_id, hand=[]):
+    async def construct_and_add_player(self, name, player_id, hand=[]):
         """
         Overriding the base class function to use player.BlackjackPlayer
         """
 
         new_player = player.BlackjackPlayer(name=name, player_id=player_id,
                                             hand=hand)
-        self.add_player(new_player)
+        await self.add_player(new_player)
 
-    def dealer_play(self):
+    async def dealer_play(self):
         """
         The logic used to guide the program through making an intelligent
         choice when it plays the game with others.
         """
 
         if self.dealer.tally >= 17:
-            self.stand()
+            await self.stand()
 
         if self.dealer.tally < 9:
-            self.double_hit(self.dealer)
+            await self.double_hit(self.dealer)
         else:
             while self.dealer.tally < 17:
-                self.hit(self.dealer)
+                await self.hit(self.dealer)
 
-    def double_hit(self, card_player):
+    async def double_hit(self, card_player):
         """
         Gives two cards to card_player. Wrapper for deal function.
 
         card_player: player.CardPlayer
         """
 
-        cards = self.deal(2, card_player)
+        cards = await self.deal(2, card_player)
         card_player.receive_cards(cards)
 
-        self.check_tally(card_player)
+        await self.check_tally(card_player)
 
         return cards
 
+    ############################
+    # Remove the below method? #
+    ############################
     def expose_commands(self):
         """
         Returns a list of valid commands for discord.
@@ -420,21 +431,21 @@ class BlackjackHandler(CardGameHandler):
         commands = ["hit", "double hit", "stand", "stay"]
         return commands
 
-    def hit(self, card_player):
+    async def hit(self, card_player):
         """
         Gives a single card to a player. Wrapper for deal function.
 
         card_player: player.CardPlayer
         """
 
-        card = self.deal(1, card_player)
+        card = await self.deal(1, card_player)
         card_player.receive_card(card[0])
 
-        self.check_tally(card_player)
+        await self.check_tally(card_player)
 
         return card
 
-    def setup(self):
+    async def setup(self):
         """
         Sets up the blackjack game by dealing two cards to the player(s) and to
         the "dealer", in this case, the bot.
@@ -443,9 +454,9 @@ class BlackjackHandler(CardGameHandler):
         players will be added in the future.
         """
 
-        [self.double_hit(card_player) for card_player in self.players]
+        [await self.double_hit(card_player) for card_player in self.players]
 
-    def stand(self):
+    async def stand(self):
         """
         Indicates that a player is finished with his or her turn. Increments
         the current_player counter.
@@ -454,10 +465,16 @@ class BlackjackHandler(CardGameHandler):
         self.current_player += 1
         self.current_player %= len(self.players)
 
-    def stay(self):
+    ##########################################################################
+    # The function below is slated for removal as it's doing nothing more
+    # than call another function to do the same thing. That sort of
+    # functionality should be kept to the user interface rather than creating
+    # convoluted code on the backend.
+    ##########################################################################
+    async def stay(self):
         """
         Convenience function that calls self.stand() as some people use the
         phrase "stay" instead of "stand".
         """
 
-        self.stand()
+        await self.stand()

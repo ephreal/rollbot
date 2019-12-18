@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 from . import game_handler
@@ -115,7 +100,7 @@ class DiscordInterface():
 
         return session_id
 
-    def add_player_to_current_players(self, new_player, sid):
+    async def add_player_to_current_players(self, new_player, sid):
         """
         Adds a player to the session passed in.
 
@@ -143,7 +128,7 @@ class DiscordInterface():
         for new_player in players:
             self.add_player_to_current_players(new_player)
 
-    def add_player_to_game(self, new_player):
+    async def add_player_to_game(self, new_player):
         """
         Sets a player as active in the session the session they are mapped to.
 
@@ -153,7 +138,7 @@ class DiscordInterface():
         player_session = self.current_players[new_player.id]["session_id"]
         player_obj = self.current_players[new_player.id]["player"]
 
-        self.current_sessions[player_session].add_player(player_obj)
+        await self.current_sessions[player_session].add_player(player_obj)
         self.current_players[new_player.id]["in_game"] = True
 
     def add_players_to_game(self, players):
@@ -202,7 +187,7 @@ class DiscordInterface():
 
         return session_id
 
-    def get_game_state_by_member(self, member):
+    async def get_game_state_by_member(self, member):
         """
         Builds and returns a states.GameState object for discord.
 
@@ -213,6 +198,7 @@ class DiscordInterface():
         handler = self.current_sessions[session]
 
         game_state = states.GameState(session, handler)
+        await game_state.set_current_player()
 
         return game_state
 
