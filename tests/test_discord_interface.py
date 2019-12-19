@@ -62,7 +62,6 @@ class TestDiscordInterface(unittest.TestCase):
         run(self.interface.add_player_to_current_players(player, session))
         run(self.interface.add_player_to_game(player))
         state = run(self.interface.get_game_state_by_member(self.test_user))
-        print(state.current_player)
 
         self.assertEqual(state.current_player.name, "Glaxion")
         self.assertEqual(state.handler,
