@@ -29,7 +29,7 @@ from discord.ext import commands
 
 class Shadowrun1Commands(commands.Cog):
     """
-
+    Shadowrun 1st edition commands.
     """
 
     def __init__(self, bot):

@@ -197,6 +197,7 @@ class ShadowrunHandler(BaseHandler):
         checked: SR1: {successes, rolls, failure}
         checked: SR5: {hits, misses, ones}
         verbose: Bool
+        glitch: bool
 
             -> formatted_roll: str
         """
