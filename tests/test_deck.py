@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 import unittest
@@ -31,19 +16,19 @@ class TestDeckMethods(unittest.TestCase):
 
     def setUp(self):
         self.cards = [
-            card.Card(name="ace", worth=1),
-            card.Card(name="two", worth=2),
-            card.Card(name="three", worth=3),
-            card.Card(name="four", worth=4),
-            card.Card(name="five", worth=5),
-            card.Card(name="six", worth=6),
-            card.Card(name="seven", worth=7),
-            card.Card(name="eight", worth=8),
-            card.Card(name="nine", worth=9),
-            card.Card(name="ten", worth=10),
-            card.Card(name="jack", worth=10),
-            card.Card(name="queen", worth=10),
-            card.Card(name="king", worth=10)
+            card.Card(name="ace", value=1),
+            card.Card(name="two", value=2),
+            card.Card(name="three", value=3),
+            card.Card(name="four", value=4),
+            card.Card(name="five", value=5),
+            card.Card(name="six", value=6),
+            card.Card(name="seven", value=7),
+            card.Card(name="eight", value=8),
+            card.Card(name="nine", value=9),
+            card.Card(name="ten", value=10),
+            card.Card(name="jack", value=10),
+            card.Card(name="queen", value=10),
+            card.Card(name="king", value=10)
         ]
 
         self.deck = deck.Deck(self.cards)
@@ -229,7 +214,7 @@ class TestDeckMethods(unittest.TestCase):
         """
         drawn = self.deck.random_card()
         self.deck.up_next(drawn)
-        self.assertEqual(drawn.worth, self.deck.cards[0].worth)
+        self.assertEqual(drawn.value, self.deck.cards[0].value)
         self.assertEqual(len(self.deck.cards), len(self.deck.clean_deck))
 
     def test_up_last(self):
@@ -238,7 +223,7 @@ class TestDeckMethods(unittest.TestCase):
         """
         drawn = self.deck.random_card()
         self.deck.up_last(drawn)
-        self.assertEqual(drawn.worth, self.deck.cards[-1].worth)
+        self.assertEqual(drawn.value, self.deck.cards[-1].value)
         self.assertEqual(len(self.deck.cards), len(self.deck.clean_deck))
 
     def test_draw_all_cards(self):

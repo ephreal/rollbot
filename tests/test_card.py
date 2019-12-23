@@ -15,7 +15,7 @@ class TestCardMethods(unittest.TestCase):
 
     def setUp(self):
 
-        self.card = card.Card(name="test", worth=10, description="test card")
+        self.card = card.Card(name="test", value=10, description="test card")
 
     def test_string_method(self):
         """
@@ -27,11 +27,11 @@ class TestCardMethods(unittest.TestCase):
 
     def test_int_method(self):
         """
-        Verifies the card returns the worth propery from the int methods.
+        Verifies the card returns the value propery from the int methods.
         """
 
         value = int(self.card)
-        self.assertEqual(value, self.card.worth)
+        self.assertEqual(value, self.card.value)
 
 
 if __name__ == "__main__":

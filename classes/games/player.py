@@ -52,11 +52,8 @@ class CardPlayer(Player):
 
     Class Functions
 
-        add_card_to_hand(card: card.Card):
-            Adds the given card to the CardPlayer's hand
-
         add_cards_to_hand(cards: list[card.Card]):
-            Adds the given cards to the CardPlanyer's hand
+            Adds the given cards to the CardPlayer's hand
 
         remove_card_from_hand(card: card.Card):
             Removes the given card from the CardPlayer's hand
@@ -75,15 +72,6 @@ class CardPlayer(Player):
         Returns the player's name
         """
         return f"{self.name}"
-
-    def add_card_to_hand(self, card):
-        """
-        Adds the given card to the player's hand
-
-        card: card.Card
-        """
-
-        self.hand.append(card)
 
     def add_cards_to_hand(self, cards):
         """
@@ -130,11 +118,17 @@ class BlackjackPlayer(CardPlayer):
 
     Additional Class Functions
 
-        receive_card(card, card.Card):
-            Increases tally by card.worth
+        add_cards_to_hand(cards: list[card.Card]) -> None:
+            Overwritten function to properly handle additional things that
+            must happen when adding a card to a blackjack player's hand
 
-        receive_cards(cards: list[card.Card]):
-            Increases tally by both cards' worth
+        can_split(): -> bool
+            Checks whether or not a player is allowed to split their hand.
+            Returns True if both cards in the player's hand are the same value.
+
+        check_bust(): -> None
+            Tallys up the player's current hand(s) to see if they have gone
+            bust or not.
     """
     def __init__(self, discord_member=None, hand=[], name=None,
                  player_id=None, split_hand=None):
@@ -145,31 +139,50 @@ class BlackjackPlayer(CardPlayer):
         self.split_hand = split_hand
         self.tally = 0
 
-    def receive_card(self, card):
+    def add_cards_to_hand(self, cards):
         """
-        Adds card to self.hand and adds card.value to self.tally. If self.tally
-        becomes larger than 21, it sets self.bust to True
-
-        card: card.Card
-        """
-
-        self.tally += card.worth
-
-        if self.tally > 21:
-            self.bust = True
-
-    def receive_cards(self, cards):
-        """
-        Receives multiple cards and adds them to self.hand and increases
-        self.tally by the cards' self.worth.
-
-        Calls self.receive_card() twice to make this happen
+        Overwriting super method to extend this functionality.
+        Adds the given cards to the player's hand and immediately updates some
+        class variables to be sane.
 
         cards: list[card.Card]
         """
 
-        self.receive_card(cards[0])
-        self.receive_card(cards[1])
+        self.hand.extend(cards)
+        self.check_bust()
+
+    def check_bust(self):
+        """
+        Checks the player's hand(s) to see if the player has gone bust or not
+            -> None
+        """
+        self.tally = self.count_hand(self.hand)
+
+        # Player's card value is above 21 and has no split hand
+        if self.tally > 21 and not self.split_hand:
+            self.bust = True
+
+        # Player has a split hand
+        if self.split_hand:
+            if self.count_hand(self.split_hand) > 21:
+                self.bust = True
+            else:
+                self.swap_hands()
+                self.tally = self.count_hand(self.hand)
+
+    def count_hand(self, hand):
+        """
+        Counts the total value of a hand.
+
+        hand: list[card.Card]
+            -> value: int
+        """
+
+        self.tally = 0
+        for card in hand:
+            self.tally += int(card)
+
+        return self.tally
 
     async def split(self):
         """

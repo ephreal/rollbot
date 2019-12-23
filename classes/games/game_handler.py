@@ -164,7 +164,7 @@ class CardGameHandler():
         """
 
         cards = self.deck.draw(amount)
-        to_player.hand.extend(cards)
+        to_player.add_cards_to_hand(cards)
         return cards
 
     ##########################################################################
@@ -368,6 +368,18 @@ class BlackjackHandler(CardGameHandler):
         self.game_type = "blackjack"
         self.highest_score = 0
 
+    async def can_split(self, card_player):
+        """
+        Checks whether or not a player is allowed to split their hand.
+        Returns True if both cards in the player's hand are the same value.
+
+            -> can_split: bool
+        """
+
+        if card_player.hand[0].worth == card_player.hand[1].worth:
+            return True
+        return False
+
     async def check_tally(self, card_player):
         """
         Checks to make sure that the card_player's tally isn't above or equal
@@ -438,6 +450,7 @@ class BlackjackHandler(CardGameHandler):
 
         # Commands do not need to be in a list for this game.
         command = "".join(commands)
+
         if command.startswith('h'):
             return await self.hit(member)
         elif command.startswith("sp"):
@@ -445,6 +458,8 @@ class BlackjackHandler(CardGameHandler):
         elif command.startswith("st"):
             await self.stand()
             return "You chose to stand."
+        elif command.startswith("sw"):
+            await self.select_split_hand(member)
 
         return "Invalid command. Please try again."
 
@@ -456,9 +471,6 @@ class BlackjackHandler(CardGameHandler):
         """
 
         card = await self.deal(1, card_player)
-        card_player.receive_card(card[0])
-
-        await self.check_tally(card_player)
 
         return card
 

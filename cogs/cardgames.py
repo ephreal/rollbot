@@ -32,10 +32,21 @@ class cardgames(commands.Cog):
             handler = self.interface.current_sessions[sid]
             await self.interface.start_game(sid)
             dealer_hand = handler.dealer.hand[0]
-            player_hand = handler.players[1].tally
+            player_hand = handler.players[1].hand
             await ctx.send("You may hit or stand.")
             await ctx.send(f"The dealer has a {dealer_hand}")
-            await ctx.send(f"You have {player_hand}")
+            await ctx.send(f"You have {[card.name for card in player_hand]}")
+
+            await ctx.send("Would you like to split your hand? y/n")
+            split = await self.get_response(ctx)
+            split = split.content
+            if " ".join(split).startswith("y"):
+                await self.interface.pass_commands(author, "split")
+                await ctx.send("You have split your hand into\n"
+                               f"{handler.players[1].hand[0].value}\n"
+                               f"{handler.players[1].split_hand[0].value}")
+            else:
+                await ctx.send("Your hand will not be split.")
         else:
             return await ctx.send("Only blackjack is curently available.")
 
@@ -51,7 +62,7 @@ class cardgames(commands.Cog):
                     return await ctx.send("Sorry, you bust! Better luck next "
                                           "time")
 
-            elif response.startswith("s"):
+            elif response.startswith("st"):
                 response = await self.interface.pass_commands(author, response)
                 await ctx.send(response)
                 # Player has chosen to stand
@@ -66,6 +77,13 @@ class cardgames(commands.Cog):
                                           "time.")
                 else:
                     return await ctx.send("Congrats, you won!")
+
+            if handler.players[1].split_hand and len(
+                                handler.player[1].split_hand) < 2:
+                await ctx.send("Would you like to switch to your other hand?")
+                swap = await self.get_response(ctx)
+                if "".join(swap).startswith("y"):
+                    await self.interface.pass_commands(author, "swap")
 
 
     async def get_response(self, ctx):

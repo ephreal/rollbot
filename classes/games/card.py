@@ -21,22 +21,20 @@ class Card():
             An extended description if more description is needed. For example,
             an uno reverse card might give a brief description of what it does.
 
-        worth
+        value
             An int indicating how much the card is worth. Not necessary if it
             doesn't makes sense.
 
     """
 
-    def __init__(self, name, description=None, worth=None):
+    def __init__(self, name, description=None, value=None):
         self.name = name
         self.description = description
-        # These cards have no self.worth by default. How's it feel card, gonna
-        # cry? Whoah, calm down. Let's work on your self.esteem first.....
-        self.worth = worth
+        self.value = value
 
     def __int__(self):
-        if self.worth:
-            return self.worth
+        if self.value:
+            return self.value
         return 0
 
     def __str__(self):
