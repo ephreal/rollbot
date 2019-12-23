@@ -72,17 +72,11 @@ class CardGameHandler():
         remove_player_by_id(id: unique_id):
             Remove a player from self.players based on their unique id
 
-        remove_player_by_index(index: int):
-            Remove a player from self.players based on the index
-
         remove_player_by_name(name: str):
             Removes a player from self.players based on their name
 
         set_current_player_by_id(player_id: unique_id):
             Sets the current player based on the player id
-
-        set_current_player_by_index(player_index: int):
-            Sets the current player based on the index in self.players
 
         set_current_player_by_name(player_name: str):
             Sets the current player based on the player name
@@ -167,10 +161,6 @@ class CardGameHandler():
         to_player.add_cards_to_hand(cards)
         return cards
 
-    ##########################################################################
-    # This method below is slated for removal unless I find a REALLY good
-    # reason to keep it.
-    ##########################################################################
     def deal_by_id(self, amount, player_id):
         """
         Deals the specified amount of cards via player id
@@ -180,8 +170,6 @@ class CardGameHandler():
 
         Returns a string list if the player exists, otherwise returns None
         """
-
-        print("Warning: deal_by_id may be removed in the near future.")
 
         player_id = [
             player for players in self.players if player.id == player_id
@@ -252,22 +240,6 @@ class CardGameHandler():
             if not player.id == player_id
         ]
 
-    ##########################################################################
-    # The below function is slated for removal unless I find a REALLY good
-    # reason to keep it.
-    ##########################################################################
-    async def remove_player_by_index(self, index):
-        """
-        Removes a player based on the index provided. Any number larger than
-        len(self.players) will be modded down to fit.
-
-        index: int
-        """
-
-        index %= len(self.players)
-
-        self.players.pop(index)
-
     async def remove_player_by_name(self, name):
         """
         Removes a player from the game based on their name
@@ -288,17 +260,6 @@ class CardGameHandler():
                   player.id == player_id]
 
         self.current_player = self.players.index(player[0])
-
-    ##########################################################################
-    # The below method is slated for removal unless I can think of a REALLY
-    # good reason to keep it.
-    ##########################################################################
-    async def set_current_player_by_index(self, player_index):
-        """
-        Sets the current player based on the index in self.players
-        """
-
-        self.current_player = player_index % len(self.players)
 
     async def set_current_player_by_name(self, player_name):
         """
@@ -417,13 +378,15 @@ class BlackjackHandler(CardGameHandler):
 
         self.current_winner = highest_index
 
-    async def construct_and_add_player(self, name, player_id, hand=[]):
+    async def construct_and_add_player(self, discord_member=None, name=None,
+                                       player_id=None, hand=[]):
         """
         Overriding the base class function to use player.BlackjackPlayer
         """
 
         new_player = player.BlackjackPlayer(name=name, player_id=player_id,
-                                            hand=hand)
+                                            hand=hand,
+                                            discord_member=discord_member)
         await self.add_player(new_player)
 
     async def dealer_play(self):

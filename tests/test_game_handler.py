@@ -106,18 +106,6 @@ class TestGameHandler(unittest.TestCase):
         self.assertFalse(self.standard_handler.players)
         self.assertTrue(self.standard_handler.players == [])
 
-    ###################################
-    # TODO: Remove below if unnecessary
-    ###################################
-    def test_remove_by_index(self):
-        """
-        Tests removing a player by index
-        """
-        run(self.standard_handler.add_player(self.player))
-        run(self.standard_handler.remove_player_by_index(0))
-        self.assertFalse(self.standard_handler.players)
-        self.assertTrue(self.standard_handler.players == [])
-
     def test_remove_player_by_name(self):
         """
         Tests removing a player by their id
@@ -139,21 +127,6 @@ class TestGameHandler(unittest.TestCase):
         self.assertEqual(self.standard_handler.current_player, 1)
 
         run(self.standard_handler.set_current_player_by_id(1234567890))
-        self.assertEqual(self.standard_handler.current_player, 0)
-
-    def test_set_current_player_by_index(self):
-        """
-        Tests setting the current player by index.
-        """
-
-        challenger = player.CardPlayer(name="zippy", player_id=20, hand=[])
-        run(self.standard_handler.add_player(self.player))
-        run(self.standard_handler.add_player(challenger))
-
-        run(self.standard_handler.set_current_player_by_index(1))
-        self.assertEqual(self.standard_handler.current_player, 1)
-
-        run(self.standard_handler.set_current_player_by_index(50))
         self.assertEqual(self.standard_handler.current_player, 0)
 
     def test_set_current_player_by_name(self):
