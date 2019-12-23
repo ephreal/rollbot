@@ -12,8 +12,18 @@ from classes.games import discord_interface
 from mock import MockUsers
 from tests.asyncio_run import run
 
-print("Tests still need to be completed for "
-      "discord_interface.add_player_to_game")
+print("\nTests still need to be completed for the following:\n"
+      "    discord_interface.add_player_to_current_players\n"
+      "    discord_interface.add_players_to_current_players\n"
+      "    discord_interface.add_player_to_game\n"
+      "    discord_interface.add_players_to_game\n"
+      "    discord_interface.create_game\n"
+      "    discord_interface.create_game_handler\n"
+      "    discord_interface.get_game_state_by_member\n"
+      "    discord_interface.is_playing\n"
+      "    discord_interface.pass_commands\n"
+      "    discord_interface.remove_player_from_game\n"
+      "    discord_interface.start_game\n")
 
 
 class TestDiscordInterface(unittest.TestCase):
@@ -34,6 +44,12 @@ class TestDiscordInterface(unittest.TestCase):
         run(self.interface.add_game_handler("BLACKJACK"))
         self.assertEqual(len(self.interface.current_sessions), 2)
 
+    def test_add_player_to_current_players(self):
+        """
+        Verifies a player is added to the current players properly.
+        """
+
+
     def test_add_player_to_game(self):
         """
         tests to make sure a player is added to the game properly
@@ -48,8 +64,7 @@ class TestDiscordInterface(unittest.TestCase):
         session_id = run(self.interface.create_game("blackjack",
                                                     self.test_user))
 
-
-    def test_generate_id(self):
+    def test_generate_session(self):
         """
         Makes sure that generate_id returns a valid int
         """
@@ -76,6 +91,7 @@ class TestDiscordInterface(unittest.TestCase):
         self.assertEqual(state.handler,
                          self.interface.current_sessions[session])
 
+    # make_player is slated for removal.
     def test_make_player(self):
         """
         Tests the make player portion of the discord interface.

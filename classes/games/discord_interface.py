@@ -109,22 +109,17 @@ class DiscordInterface():
         """
         Adds a player to the session passed in.
 
-        new_player: member
-
+        new_player: discord.member
         sid: int
+            -> None
         """
-
-        player_obj = await self.make_player(new_player)
-        # Notes to future self: Ceating a player object is pointless here.
-        # This is OK to remove provided you change all player creation
-        # to the game handler and update your tests accordingly.
         # For now, I'm going to get the game handler to handle all the player
         # creation and leave the rest up to you because it is getting late.
         # This required changes on all of the following:
         #   add_player_to_game (Commented out a line)
         #   create_game
         #   pass_commands (Removed passing through player object)
-        self.current_players[new_player.id] = {"player": player_obj,
+        self.current_players[new_player.id] = {
                                                "session_id": sid,
                                                "in_game": False,
                                                "member": new_player
@@ -149,10 +144,6 @@ class DiscordInterface():
         new_player: discord member
         """
 
-        player_session = self.current_players[new_player.id]["session_id"]
-        player_obj = self.current_players[new_player.id]["player"]
-
-        # await self.current_sessions[player_session].add_player(player_obj)
         self.current_players[new_player.id]["in_game"] = True
 
     async def add_players_to_game(self, players):
@@ -179,7 +170,8 @@ class DiscordInterface():
         handler = self.current_sessions[session_id]
         await handler.construct_and_add_player(
             name=initial_player.name,
-            player_id=initial_player.id
+            player_id=initial_player.id,
+            discord_member=initial_player
         )
         await self.add_player_to_current_players(initial_player, session_id)
         await self.add_player_to_game(initial_player)
@@ -246,6 +238,9 @@ class DiscordInterface():
 
         return self.current_players[member.id]["in_game"]
 
+    # NOTE: This method below is slated for removal. It makes FAR more sense
+    #       to handle player creation within the game handler rather than the
+    #       discord interface.
     @classmethod
     async def make_player(self, member):
         """
@@ -257,7 +252,8 @@ class DiscordInterface():
         new_player = player.CardPlayer(
                                         name=member.name,
                                         player_id=member.id,
-                                        hand=[]
+                                        hand=[],
+                                        discord_member=member
         )
         return new_player
 
