@@ -32,6 +32,11 @@ class Deck():
 
     Class Functions
 
+        Deck.__len__() -> length(int):
+            Returns the amount of cards in the deck. As cards are removed, the
+            length should change. To get the total size of the deck if things
+            have been drawn from in, call len(Deck.clean_deck) instead.
+
         Deck.add_discarded():
             Places all discarded card back into self.cards
 
@@ -94,7 +99,7 @@ class Deck():
     """
     def __init__(self, cards):
         # And today I learned a lesson about why taking a copy of a list is
-        # a GoodThing.
+        # a Good Thing.
         self.clean_deck = cards[:]
 
         # prepare deck for first use
@@ -294,21 +299,6 @@ class Deck():
 
         random.shuffle(self.cards)
 
-    def up_next(self, card):
-        """
-        Places the card(s) at the front of the deck. If a list is passed in,
-        it places the cards into the deck in the order specified.
-        """
-
-        if isinstance(card, Card):
-            self.place_card(card, 1)
-
-        elif isinstance(card, list):
-            if len(card) == 1:
-                self.place_card(card[0], 1)
-            else:
-                self.place_cards(card, 1)
-
     def up_last(self, card):
         """
         Places the card(s) at the end of the deck.If a list is passed in, it
@@ -323,6 +313,21 @@ class Deck():
                 self.place_card(card, len(self.cards+1))
             else:
                 self.place_cards(card, len(self.cards)+1)
+
+    def up_next(self, card):
+        """
+        Places the card(s) at the front of the deck. If a list is passed in,
+        it places the cards into the deck in the order specified.
+        """
+
+        if isinstance(card, Card):
+            self.place_card(card, 1)
+
+        elif isinstance(card, list):
+            if len(card) == 1:
+                self.place_card(card[0], 1)
+            else:
+                self.place_cards(card, 1)
 
 
 class StandardDeck(Deck):

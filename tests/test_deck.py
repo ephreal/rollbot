@@ -67,7 +67,8 @@ class TestDeckMethods(unittest.TestCase):
     def test_clean_deck(self):
         """
         Verifies that clean_deck remains unchanged after the deck is
-        initialized
+        initialized. VERY important to take that copy of the list rather than
+        setting the variable equal to the list...
         """
         self.assertEqual(self.deck.clean_deck, self.cards)
 
@@ -132,7 +133,7 @@ class TestDeckMethods(unittest.TestCase):
         self.assertTrue(len(self.deck.discarded) == 3)
         self.assertTrue(len(self.deck.cards) == len(self.deck.clean_deck) - 3)
 
-    def test_drawing(self):
+    def test_draw(self):
         """
         Test the ability to draw cards. Verifies that cards are properly
         placed into the in_hand variable.
@@ -208,15 +209,6 @@ class TestDeckMethods(unittest.TestCase):
         self.deck.shuffle()
         self.assertFalse(cards == self.deck.cards)
 
-    def test_up_first(self):
-        """
-        Makes sure that inserting both a string and a list work as intended
-        """
-        drawn = self.deck.random_card()
-        self.deck.up_next(drawn)
-        self.assertEqual(drawn.value, self.deck.cards[0].value)
-        self.assertEqual(len(self.deck.cards), len(self.deck.clean_deck))
-
     def test_up_last(self):
         """
         Makes sure that inserting both a string and a list work as intended
@@ -224,6 +216,15 @@ class TestDeckMethods(unittest.TestCase):
         drawn = self.deck.random_card()
         self.deck.up_last(drawn)
         self.assertEqual(drawn.value, self.deck.cards[-1].value)
+        self.assertEqual(len(self.deck.cards), len(self.deck.clean_deck))
+
+    def test_up_next(self):
+        """
+        Makes sure that inserting both a string and a list work as intended
+        """
+        drawn = self.deck.random_card()
+        self.deck.up_next(drawn)
+        self.assertEqual(drawn.value, self.deck.cards[0].value)
         self.assertEqual(len(self.deck.cards), len(self.deck.clean_deck))
 
     def test_draw_all_cards(self):
