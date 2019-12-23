@@ -229,6 +229,17 @@ class CardGameHandler():
 
         return (next_player, self.players[next_player])
 
+    async def get_player_by_id(self, player_id):
+        """
+        Returns a player based on the player id
+        player_id: int
+            -> player.CardPlayer()
+        """
+
+        for card_player in self.players:
+            if card_player.id == player_id:
+                return card_player
+
     async def remove_player_by_id(self, player_id):
         """
         Removes a player based on their id
@@ -357,15 +368,6 @@ class BlackjackHandler(CardGameHandler):
         self.game_type = "blackjack"
         self.highest_score = 0
 
-    def check_commands(self, command):
-        """
-        Checks a command to see if it's valid in the context of the game.
-        If not, returns False
-
-        return: Boolean
-        """
-        pass
-
     async def check_tally(self, card_player):
         """
         Checks to make sure that the card_player's tally isn't above or equal
@@ -377,8 +379,28 @@ class BlackjackHandler(CardGameHandler):
             self.highest_score = card_player.tally
             self.current_ties = [card_player]
 
+        elif card_player.tally > 22:
+            # Player has gone bust. Recheck the winner.
+            await self.check_winner()
+
         elif card_player.tally == self.highest_score:
             self.current_ties.append(card_player)
+
+    async def check_winner(self):
+        """
+        Checks and sets the current winner. The current winner is the person
+        who has the highest score and is not bust.
+            -> None
+        """
+
+        highest_score = 0
+        highest_index = None
+        for card_player in self.players:
+            if card_player.tally > highest_score:
+                highest_score = card_player.tally
+                highest_index = self.players.index(card_player)
+
+        self.current_winner = highest_index
 
     async def construct_and_add_player(self, name, player_id, hand=[]):
         """
@@ -418,18 +440,26 @@ class BlackjackHandler(CardGameHandler):
 
         return cards
 
-    ############################
-    # Remove the below method? #
-    ############################
-    def expose_commands(self):
+    async def handle_commands(self, member, commands):
         """
-        Returns a list of valid commands for discord.
+        Checks if a command is viable and attempts to run it if possible.
 
-        returns: list[str]
+        card_player: player.CardPlayer
+        commands: list[str]
+            -> response: str
         """
 
-        commands = ["hit", "double hit", "stand", "stay"]
-        return commands
+        # Commands do not need to be in a list for this game.
+        command = "".join(commands)
+        if command.startswith('h'):
+            return await self.hit(member)
+        elif command.startswith("d"):
+            return await self.double_hit(member)
+        elif command.startswith("s"):
+            await self.stand()
+            return "You chose to stand."
+
+        return "Invalid command. Please try again."
 
     async def hit(self, card_player):
         """
@@ -455,6 +485,7 @@ class BlackjackHandler(CardGameHandler):
         """
 
         [await self.double_hit(card_player) for card_player in self.players]
+        await self.check_winner()
 
     async def stand(self):
         """
@@ -464,17 +495,3 @@ class BlackjackHandler(CardGameHandler):
 
         self.current_player += 1
         self.current_player %= len(self.players)
-
-    ##########################################################################
-    # The function below is slated for removal as it's doing nothing more
-    # than call another function to do the same thing. That sort of
-    # functionality should be kept to the user interface rather than creating
-    # convoluted code on the backend.
-    ##########################################################################
-    async def stay(self):
-        """
-        Convenience function that calls self.stand() as some people use the
-        phrase "stay" instead of "stand".
-        """
-
-        await self.stand()

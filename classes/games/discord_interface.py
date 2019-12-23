@@ -66,6 +66,11 @@ class DiscordInterface():
                 Adds multiple players to the game_handler their session_id
                 points to.
 
+            create_game(game_type: str, initial_player: discord.member):
+            -> session_id: int
+                Handles the initial creation of the game with the initial
+                player.
+
             create_game_handler(game_type: str, session_id: int):
                 Create a game handler based on the contents of game_type.
                 Defaults to game_handler.BlackjackHandler
@@ -83,7 +88,7 @@ class DiscordInterface():
         self.current_players = {}
         self.current_sessions = {}
 
-    def add_game_handler(self, game_type):
+    async def add_game_handler(self, game_type):
         """
         Generates a game_session_id and adds the handler to the
         current_sessions dict. The players will be added to the current_players
@@ -96,7 +101,7 @@ class DiscordInterface():
         """
 
         session_id = self.generate_session()
-        self.create_game_handler(game_type, session_id)
+        await self.create_game_handler(game_type, session_id)
 
         return session_id
 
@@ -109,14 +114,23 @@ class DiscordInterface():
         sid: int
         """
 
-        player_obj = self.make_player(new_player)
+        player_obj = await self.make_player(new_player)
+        # Notes to future self: Ceating a player object is pointless here.
+        # This is OK to remove provided you change all player creation
+        # to the game handler and update your tests accordingly.
+        # For now, I'm going to get the game handler to handle all the player
+        # creation and leave the rest up to you because it is getting late.
+        # This required changes on all of the following:
+        #   add_player_to_game (Commented out a line)
+        #   create_game
+        #   pass_commands (Removed passing through player object)
         self.current_players[new_player.id] = {"player": player_obj,
                                                "session_id": sid,
                                                "in_game": False,
                                                "member": new_player
                                                }
 
-    def add_players_to_current_players(self, players, sid):
+    async def add_players_to_current_players(self, players, sid):
         """
         Adds a list of players to a game session
 
@@ -126,7 +140,7 @@ class DiscordInterface():
         """
 
         for new_player in players:
-            self.add_player_to_current_players(new_player)
+            await self.add_player_to_current_players(new_player)
 
     async def add_player_to_game(self, new_player):
         """
@@ -138,10 +152,10 @@ class DiscordInterface():
         player_session = self.current_players[new_player.id]["session_id"]
         player_obj = self.current_players[new_player.id]["player"]
 
-        await self.current_sessions[player_session].add_player(player_obj)
+        # await self.current_sessions[player_session].add_player(player_obj)
         self.current_players[new_player.id]["in_game"] = True
 
-    def add_players_to_game(self, players):
+    async def add_players_to_game(self, players):
         """
         Sets a list of players as active in the game session they are mapped to
 
@@ -149,9 +163,29 @@ class DiscordInterface():
         """
 
         for member in players:
-            self.add_player_to_game(member)
+            await self.add_player_to_game(member)
 
-    def create_game_handler(self, game_type, session_id):
+    async def create_game(self, game_type, initial_player):
+        """
+        Handles the initial creation of the game with the initial
+        player.
+
+        game_type: str
+        initial_player: discord.member
+            -> session_id: int
+        """
+
+        session_id = await self.add_game_handler(game_type)
+        handler = self.current_sessions[session_id]
+        await handler.construct_and_add_player(
+            name=initial_player.name,
+            player_id=initial_player.id
+        )
+        await self.add_player_to_current_players(initial_player, session_id)
+        await self.add_player_to_game(initial_player)
+        return session_id
+
+    async def create_game_handler(self, game_type, session_id):
         """
         Creates a game handler for use in add_game_handler based on the content
         of game_type.
@@ -202,8 +236,18 @@ class DiscordInterface():
 
         return game_state
 
+    async def is_playing(self, member):
+        """
+        Checks to see if the discord member is currently in a game.
+
+        member: discord.member
+            -> in_game: bool
+        """
+
+        return self.current_players[member.id]["in_game"]
+
     @classmethod
-    def make_player(self, member):
+    async def make_player(self, member):
         """
         Makes a player object for adding a player to the current players list.
 
@@ -216,3 +260,38 @@ class DiscordInterface():
                                         hand=[]
         )
         return new_player
+
+    async def pass_commands(self, member, commands):
+        """
+        Passes commands onto the correct game handler for the player.
+
+        member: discord.member
+        commands: list[str]
+            -> response: str
+        """
+
+        player_dict = self.current_players[member.id]
+        handler = self.current_sessions[player_dict["session_id"]]
+        current_player = await handler.get_player_by_id(member.id)
+        return await handler.handle_commands(current_player, commands)
+
+    async def remove_player_from_game(self, member):
+        """
+        Sets the player as not active in a game.
+
+        member: discord.member
+            -> None
+        """
+
+        game_player = self.current_player[member.id]
+        game_player["in_game"] = False
+
+    async def start_game(self, sid):
+        """
+        Starts the game specified by the session id.
+
+        sid: int
+            -> None
+        """
+
+        await self.current_sessions[sid].setup()

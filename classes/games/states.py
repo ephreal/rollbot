@@ -55,7 +55,6 @@ class GameState():
         self.handler = game_handler
 
         self.cards_in_hand = self.handler.deck.in_hand
-        self.valid_commands = self.handler.expose_commands()
 
     async def set_current_player(self):
         """

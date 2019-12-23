@@ -28,10 +28,10 @@ class TestDiscordInterface(unittest.TestCase):
         Verifies that the add_game_handler function does what it says
         """
 
-        self.interface.add_game_handler("blackjack")
+        run(self.interface.add_game_handler("blackjack"))
         self.assertEqual(len(self.interface.current_sessions), 1)
 
-        self.interface.add_game_handler("BLACKJACK")
+        run(self.interface.add_game_handler("BLACKJACK"))
         self.assertEqual(len(self.interface.current_sessions), 2)
 
     def test_add_player_to_game(self):
@@ -39,6 +39,15 @@ class TestDiscordInterface(unittest.TestCase):
         tests to make sure a player is added to the game properly
         """
         pass
+
+    def test_create_game(self):
+        """
+        Tests to make sure a game is created properly.
+        """
+
+        session_id = run(self.interface.create_game("blackjack",
+                                                    self.test_user))
+
 
     def test_generate_id(self):
         """
@@ -57,8 +66,8 @@ class TestDiscordInterface(unittest.TestCase):
         Verifies that the game state is created and returned
         """
 
-        player = self.interface.make_player(self.test_user)
-        session = self.interface.add_game_handler("blackjack")
+        player = run(self.interface.make_player(self.test_user))
+        session = run(self.interface.add_game_handler("blackjack"))
         run(self.interface.add_player_to_current_players(player, session))
         run(self.interface.add_player_to_game(player))
         state = run(self.interface.get_game_state_by_member(self.test_user))
@@ -72,6 +81,6 @@ class TestDiscordInterface(unittest.TestCase):
         Tests the make player portion of the discord interface.
         """
 
-        player = self.interface.make_player(self.test_user)
+        player = run(self.interface.make_player(self.test_user))
         self.assertEqual(player.id, 10)
         self.assertEqual(player.name, "Glaxion")
