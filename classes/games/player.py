@@ -125,6 +125,9 @@ class BlackjackPlayer(CardPlayer):
         tally (int)
             A running tally of the player's hand.
 
+        split_hand (list[Card])
+            The secondary hand that a player has when they choose to split.
+
     Additional Class Functions
 
         receive_card(card, card.Card):
@@ -134,11 +137,12 @@ class BlackjackPlayer(CardPlayer):
             Increases tally by both cards' worth
     """
     def __init__(self, discord_member=None, hand=[], name=None,
-                 player_id=None):
+                 player_id=None, split_hand=None):
         super().__init__(discord_member=discord_member, hand=hand, name=name,
                          player_id=player_id)
 
         self.bust = False
+        self.split_hand = split_hand
         self.tally = 0
 
     def receive_card(self, card):
@@ -166,3 +170,25 @@ class BlackjackPlayer(CardPlayer):
 
         self.receive_card(cards[0])
         self.receive_card(cards[1])
+
+    async def split(self):
+        """
+        Splits the player's hand into 2 hands.
+
+            -> None
+        """
+
+        self.split_hand = self.hand[0:1]
+        self.hand = self.hand[1:]
+
+    async def swap_hands(self):
+        """
+        Changes the self.split_hand to be self.hand. Only needed when a player
+        has split their hand an want's to draw cards for the other hand.
+
+            -> None
+        """
+
+        temp = self.split_hand
+        self.split_hand = self.hand
+        self.hand = temp

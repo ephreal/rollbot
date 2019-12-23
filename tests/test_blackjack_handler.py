@@ -58,16 +58,6 @@ class TestBlackjackHandler(unittest.TestCase):
         else:
             self.assertNotEqual(start, self.dealer.tally)
 
-    def test_double_hit(self):
-        """
-        tests taking two cards from the deck at once.
-        """
-        run(self.handler.double_hit(self.player))
-
-        self.assertTrue(self.player.tally > 0)
-        self.assertEqual(len(self.player.hand), 2)
-        self.assertEqual(len(self.handler.deck), 50)
-
     def test_hit(self):
         """
         Tests taking a card from the deck

@@ -31,10 +31,10 @@ class cardgames(commands.Cog):
             sid = await self.interface.create_game(game, author)
             handler = self.interface.current_sessions[sid]
             await self.interface.start_game(sid)
-            dealer_hand = handler.players[0].tally
+            dealer_hand = handler.dealer.hand[0]
             player_hand = handler.players[1].tally
-            await ctx.send("You may hit, double hit, or stand.")
-            await ctx.send(f"The dealer has {dealer_hand}")
+            await ctx.send("You may hit or stand.")
+            await ctx.send(f"The dealer has a {dealer_hand}")
             await ctx.send(f"You have {player_hand}")
         else:
             return await ctx.send("Only blackjack is curently available.")
@@ -43,7 +43,7 @@ class cardgames(commands.Cog):
             response = await self.get_response(ctx)
             response = response.content
 
-            if response.startswith("h") or response.startswith("d"):
+            if response.startswith("h"):
                 response = await self.interface.pass_commands(author, response)
                 player_hand = handler.players[1].tally
                 await ctx.send(f"Your hand is {player_hand}")
@@ -55,9 +55,12 @@ class cardgames(commands.Cog):
                 response = await self.interface.pass_commands(author, response)
                 await ctx.send(response)
                 # Player has chosen to stand
-                await handler.dealer_play()
+                if not handler.players[1].bust and (
+                       handler.dealer.tally < handler.players[1].tally):
+                    await handler.dealer_play()
                 dealer_hand = handler.dealer.tally
-                if handler.dealer.tally > handler.players[1].tally:
+                if not handler.dealer.bust and (
+                       handler.dealer.tally > handler.players[1].tally):
                     return await ctx.send("Sorry, you lost. The dealer has "
                                           f"{dealer_hand} Best of luck next "
                                           "time.")

@@ -379,9 +379,12 @@ class BlackjackHandler(CardGameHandler):
             self.highest_score = card_player.tally
             self.current_ties = [card_player]
 
-        elif card_player.tally > 22:
+        elif card_player.tally > 22 and not card_player.split_hand:
             # Player has gone bust. Recheck the winner.
             await self.check_winner()
+
+        elif card_player.split_hand:
+            card_player.swap_hands()
 
         elif card_player.tally == self.highest_score:
             self.current_ties.append(card_player)
@@ -413,32 +416,16 @@ class BlackjackHandler(CardGameHandler):
 
     async def dealer_play(self):
         """
-        The logic used to guide the program through making an intelligent
+        The logic used to guide the program through making a (semi) intelligent
         choice when it plays the game with others.
         """
 
         if self.dealer.tally >= 17:
             await self.stand()
 
-        if self.dealer.tally < 9:
-            await self.double_hit(self.dealer)
         else:
             while self.dealer.tally < 17:
                 await self.hit(self.dealer)
-
-    async def double_hit(self, card_player):
-        """
-        Gives two cards to card_player. Wrapper for deal function.
-
-        card_player: player.CardPlayer
-        """
-
-        cards = await self.deal(2, card_player)
-        card_player.receive_cards(cards)
-
-        await self.check_tally(card_player)
-
-        return cards
 
     async def handle_commands(self, member, commands):
         """
@@ -453,9 +440,9 @@ class BlackjackHandler(CardGameHandler):
         command = "".join(commands)
         if command.startswith('h'):
             return await self.hit(member)
-        elif command.startswith("d"):
-            return await self.double_hit(member)
-        elif command.startswith("s"):
+        elif command.startswith("sp"):
+            return await member.split()
+        elif command.startswith("st"):
             await self.stand()
             return "You chose to stand."
 
@@ -475,6 +462,15 @@ class BlackjackHandler(CardGameHandler):
 
         return card
 
+    async def select_split_hand(self, card_player):
+        """
+        Sets the second hand of a player who split their hand to be the active
+        hand.
+            -> None
+        """
+
+        await card_player.swap_hands()
+
     async def setup(self):
         """
         Sets up the blackjack game by dealing two cards to the player(s) and to
@@ -484,8 +480,19 @@ class BlackjackHandler(CardGameHandler):
         players will be added in the future.
         """
 
-        [await self.double_hit(card_player) for card_player in self.players]
+        [await self.hit(card_player) for card_player in self.players]
+        [await self.hit(card_player) for card_player in self.players]
         await self.check_winner()
+
+    async def split(self, card_player):
+        """
+        Calls the player's split() function to split a hand into 2 different
+        hands.
+
+        card_player: player.BlackjackPlayer
+            -> None
+        """
+        await card_player.split()
 
     async def stand(self):
         """
