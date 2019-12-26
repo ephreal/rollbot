@@ -100,7 +100,7 @@ class DiscordInterface():
         return: session_id (int)
         """
 
-        session_id = self.generate_session()
+        session_id = await self.generate_session()
         await self.create_game_handler(game_type, session_id)
 
         return session_id
@@ -113,12 +113,6 @@ class DiscordInterface():
         sid: int
             -> None
         """
-        # For now, I'm going to get the game handler to handle all the player
-        # creation and leave the rest up to you because it is getting late.
-        # This required changes on all of the following:
-        #   add_player_to_game (Commented out a line)
-        #   create_game
-        #   pass_commands (Removed passing through player object)
         self.current_players[new_player.id] = {
                                                "session_id": sid,
                                                "in_game": False,
@@ -130,12 +124,12 @@ class DiscordInterface():
         Adds a list of players to a game session
 
         players: list[member]
-
         sid: int
+            -> None
         """
 
         for new_player in players:
-            await self.add_player_to_current_players(new_player)
+            await self.add_player_to_current_players(new_player, sid)
 
     async def add_player_to_game(self, new_player):
         """
@@ -198,7 +192,7 @@ class DiscordInterface():
 
         self.current_sessions[session_id] = handler
 
-    def generate_session(self):
+    async def generate_session(self):
         """
         Generates a random game session for use. If the game session id is
         already in use, it'll try generate another one.

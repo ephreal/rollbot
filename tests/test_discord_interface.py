@@ -13,8 +13,6 @@ from mock import MockUsers
 from tests.asyncio_run import run
 
 print("\nTests still need to be completed for the following:\n"
-      "    discord_interface.add_player_to_current_players\n"
-      "    discord_interface.add_players_to_current_players\n"
       "    discord_interface.add_player_to_game\n"
       "    discord_interface.add_players_to_game\n"
       "    discord_interface.create_game\n"
@@ -49,6 +47,27 @@ class TestDiscordInterface(unittest.TestCase):
         Verifies a player is added to the current players properly.
         """
 
+        sid = run(self.interface.generate_session())
+        run(self.interface.add_player_to_current_players(self.test_user, sid))
+        card_player = self.interface.current_players[self.test_user.id]
+
+        self.assertEqual(card_player['member'], self.test_user)
+
+    def test_add_players_to_current_players(self):
+        """
+        Verifies players are added to the current players properly.
+        """
+
+        zorp = self.test_user = MockUsers.DiscordUser(userid=9, name="zorp")
+        sid = run(self.interface.generate_session())
+        users = [zorp, self.test_user]
+        run(self.interface.add_players_to_current_players(users, sid))
+
+        card_player = self.interface.current_players[self.test_user.id]
+        self.assertEqual(card_player['member'], self.test_user)
+
+        card_player = self.interface.current_players[zorp.id]
+        self.assertEqual(card_player['member'], zorp)
 
     def test_add_player_to_game(self):
         """
@@ -69,7 +88,7 @@ class TestDiscordInterface(unittest.TestCase):
         Makes sure that generate_id returns a valid int
         """
 
-        session_id = self.interface.generate_session()
+        session_id = run(self.interface.generate_session())
 
         self.assertTrue(isinstance(session_id, int))
 
