@@ -7,6 +7,7 @@ Please see the license for any restrictions or rights granted to you by the
 License.
 """
 
+import asyncio
 import unittest
 from classes.utils import structures
 
@@ -20,7 +21,7 @@ class TestQueue(unittest.TestCase):
         Verifies that adding things to the queue works
         """
 
-        self.queue.add("test")
+        run(self.queue.add("test"))
         self.assertEqual("test", self.queue.items[0])
 
     def test_empty(self):
@@ -28,27 +29,27 @@ class TestQueue(unittest.TestCase):
         Verifies the queue can test whether it's empty or not correctly
         """
 
-        self.assertTrue(self.queue.empty())
-        self.queue.add(5)
-        self.assertFalse(self.queue.empty())
+        self.assertTrue(run(self.queue.empty()))
+        run(self.queue.add(5))
+        self.assertFalse(run(self.queue.empty()))
 
     def test_full(self):
         """
         Verifies that full checks it's array properly.
         """
-        self.assertFalse(self.queue.full())
+        self.assertFalse(run(self.queue.full()))
         for i in range(0, 6):
-            self.queue.add(i)
+            run(self.queue.add(i))
 
-        self.assertTrue(self.queue.full())
+        self.assertTrue(run(self.queue.full()))
 
     def test_peek(self):
         """
         Verifies that peek shows the first element and does not remove any
         elements from the queue.
         """
-        self.queue.add(3)
-        self.assertTrue(3, self.queue.peek())
+        run(self.queue.add(3))
+        self.assertTrue(3, run(self.queue.peek()))
         self.assertTrue(1, len(self.queue.items))
 
     def test_remove(self):
@@ -56,7 +57,20 @@ class TestQueue(unittest.TestCase):
         Verifies that the queue is able to remove things from it.
         """
 
-        self.queue.add("test")
-        item = self.queue.remove()
+        run(self.queue.add("test"))
+        item = run(self.queue.remove())
 
         self.assertEqual("test", item)
+
+
+def run(coroutine):
+    """
+    Runs and returns the data from the couroutine passed in. This is to
+    only be used in unittesting.
+
+    coroutine : asyncio coroutine
+
+        -> coroutine return
+    """
+
+    return asyncio.get_event_loop().run_until_complete(coroutine)

@@ -16,19 +16,19 @@ class Queue:
         self.maxlen = maxlen
         self.items = []
 
-    def add(self, item):
+    async def add(self, item):
         """
         Add an item to the queue. Returns True if successful, False if not
 
             -> Boolean
         """
-        if not self.full():
+        if not (await self.full()):
             self.items.append(item)
             return True
 
         return False
 
-    def empty(self):
+    async def empty(self):
         """
         Tests whether or not the queue is empty.
 
@@ -38,7 +38,7 @@ class Queue:
         if len(self.items) == 0:
             return True
 
-    def full(self):
+    async def full(self):
         """
         Checks to see if the queue is full. If maxlen is 0, there is assumed
         to be no limit (limited practically by memory size)
@@ -48,27 +48,25 @@ class Queue:
             -> True or None
         """
 
-        print(self.maxlen)
-        print(len(self.items))
         if (self.maxlen == 0) or (len(self.items) < self.maxlen):
             return None
         return True
 
-    def peek(self):
+    async def peek(self):
         """
         Returns the first item on the queue without removing it.
         """
 
         return self.items[0]
 
-    def remove(self):
+    async def remove(self):
         """
         Removes the first item from the queue. Returns the item to the caller.
 
             -> first item from queue
         """
 
-        if not self.empty():
+        if not (await self.empty()):
             item = self.items[0]
             self.items = self.items[1:]
             return item

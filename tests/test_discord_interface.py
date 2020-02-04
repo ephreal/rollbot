@@ -95,20 +95,20 @@ class TestDiscordInterface(unittest.TestCase):
         session_id = str(session_id)
         self.assertEqual(len(session_id), 11)
 
-    def test_get_game_state_by_member(self):
-        """
-        Verifies that the game state is created and returned
-        """
-
-        player = run(self.interface.make_player(self.test_user))
-        session = run(self.interface.add_game_handler("blackjack"))
-        run(self.interface.add_player_to_current_players(player, session))
-        run(self.interface.add_player_to_game(player))
-        state = run(self.interface.get_game_state_by_member(self.test_user))
-
-        self.assertEqual(state.current_player.name, "Glaxion")
-        self.assertEqual(state.handler,
-                         self.interface.current_sessions[session])
+    # def test_get_game_state_by_member(self):
+    #     """
+    #     Verifies that the game state is created and returned
+    #     """
+    #
+    #     player = run(self.interface.make_player(self.test_user))
+    #     session = run(self.interface.add_game_handler("blackjack"))
+    #     run(self.interface.add_player_to_current_players(player, session))
+    #     run(self.interface.add_player_to_game(player))
+    #     state = run(self.interface.get_game_state_by_member(self.test_user))
+    #
+    #     self.assertEqual(state.current_player.name, "Glaxion")
+    #     self.assertEqual(state.handler,
+    #                      self.interface.current_sessions[session])
 
     # make_player is slated for removal.
     def test_make_player(self):
