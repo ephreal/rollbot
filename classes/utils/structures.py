@@ -54,6 +54,13 @@ class Queue:
             return None
         return True
 
+    def peek(self):
+        """
+        Returns the first item on the queue without removing it.
+        """
+
+        return self.items[0]
+
     def remove(self):
         """
         Removes the first item from the queue. Returns the item to the caller.
