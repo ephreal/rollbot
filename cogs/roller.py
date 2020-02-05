@@ -1,30 +1,17 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 from discord.ext import commands
 from classes.roll_functions import roller as rl
 from classes.bot_utils import utils
+
+import sys
 
 
 class roller(commands.Cog):
@@ -34,7 +21,7 @@ class roller(commands.Cog):
         self.utils = utils(self.bot)
 
     @commands.command(pass_context=True)
-    async def roll(self, ctx, roll):
+    async def roll(self, ctx, *rolls):
         """
         A general purpose rolling command.
 
@@ -78,35 +65,68 @@ class roller(commands.Cog):
 
         try:
 
-            if len(roll) == 0:
+            if len(rolls) == 0:
                 # return 1d6 roll
                 dice_pool = 1
                 sides = 6
-
-            elif len(roll) >= 1:
-                if "d" in roll:
-                    roll = roll.split("d")
-                    dice_pool = int(roll[0])
-                    sides = int(roll[1])
-                else:
-                    dice_pool = int(roll)
-                    sides = 6
-
                 rolls = await self.dice_roller.roll(dice_pool, sides)
+                rolls = str(rolls)
+                rolls = rolls.replace("[", "")
+                rolls = rolls.replace("]", "")
+                message += f"You rolled {dice_pool}D{sides}\n" \
+                           f"{rolls}\n"
 
-            rolls = str(rolls)
-            rolls = rolls.replace("[", "")
-            rolls = rolls.replace("]", "")
+            else:
+                # different or multiple rolls ahead
+                rolls = await self.multiple_rolls(rolls)
+                message += await self.format_rolls(rolls)
 
-            message += f"You rolled {dice_pool}D{sides}\n" \
-                       f"{rolls}\n```"
+            message += "```"
 
             await channel.send(message)
 
         except Exception as e:
             await channel.send("Incorrect input. Run .help roll if you need "
                                "help.")
-            await channel.send(f"Error message: {e}")
+            print(f"Error message: {e}\n"
+                  f"line: {sys.exc_info()[-1].tb_lineno}")
+
+    async def multiple_rolls(self, roll_types):
+        """
+        Handles the rolling of anything more complex than a 1d6.
+
+        roll_types: (string)
+            -> {roll_type: [int]}
+        """
+
+        # Initialize the rolls dictionary
+        rolls = {roll: [] for roll in roll_types}
+        for roll in roll_types:
+            dice, sides = roll.lower().split("d")
+            dice = int(dice)
+            sides = int(sides)
+            rolls[roll].extend(await self.dice_roller.roll(dice, sides))
+
+        return rolls
+
+    async def format_rolls(self, rolls):
+        """
+        Formats the output from multiple_rolls.
+
+        rolls: {roll: [int]}
+            -> formatted_rolls: string
+        """
+
+        formatted_rolls = ""
+        roll_keys = list(rolls.keys())
+        roll_keys.sort()
+        for i in roll_keys:
+            total = [int(y) for y in rolls[i]]
+            formatted_rolls += f"{i}:    total: {sum(total)}\n    " \
+                               f"    Rolls: {rolls[i]}\n\n"
+        return formatted_rolls
+
+
 
 
 def setup(bot):
