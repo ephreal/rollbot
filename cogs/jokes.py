@@ -20,9 +20,10 @@ class Joke(commands.Cog):
 
     """
     Commands:
-        .joke        - fetch a random joke
+        .joke        - fetch a random dad joke
         .joke dad    - fetch a random dad joke
         .joke norris - fetch a random chuck norris joke
+        .joke geek   - fetch a random geeky joke
 
     Methods:
         joke(ctx: discord context object, joke_type: string):
@@ -45,8 +46,9 @@ class Joke(commands.Cog):
         Fetches and displays a random joke for your amusement.
 
         Available joke types are
-            dad
             chuck
+            dad
+            geek
             norris
 
         Get a random joke:
@@ -63,6 +65,8 @@ class Joke(commands.Cog):
             return await ctx.send(await self.dad_joke())
         elif joke_type == "chuck" or joke_type == "norris":
             return await ctx.send(await self.chuck_norris_joke())
+        elif joke_type == "geek":
+            return await ctx.send(await self.geek_joke())
 
         return await ctx.send(await self.dad_joke())
 
@@ -91,6 +95,19 @@ class Joke(commands.Cog):
         dad_joke = await network.fetch_page(url, headers)
         dad_joke = json.loads(dad_joke)
         return dad_joke["joke"]
+
+    async def geek_joke(self):
+        """
+        Gets and returns a random joke from
+        https://geek-jokes.sameerkumar.website/api
+
+            -> joke: String
+        """
+
+        headers = {"Accept": "application/json"}
+        url = "https://geek-jokes.sameerkumar.website/api"
+        geek_joke = await network.fetch_page(url, headers=headers)
+        return geek_joke
 
 
 def setup(bot):
