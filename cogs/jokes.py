@@ -68,7 +68,7 @@ class Joke(commands.Cog):
         elif joke_type == "geek":
             return await ctx.send(await self.geek_joke())
 
-        return await ctx.send(await self.dad_joke())
+        return await ctx.send(await self.d_katz_joke_api())
 
     async def chuck_norris_joke(self):
         """
@@ -108,6 +108,19 @@ class Joke(commands.Cog):
         url = "https://geek-jokes.sameerkumar.website/api"
         geek_joke = await network.fetch_page(url, headers=headers)
         return geek_joke
+
+    async def d_katz_joke_api(self):
+        """
+        Gets and returns a joke from the joke database maintained by 15DKatz
+        at https://official-joke-api.appspot.com/random_joke
+
+            -> joke: String
+        """
+
+        url = "https://official-joke-api.appspot.com/random_joke"
+        random_joke = await network.fetch_page(url)
+        random_joke = json.loads(random_joke)
+        return f"{random_joke['setup']}\n{random_joke['punchline']}"
 
 
 def setup(bot):
