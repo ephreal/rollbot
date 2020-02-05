@@ -41,7 +41,7 @@ class Joke(commands.Cog):
 
     @commands.command(description="Get a random joke")
     async def joke(self, ctx, joke_type=None):
-        f"""
+        """
         Fetches and displays a random joke for your amusement.
 
         Available joke types are
@@ -50,13 +50,13 @@ class Joke(commands.Cog):
             norris
 
         Get a random joke:
-            {self.bot.command_prefix}joke
+            .joke
 
         Get a dad joke:
-            {self.bot.command_prefix}joke dad
+            .joke dad
 
         Get a chuck norris joke:
-            {self.bot.command_prefix}joke chuck
+            .joke chuck
         """
 
         if joke_type == "dad":
