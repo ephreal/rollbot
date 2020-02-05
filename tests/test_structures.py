@@ -9,7 +9,7 @@ License.
 
 import asyncio
 import unittest
-from classes.utils import structures
+from utils import structures
 
 
 class TestQueue(unittest.TestCase):

@@ -9,7 +9,7 @@ License.
 
 
 from discord.ext import commands
-from classes.utils import network
+from utils import network
 
 import json
 

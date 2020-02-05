@@ -7,7 +7,7 @@ Please see the license for any restrictions or rights granted to you by the
 License.
 """
 
-from classes.utils import network
+from utils import network
 import asyncio
 import json
 import unittest
