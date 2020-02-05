@@ -64,7 +64,7 @@ class Joke(commands.Cog):
         elif joke_type == "chuck" or joke_type == "norris":
             return await ctx.send(await self.chuck_norris_joke())
 
-        return await ctx.send(await self.dad_joke(), tts=True)
+        return await ctx.send(await self.dad_joke())
 
     async def chuck_norris_joke(self):
         """
