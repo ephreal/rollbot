@@ -11,12 +11,12 @@ License.
 import aiohttp
 
 
-async def fetch_page(url):
+async def fetch_page(url, headers={}):
     async with aiohttp.ClientSession() as session:
-        html = await fetch(session, url)
+        html = await fetch(session, url, headers)
         return html
 
 
-async def fetch(session, url):
-    async with session.get(url) as html:
+async def fetch(session, url, headers):
+    async with session.get(url, headers=headers) as html:
         return await html.text()
