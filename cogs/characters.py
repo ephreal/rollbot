@@ -27,7 +27,7 @@ DEALINGS IN THE SOFTWARE.
 # through an interactive system with the bot.
 
 from discord.ext import commands
-from classes.roll_functions import roller
+from classes.dice_rolling.base_roll_functions import roller
 
 
 class DnDChars(commands.Cog):

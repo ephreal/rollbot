@@ -8,7 +8,7 @@ License.
 """
 
 from discord.ext import commands
-from classes.roll_functions import roller as rl
+from classes.dice_rolling.base_roll_functions import roller as rl
 from classes.bot_utils import utils
 
 import sys

@@ -22,7 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from classes.roll_functions import roller
+from classes.dice_rolling.base_roll_functions import roller
 from discord.ext import commands
 
 
