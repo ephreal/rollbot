@@ -24,6 +24,16 @@ class TestQueue(unittest.TestCase):
         run(self.queue.add("test"))
         self.assertEqual("test", self.queue.items[0])
 
+    def test_clear(self):
+        """
+        Verifies the queue can be cleared proprely
+        """
+
+        run(self.queue.add(1))
+        self.assertEqual(len(self.queue.items), 1)
+        run(self.queue.clear())
+        self.assertEqual(len(self.queue.items), 0)
+
     def test_empty(self):
         """
         Verifies the queue can test whether it's empty or not correctly

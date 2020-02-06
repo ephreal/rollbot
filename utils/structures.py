@@ -28,6 +28,13 @@ class Queue:
 
         return False
 
+    async def clear(self):
+        """
+        Clears all items from the queue
+        """
+
+        self.items = []
+
     async def empty(self):
         """
         Tests whether or not the queue is empty.
