@@ -150,7 +150,8 @@ class musicPlayer(commands.Cog):
 
         if len(results) > 1:
             # The user must choose a song.
-            message = f"```css\n{ctx.author.name}, choose a song number to play"
+            message = f"```css\n{ctx.author.name}, choose a song number " \
+                      f"for playback"
 
             counter = 1
             for i in results:
@@ -161,7 +162,7 @@ class musicPlayer(commands.Cog):
 
             await ctx.send(message)
 
-            msg = await self.bot.wait_for('message', timeout=20)
+            msg = await self.bot.wait_for('message', timeout=30)
             choice = msg.content
 
             try:
