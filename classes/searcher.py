@@ -7,7 +7,6 @@ Please see the license for any restrictions or rights granted to you by the
 License.
 """
 
-import operator
 from nltk.corpus import stopwords
 
 import json
@@ -22,13 +21,18 @@ class IndexSearch():
     def __init__(self, index_path="audio/song_index.json"):
         self.index = index_path
 
-    def search(self, tokens):
+    def search(self, tokens, search_type=None):
         """
         Searches for matching tokens inside the index file. If none match,
         returns and empty list. If any match, it calls self.rank_results() to
         rank the results for ease of use.
 
+        If search_type is set, it will attempt to search for that data instead
+        of the default data in the index (ie: search for authors rather than
+        songs)
+
         tokens: string
+        search_type: string
             -> [] or songs[string]
         """
         results = []

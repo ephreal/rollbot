@@ -77,6 +77,7 @@ class MusicPlayer():
 
         if not await self.music_queue.peek():
             return None
+
         self.voice_client.stop()
         await self.play()
 

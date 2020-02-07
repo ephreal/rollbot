@@ -93,12 +93,15 @@ class musicPlayer(commands.Cog):
         """
 
         results, total_relevance = await self.search_index(ctx, keywords)
-
+        # Cut to the first 20 results due to discord character limitations
+        results = results[:20]
         message = f"```css\n{ctx.author.name}, here are your song results."
+
         counter = 1
         for i in results:
             relevance = (i.relevance/total_relevance) * 100
             message += f"\n{counter}: {i.name} .... relevance: {relevance}%"
+            counter += 1
         message += "```"
         await ctx.send(message)
 
@@ -138,17 +141,25 @@ class musicPlayer(commands.Cog):
         if not vc:
             return
 
+        if not keywords:
+            player = self.players[ctx.guild.id]
+            return await player.play()
+
         results, total_relevance = await self.search_index(ctx, keywords)
+        results = results[:20]
 
         if len(results) > 1:
             # The user must choose a song.
-            message = f"```css\n{ctx.author.name}, here are your song results."
+            message = f"```css\n{ctx.author.name}, choose a song number to play"
+
             counter = 1
             for i in results:
                 relevance = (i.relevance/total_relevance) * 100
-                message += f"\n{counter}: {i.name} .... relevance: " \
-                           f"{relevance}%"
+                message += f"\n{counter}: {i.name} .... relevance: {relevance}%"
+                counter += 1
             message += "```"
+
+            await ctx.send(message)
 
             msg = await self.bot.wait_for('message', timeout=20)
             choice = msg.content
