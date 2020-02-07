@@ -39,9 +39,9 @@ class TestQueue(unittest.TestCase):
         Verifies the queue can test whether it's empty or not correctly
         """
 
-        self.assertTrue(run(self.queue.empty()))
+        self.assertTrue(run(self.queue.is_empty()))
         run(self.queue.add(5))
-        self.assertFalse(run(self.queue.empty()))
+        self.assertFalse(run(self.queue.is_empty()))
 
     def test_full(self):
         """

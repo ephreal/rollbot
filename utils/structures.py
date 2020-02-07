@@ -35,11 +35,11 @@ class Queue:
 
         self.items = []
 
-    async def empty(self):
+    async def is_empty(self):
         """
         Tests whether or not the queue is empty.
 
-        Returns True if empty, None if not.
+        Returns True if is_empty, None if not.
         """
 
         if len(self.items) == 0:
@@ -64,6 +64,8 @@ class Queue:
         Returns the first item on the queue without removing it.
         """
 
+        if len(self.items) == 0:
+            return None
         return self.items[0]
 
     async def remove(self):
@@ -73,7 +75,7 @@ class Queue:
             -> first item from queue
         """
 
-        if not (await self.empty()):
+        if not (await self.is_empty()):
             item = self.items[0]
             self.items = self.items[1:]
             return item

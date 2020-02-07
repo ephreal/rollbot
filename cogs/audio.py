@@ -8,17 +8,13 @@ License.
 """
 
 import discord
-import youtube_dl
-
+import os
+# import youtube_dl
 from asyncio import sleep
 from discord.ext import commands
-from discord import client
 
 
 from utils.structures import Queue
-
-if not discord.opus.is_loaded():
-    discord.opus.load_opus("opus")
 
 
 class musicPlayer(commands.Cog):
@@ -26,31 +22,78 @@ class musicPlayer(commands.Cog):
         self.bot = bot
         self.voice_clients = {}
         self.player = None
-        self.music_queue = Queue(10)
+        self.music_queues = {}
 
-    @commands.command()
     async def join(self, ctx):
         """
         joins the bot to the voice channel the author is in.
         """
+        join = "audio/bot_sounds/start_click.mp3"
 
         channel = ctx.author.voice.channel
-        self.voice_clients[ctx.guild.name] = await channel.connect()
+        if not channel:
+            return await ctx.send("You must be in a voice channel to do that")
+        # I have to play SOMETHING otherwise the bot refuses to play anything
+        # later on (is_playing() always returns True)
+        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(join))
+        self.voice_clients[ctx.guild.id] = await channel.connect()
+        self.voice_clients[ctx.guild.id].stop()
+        self.voice_clients[ctx.guild.id].play(source)
+        self.music_queues[ctx.guild.id] = Queue(10)
+        await sleep(2)
+        return self.voice_clients[ctx.guild.id]
+
+    @commands.command()
+    async def summon(self, ctx):
+        """
+        Summons the bot to your voice channel
+        """
+
+        channel = ctx.author.voice.channel
+        if not channel:
+            return await ctx.send("Join a voice channel first.")
+
+        vc = self.voice_clients[ctx.guild.id]
+        await vc.move_to(channel)
+
+    @commands.command()
+    async def clear(self, ctx):
+        """
+        Clears the music queue.
+        """
+
+        await self.music_queue.clear()
 
     @commands.command()
     async def disconnect(self, ctx):
         """
         Disconnects the bot from the voice channel.
         """
-        del(self.voice_clients[ctx.guild.name])
+        del(self.voice_clients[ctx.guild.id])
         await ctx.voice_client.disconnect()
+
+    async def enqueue(self, ctx, song):
+        """
+        Adds a song to the queue.
+
+        song: string
+            -> None
+        """
+
+        queue = self.music_queues[ctx.guild.id]
+
+        if not await queue.add(song):
+            await ctx.send("The queue is full, please try again later.")
+            return None
+        await ctx.send("Your song has been added to the queue.")
+        return True
 
     @commands.command()
     async def stop(self, ctx):
         """
         Stops the bot from playing audio
         """
-        vc = self.voice_clients[ctx.guild.name]
+        vc = self.voice_clients[ctx.guild.id]
         vc.stop()
         await ctx.send("Stopped voice client")
 
@@ -60,7 +103,7 @@ class musicPlayer(commands.Cog):
         Pauses the voice client from playing
         """
 
-        vc = self.voice_clients[ctx.guild.name]
+        vc = self.voice_clients[ctx.guild.id]
         vc.pause()
         await ctx.send("Paused the voice client")
 
@@ -70,14 +113,43 @@ class musicPlayer(commands.Cog):
         Searches local audio and plays the song (if found)
         """
 
+        try:
+            vc = self.voice_clients[ctx.guild.id]
+        except KeyError:
+            vc = await self.join(ctx)
+
+        if not vc:
+            return
+
         base_path = "audio"
-        vc = self.voice_clients[ctx.guild.name]
+        song = f"{base_path}/{song}"
 
-        if vc.is_playing:
-            return await self.enqueue(song)
+        if not await self.enqueue(ctx, song):
+            return
 
-        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song))
-        vc.play(f"{base_path}/{source}")
+        if not vc.is_playing():
+            await self.play_local(ctx)
+
+    async def play_local(self, ctx):
+
+        queue = self.music_queues[ctx.guild.id]
+        vc = self.voice_clients[ctx.guild.id]
+
+        song = await queue.remove()
+        while song:
+            while not vc.is_playing():
+                source = discord.PCMVolumeTransformer(
+                            discord.FFmpegPCMAudio(song)
+                        )
+
+                vc.play(source)
+                song = None
+
+            while vc.is_playing() or not vc.is_paused():
+                await sleep(1)
+            song = await queue.remove()
+
+        ctx.send("Completed playing")
 
     @commands.command()
     async def resume(self, ctx):
@@ -85,23 +157,28 @@ class musicPlayer(commands.Cog):
         Resumes playing the paused song.
         """
 
-        vc = self.voice_clients[ctx.guild.name]
-        vc.resume()
+        vc = self.voice_clients[ctx.guild.id]
+        await vc.resume()
 
+    @commands.command()
+    async def songs(self, ctx, *path):
+        """
+        Lists available songs.
+        """
+        path = " ".join(path)
+        path = path.replace(".", "")
+        await ctx.send(os.listdir(f"audio/{path}"))
 
-    # async def create_voice_client(self, author):
-    #     """
-    #     Creates a voice client for the music player to
-    #     use.
-    #     """
-    #
-    #     if not author.voice_channel:
-    #         return await self.bot.say("Please enter a voice channel first")
-    #
-    #     if not self.current_vc:
-    #         return self.current_vc.move_to(author.voice_channel)
-    #
-    #     return await self.bot.join_voice_channel(author.voice_channel)
+    @commands.command()
+    async def state(self, ctx):
+        vc = self.voice_clients[ctx.guild.id]
+        queue = self.music_queues[ctx.guild.id]
+        message = f"```css\nmusic queue: {queue.items}\n" \
+                  f"up next: {await queue.peek()}\n" \
+                  f"playing state: {vc.is_playing()}\n" \
+                  "```"
+        return await ctx.send(message)
+
     #
     # async def queue(self, channel, url):
     #     """
