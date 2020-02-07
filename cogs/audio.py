@@ -59,11 +59,12 @@ class musicPlayer(commands.Cog):
         if not channel:
             return await ctx.send("Join a voice channel first.")
 
-        if not self.players[ctx.guild.id]:
-            return await self.initialize_voice(channel)
+        try:
+            vc = self.players[ctx.guild.id].voice_client
+            await vc.move_to(channel)
 
-        vc = self.players[ctx.guild.id].voice_client
-        await vc.move_to(channel)
+        except KeyError:
+            return await self.initialize_voice(ctx)
 
     @commands.command()
     async def clear(self, ctx):
