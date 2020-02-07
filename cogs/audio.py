@@ -15,6 +15,7 @@ from discord.ext import commands
 
 from classes.indexer import Indexer
 from classes.music_player import MusicPlayer
+from classes.searcher import IndexSearch
 
 
 class musicPlayer(commands.Cog):
@@ -22,6 +23,7 @@ class musicPlayer(commands.Cog):
         self.bot = bot
         self.indexer = Indexer()
         self.players = {}
+        self.searcher = IndexSearch()
 
     async def initialize_voice(self, ctx):
         """
@@ -108,8 +110,7 @@ class musicPlayer(commands.Cog):
 
         # I think I'll bring the search class into here so it's possible to
         # search without having the bot in a voice channel.
-        player = self.players[ctx.guild.id]
-        results = await player.search(" ".join(keywords))
+        results = self.searcher.search(" ".join(keywords))
         if not results:
             return await ctx.send("Sorry, that does not match any songs.")
 
