@@ -6,8 +6,10 @@
 * [python 3.7+](https://www.python.org/downloads/release/python-373)
 * [discord.py](https://github.com/Rapptz/discord.py)
 * [aiohttp](https://github.com/aio-libs/aiohttp)
+* [nltk](https://www.nltk.org/install.html)
+* [pynacl](https://pypi.org/project/PyNaCl/)
 
-This bot has become a general-purpose discord bot with more server management capabilities slowly being incorporated in. Along with being good for rolling dice, the bot also has some fun features such as posting a random (or specific) XKCD comic, getting shadowrun/DnD quotes from a quotesite, and more.
+This bot has become a general-purpose discord bot with more server management capabilities and random features slowly being incorporated in when I get hit by something that I really want on it. Along with being good for rolling dice, the bot also has some fun features such as posting a random (or specific) XKCD comic, getting shadowrun/DnD quotes from a quotesite, and more.
 
 It is also be possible to connect my bot to your discord server if you'd like to use the same bot that I do. If you'd like to try this, [click here and authorize my bot on your server.](https://discordapp.com/api/oauth2/authorize?client_id=286673190288228362&permissions=502398078&scope=bot) Do note that the bot is currently in a perpetual state of development and I make no guarantees about the uptime of the bot. I do my best to have it up as much as possible. If you'd like to support me in my endeavors to make the bot more awesome and reliable, please consider [supporting me on Patreon.](https://www.patreon.com/ephreal)
 
@@ -19,12 +21,17 @@ The bot has been redesigned with better reliability in mind, and it's possible t
 * Get quotes
   * Shadowrun/DnD
   * Inspirobot
+* Get jokes
+  * dad jokes
+  * chuck norris jokes
 * Halt the bot
 * Kick users
 * Ping the bot
 * Play a "guess the number" game
+* Play blackjack (terribly)
 * Play Rock Paper Scissors
-* Purge message from a channel
+* Play music
+* Purge messages from a channel
 * Reboot the bot
 * Reload bot cogs
 * Rename the bot
@@ -71,19 +78,16 @@ Follow the install instructions and make sure that pip is installed with python.
 Once python is installed, install discord with pip. If you're not sure how to run commands, see here: <https://itconnect.uw.edu/learn/workshops/online-tutorials/web-publishing/what-is-a-terminal/>
 
 ```bash
-pip install discord
-pip install aiohttp
+pip install -r requirements.txt
 ```
 
 The command may differ depending on the version of python/pip you have. If the above fails, try some of these.
 
 ```bash
-python -m pip install discord
-python -m pip install aiohttp
+python -m pip install -r requirements.txt
 
 # or
-python3 -m pip install discord
-python3 -m pip install aiohttp
+python3 -m pip install -r requirements.txt
 ```
 
 If you still can't get discord installed, try googling your error. There's probably something else going on that you'll need to fix.
