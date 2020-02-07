@@ -101,7 +101,7 @@ class musicPlayer(commands.Cog):
         await ctx.send("Song paused...")
 
     @commands.command()
-    async def play(self, ctx, song=None):
+    async def play(self, ctx, *song):
         """
         Searches local audio and plays the song (if found)
         """
@@ -115,6 +115,7 @@ class musicPlayer(commands.Cog):
             return
 
         if song is not None:
+            song = " ".join(song)
             if not await self.players[ctx.guild.id].enqueue(song):
                 return await ctx.send("The music queue is full.")
             return await ctx.send("Your song has been queue for playback.")
