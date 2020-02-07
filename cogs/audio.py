@@ -8,24 +8,20 @@ License.
 """
 
 import discord
-import os
 # import youtube_dl
 from asyncio import sleep
 from discord.ext import commands
 
 
-from utils.structures import Queue
+from classes.indexer import Indexer
 from classes.music_player import MusicPlayer
 
 
 class musicPlayer(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.indexer = Indexer()
         self.players = {}
-        # Both voice_clients and music_queues will be removed when the music
-        # player is completed.
-        self.voice_clients = {}
-        self.music_queues = {}
 
     async def initialize_voice(self, ctx):
         """
@@ -38,8 +34,6 @@ class musicPlayer(commands.Cog):
             return await ctx.send("You must be in a voice channel to do that")
 
         vc = await channel.connect()
-        self.voice_clients[ctx.guild.id] = vc
-        self.music_queues[ctx.guild.id] = Queue(10)
         self.players[ctx.guild.id] = MusicPlayer(voice_client=vc)
 
         # I have to play SOMETHING otherwise the bot refuses to play anything
@@ -83,6 +77,103 @@ class musicPlayer(commands.Cog):
         await ctx.voice_client.disconnect()
 
     @commands.command()
+    async def index(self, ctx):
+        """
+        Builds the song index.
+        """
+
+        self.indexer.update_index()
+
+    @commands.command()
+    async def search(self, ctx, *keywords):
+        """
+        Searches the song index for a particular song.
+        """
+
+        results, total_relevance = await self.search_index(ctx, keywords)
+
+        message = f"```css\n{ctx.author.name}, here are your song results."
+        counter = 1
+        for i in results:
+            relevance = (i.relevance/total_relevance) * 100
+            message += f"\n{counter}: {i.name} .... relevance: {relevance}%"
+        message += "```"
+        await ctx.send(message)
+
+    async def search_index(self, ctx, keywords):
+        """
+        Searches the song index for a particular song and, if multiple are
+        found, asks which one was intended.
+        """
+
+        # I think I'll bring the search class into here so it's possible to
+        # search without having the bot in a voice channel.
+        player = self.players[ctx.guild.id]
+        results = await player.search(" ".join(keywords))
+        if not results:
+            return await ctx.send("Sorry, that does not match any songs.")
+
+        total_relevance = 0
+        for i in results:
+            total_relevance += i.relevance
+
+        return results, total_relevance
+
+    @commands.command()
+    async def play(self, ctx, *keywords):
+        """
+        Search the song database and immediately queue up or play a song.
+
+        examples:
+            Play the song "gravity".
+                .play gravity
+        """
+
+        try:
+            vc = self.players[ctx.guild.id].voice_client
+        except KeyError:
+            vc = await self.initialize_voice(ctx)
+
+        if not vc:
+            return
+
+        results, total_relevance = await self.search_index(ctx, keywords)
+
+        if len(results) > 1:
+            # The user must choose a song.
+            message = f"```css\n{ctx.author.name}, here are your song results."
+            counter = 1
+            for i in results:
+                relevance = (i.relevance/total_relevance) * 100
+                message += f"\n{counter}: {i.name} .... relevance: " \
+                           f"{relevance}%"
+            message += "```"
+
+            msg = await self.bot.wait_for('message', timeout=20)
+            choice = msg.content
+
+            try:
+                choice = int(choice) - 1
+            except ValueError:
+                return await ctx.send("That seems to be an invalid choice.")
+        else:
+            choice = 0
+
+        choice = results[choice]
+        if await self.players[ctx.guild.id].enqueue(choice.path):
+            await ctx.send("Queueing your song for playback")
+        else:
+            await ctx.send("The music queue is full, please try again later.")
+
+    @commands.command()
+    async def next(self, ctx):
+        """
+        Advances the player to the next song in the queue.
+        """
+        player = self.players[ctx.guild.id]
+        await player.next()
+
+    @commands.command()
     async def stop(self, ctx):
         """
         Stops the bot from playing audio
@@ -100,29 +191,6 @@ class musicPlayer(commands.Cog):
         player = self.players[ctx.guild.id]
         await player.pause()
         await ctx.send("Song paused...")
-
-    @commands.command()
-    async def play(self, ctx, *song):
-        """
-        Searches local audio and plays the song (if found)
-        """
-
-        try:
-            vc = self.players[ctx.guild.id].voice_client
-        except KeyError:
-            vc = await self.initialize_voice(ctx)
-
-        if not vc:
-            return
-
-        if song is not None:
-            song = " ".join(song)
-            if not await self.players[ctx.guild.id].enqueue(song):
-                return await ctx.send("The music queue is full.")
-            return await ctx.send("Your song has been queue for playback.")
-
-        if not vc.is_playing():
-            await self.play_song(ctx)
 
     async def play_song(self, ctx):
         """

@@ -10,6 +10,8 @@ License.
 
 import discord
 import os
+
+from classes.searcher import IndexSearch
 # Note: The import here is going to be relative to the main.py file, not this
 #       one. Therefore, look in a utils folder near main.py. I really wish I
 #       knew a better way to do this.
@@ -25,6 +27,7 @@ class MusicPlayer():
     """
     def __init__(self, audio_path="audio", voice_client=None):
         # Note: Audio path will be relative to main.py
+        self.searcher = IndexSearch(index_path=f"{audio_path}/song_index.json")
         self.audio_path = audio_path
         self.voice_client = voice_client
         self.currently_playing = None
@@ -58,8 +61,6 @@ class MusicPlayer():
         Adds a song to the music queue.
         """
 
-        song = song.replace("..", "")
-        song = f"{self.audio_path}/{song}"
         if not await self.music_queue.add(song):
             return None
 
@@ -76,7 +77,7 @@ class MusicPlayer():
 
         if not await self.music_queue.peek():
             return None
-        await self.voice_client.stop()
+        self.voice_client.stop()
         await self.play()
 
     async def pause(self):
@@ -98,6 +99,16 @@ class MusicPlayer():
         # Can only play local files for now.
         source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song))
         self.voice_client.play(source)
+
+    async def search(self, keywords):
+        """
+        Searches the music index and returns a list of ranked results
+
+        keywords: string
+            -> ranked_results{}
+        """
+
+        return self.searcher.search(keywords)
 
     async def stop(self):
         """
