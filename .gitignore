@@ -3,3 +3,4 @@ config.json
 config/config.json
 __pycache__
 pybot
+song_index.json
