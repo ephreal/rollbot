@@ -93,6 +93,9 @@ class musicPlayer(commands.Cog):
         """
 
         results, total_relevance = await self.search_index(ctx, keywords)
+        if results is None:
+            return
+
         # Cut to the first 20 results due to discord character limitations
         results = results[:20]
         message = f"```css\n{ctx.author.name}, here are your song results."
@@ -115,7 +118,8 @@ class musicPlayer(commands.Cog):
         # search without having the bot in a voice channel.
         results = self.searcher.search(" ".join(keywords))
         if not results:
-            return await ctx.send("Sorry, that does not match any songs.")
+            await ctx.send("Sorry, that does not match any songs.")
+            return [None, None]
 
         total_relevance = 0
         for i in results:
@@ -146,6 +150,9 @@ class musicPlayer(commands.Cog):
             return await player.play()
 
         results, total_relevance = await self.search_index(ctx, keywords)
+        if results is None:
+            return
+
         results = results[:20]
 
         if len(results) > 1:
@@ -233,11 +240,13 @@ class musicPlayer(commands.Cog):
 
     @commands.command()
     async def state(self, ctx):
-        vc = self.players[ctx.guild.id].voice_client
+        player = self.players[ctx.guild.id]
+        vc = player.voice_client
         queue = self.players[ctx.guild.id].music_queue
         message = f"```css\nmusic queue: {queue.items}\n" \
                   f"up next: {await queue.peek()}\n" \
                   f"playing state: {vc.is_playing()}\n" \
+                  f"Now playing: {player.now_playing}\n" \
                   "```"
         return await ctx.send(message)
 

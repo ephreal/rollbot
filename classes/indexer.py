@@ -25,6 +25,8 @@ class Indexer():
         self.index_path = index_path
         self.index_name = "song_index.json"
         self.ignore_files = [self.index_name, "bot_sounds"]
+        self.remove_punctuation = ["[", "]", "(", ")", "\"", ";", ":", "?",
+                                   "&", "-"]
 
     def update_index(self):
         """
@@ -57,6 +59,8 @@ class Indexer():
 
         file_path = os.path.join(root, file_name)
         file_name, _ = os.path.splitext(file_name)
+        for punc in self.remove_punctuation:
+            file_name.replace(punc, " ")
         stop_words = set(stopwords.words('english'))
         word_tokens = nltk.tokenize.word_tokenize(file_name)
         tokens = [t.lower() for t in word_tokens if t not in stop_words]

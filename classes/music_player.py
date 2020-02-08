@@ -11,6 +11,7 @@ License.
 import discord
 import os
 
+from asyncio import sleep
 from classes.searcher import IndexSearch
 # Note: The import here is going to be relative to the main.py file, not this
 #       one. Therefore, look in a utils folder near main.py. I really wish I
@@ -32,6 +33,7 @@ class MusicPlayer():
         self.voice_client = voice_client
         self.currently_playing = None
         self.music_queue = Queue(10)
+        self.now_playing = None
 
     async def available_songs(self, subdir=""):
         """
@@ -97,9 +99,10 @@ class MusicPlayer():
         """
 
         song = await self.music_queue.remove()
+        self.now_playing = os.path.basename(song)
         # Can only play local files for now.
         source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song))
-        self.voice_client.play(source)
+        self.voice_client.play(source, after=lambda e: print(f"Error: {e}"))
 
     async def search(self, keywords):
         """
