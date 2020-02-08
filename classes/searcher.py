@@ -74,10 +74,11 @@ class IndexSearch():
                 if result == results[i]:
                     to_pop.append(i)
                     result.relevance += 1
-
-            to_pop.sort(reverse=True)
-            for i in to_pop:
-                results.pop(i)
+            if results:
+                to_pop.sort(reverse=True)
+                print(to_pop)
+                for i in to_pop:
+                    results.pop(i)
             sorted_results.append(result)
 
         sorted_results.sort(reverse=True)
