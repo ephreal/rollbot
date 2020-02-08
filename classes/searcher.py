@@ -64,6 +64,7 @@ class IndexSearch():
         """
 
         sorted_results = []
+        to_pop = []
 
         while results:
             result = results[0]
@@ -71,8 +72,12 @@ class IndexSearch():
 
             for i in range(len(results)):
                 if result == results[i]:
-                    results.pop(i)
+                    to_pop.append(i)
                     result.relevance += 1
+
+            to_pop.sort(reverse=True)
+            for i in to_pop:
+                results.pop(i)
             sorted_results.append(result)
 
         sorted_results.sort(reverse=True)
