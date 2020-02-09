@@ -37,7 +37,7 @@ class Indexer():
         index = f"{self.index_path}/{self.index_name}"
         tokens = {}
 
-        for root, dirs, files in os.walk(self.index_path):
+        for root, dirs, files in os.walk(self.index_path, followlinks=True):
             dirs[:] = [d for d in dirs if d not in self.ignore_files]
             files[:] = [f for f in files if f not in self.ignore_files]
 
