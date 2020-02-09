@@ -59,11 +59,13 @@ class Indexer():
 
         file_path = os.path.join(root, file_name)
         file_name, _ = os.path.splitext(file_name)
-        author_dir = os.path.basename(root)
+        album_dir = os.path.basename(root)
+        author_dir = os.path.basename(os.path.dirname(root))
         for punc in self.remove_punctuation:
             file_name.replace(punc, " ")
         stop_words = set(stopwords.words('english'))
         word_tokens = nltk.tokenize.word_tokenize(file_name)
+        word_tokens.extend(nltk.tokenize.word_tokenize(album_dir))
         word_tokens.extend(nltk.tokenize.word_tokenize(author_dir))
         tokens = [t.lower() for t in word_tokens if t not in stop_words]
 
