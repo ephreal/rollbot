@@ -194,6 +194,15 @@ class musicPlayer(commands.Cog):
         await player.next()
 
     @commands.command()
+    async def resume(self, ctx):
+        """
+        Resumes playing the paused song.
+        """
+
+        player = self.players[ctx.guild.id]
+        await player.resume()
+
+    @commands.command()
     async def stop(self, ctx):
         """
         Stops the bot from playing audio
@@ -219,15 +228,6 @@ class musicPlayer(commands.Cog):
 
         player = self.players[ctx.guild.id]
         await player.play()
-
-    @commands.command()
-    async def resume(self, ctx):
-        """
-        Resumes playing the paused song.
-        """
-
-        player = self.players[ctx.guild.id]
-        await player.resume()
 
     @commands.command()
     async def songs(self, ctx, *path):

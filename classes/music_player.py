@@ -11,7 +11,7 @@ License.
 import discord
 import os
 
-from asyncio import sleep
+import asyncio
 from classes.searcher import IndexSearch
 # Note: The import here is going to be relative to the main.py file, not this
 #       one. Therefore, look in a utils folder near main.py. I really wish I
@@ -34,6 +34,8 @@ class MusicPlayer():
         self.currently_playing = None
         self.music_queue = Queue(10)
         self.now_playing = None
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.song_event_loop())
 
     async def available_songs(self, subdir=""):
         """
@@ -104,6 +106,14 @@ class MusicPlayer():
         source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(song))
         self.voice_client.play(source, after=lambda e: print(f"Error: {e}"))
 
+    async def resume(self):
+        """
+        Resumes a paused song
+        """
+
+        if self.voice_client.is_paused():
+            self.voice_client.resume()
+
     async def search(self, keywords):
         """
         Searches the music index and returns a list of ranked results
@@ -113,6 +123,25 @@ class MusicPlayer():
         """
 
         return self.searcher.search(keywords)
+
+    async def song_event_loop(self):
+        """
+        Checks for songs in the queue and starts playing them if the voice
+        client is not paused or playing.
+        """
+
+        vc = self.voice_client
+
+        while True:
+            if not (vc.is_paused() or vc.is_playing()):
+                if await self.music_queue.peek():
+                    try:
+                        await self.next()
+                    except Exception:
+                        pass
+                else:
+                    self.now_playing = None
+            await asyncio.sleep(1)
 
     async def stop(self):
         """
