@@ -59,6 +59,8 @@ class Indexer():
 
         file_path = os.path.join(root, file_name)
         file_name, _ = os.path.splitext(file_name)
+        file_root = os.path.basename(os.path.dirname(root))
+        file_name += f" {file_root}"
         for punc in self.remove_punctuation:
             file_name.replace(punc, " ")
         stop_words = set(stopwords.words('english'))
