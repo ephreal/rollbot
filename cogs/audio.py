@@ -85,6 +85,7 @@ class musicPlayer(commands.Cog):
         """
 
         self.indexer.update_index()
+        await ctx.send("Indexing complete!")
 
     @commands.command()
     async def search(self, ctx, *keywords):
