@@ -85,6 +85,7 @@ class musicPlayer(commands.Cog):
         """
 
         self.indexer.update_index()
+        await ctx.send("Indexing complete!")
 
     @commands.command()
     async def search(self, ctx, *keywords):
@@ -93,14 +94,18 @@ class musicPlayer(commands.Cog):
         """
 
         results, total_relevance = await self.search_index(ctx, keywords)
+        if results is None:
+            return
+
         # Cut to the first 20 results due to discord character limitations
         results = results[:20]
-        message = f"```css\n{ctx.author.name}, here are your song results."
+        message = f"```css\n{ctx.author.name}, here are your song results.\n"
 
         counter = 1
         for i in results:
             relevance = (i.relevance/total_relevance) * 100
-            message += f"\n{counter}: {i.name} .... relevance: {relevance}%"
+            message += f"{counter}: {i.name} .... relevance: " \
+                       f"{relevance:.2f}%\n"
             counter += 1
         message += "```"
         await ctx.send(message)
@@ -115,7 +120,8 @@ class musicPlayer(commands.Cog):
         # search without having the bot in a voice channel.
         results = self.searcher.search(" ".join(keywords))
         if not results:
-            return await ctx.send("Sorry, that does not match any songs.")
+            await ctx.send("Sorry, that does not match any songs.")
+            return [None, None]
 
         total_relevance = 0
         for i in results:
@@ -146,11 +152,15 @@ class musicPlayer(commands.Cog):
             return await player.play()
 
         results, total_relevance = await self.search_index(ctx, keywords)
+        if results is None:
+            return
+
         results = results[:20]
 
         if len(results) > 1:
             # The user must choose a song.
-            message = f"```css\n{ctx.author.name}, choose a song number to play"
+            message = f"```css\n{ctx.author.name}, choose a song number " \
+                      f"for playback"
 
             counter = 1
             for i in results:
@@ -161,7 +171,7 @@ class musicPlayer(commands.Cog):
 
             await ctx.send(message)
 
-            msg = await self.bot.wait_for('message', timeout=20)
+            msg = await self.bot.wait_for('message', timeout=30)
             choice = msg.content
 
             try:
@@ -184,6 +194,15 @@ class musicPlayer(commands.Cog):
         """
         player = self.players[ctx.guild.id]
         await player.next()
+
+    @commands.command()
+    async def resume(self, ctx):
+        """
+        Resumes playing the paused song.
+        """
+
+        player = self.players[ctx.guild.id]
+        await player.resume()
 
     @commands.command()
     async def stop(self, ctx):
@@ -213,15 +232,6 @@ class musicPlayer(commands.Cog):
         await player.play()
 
     @commands.command()
-    async def resume(self, ctx):
-        """
-        Resumes playing the paused song.
-        """
-
-        player = self.players[ctx.guild.id]
-        await player.resume()
-
-    @commands.command()
     async def songs(self, ctx, *path):
         """
         Lists available songs.
@@ -232,11 +242,13 @@ class musicPlayer(commands.Cog):
 
     @commands.command()
     async def state(self, ctx):
-        vc = self.players[ctx.guild.id].voice_client
+        player = self.players[ctx.guild.id]
+        vc = player.voice_client
         queue = self.players[ctx.guild.id].music_queue
         message = f"```css\nmusic queue: {queue.items}\n" \
                   f"up next: {await queue.peek()}\n" \
                   f"playing state: {vc.is_playing()}\n" \
+                  f"Now playing: {player.now_playing}\n" \
                   "```"
         return await ctx.send(message)
 
