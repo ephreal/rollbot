@@ -42,8 +42,7 @@ class Queue:
         Returns True if is_empty, None if not.
         """
 
-        if len(self.items) == 0:
-            return True
+        return len(self.items) == 0
 
     async def full(self):
         """
