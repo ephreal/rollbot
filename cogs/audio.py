@@ -1,4 +1,4 @@
-o# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 This software is licensed under the License (MIT) located at
 https://github.com/ephreal/rollbot/Licence
