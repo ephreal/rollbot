@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+o# -*- coding: utf-8 -*-
 """
 This software is licensed under the License (MIT) located at
 https://github.com/ephreal/rollbot/Licence
@@ -165,7 +165,8 @@ class musicPlayer(commands.Cog):
             counter = 1
             for i in results:
                 relevance = (i.relevance/total_relevance) * 100
-                message += f"\n{counter}: {i.name} .... relevance: {relevance}%"
+                message += f"\n{counter}: {i.name} .... relevance: " \
+                           f"{relevance:.2f}%"
                 counter += 1
             message += "```"
 
