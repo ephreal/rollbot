@@ -8,7 +8,7 @@ License.
 """
 
 
-from tests.asyncio_run import run
+import asyncio
 import unittest
 from classes.games import game_handler
 from classes.games import player
@@ -143,6 +143,19 @@ class TestGameHandler(unittest.TestCase):
 
         run(self.standard_handler.set_current_player_by_name("gorlog"))
         self.assertEqual(self.standard_handler.current_player, 0)
+
+
+def run(coroutine):
+    """
+    Runs and returns the data from the couroutine passed in. This is to
+    only be used in unittesting.
+
+    coroutine : asyncio coroutine
+
+        -> coroutine return
+    """
+
+    return asyncio.get_event_loop().run_until_complete(coroutine)
 
 
 if __name__ == "__main__":
