@@ -26,6 +26,7 @@ Commands provided by this cog
     purge : remove messages from a channel.
 """
 
+from discord import Embed, TextChannel
 from discord.ext import commands
 
 
@@ -33,6 +34,33 @@ class MessageManager(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.prefix = self.bot.command_prefix
+
+    @commands.command(description="Move a specified amount of messages")
+    @commands.has_permissions(manage_messages=True)
+    async def move(self, ctx, limit: int, channel: TextChannel):
+        """
+        Moves a specified amount of messages to the specified channel.
+
+        usage:
+            .move <amount> #channel-name
+
+        examples:
+            move 10 messages to the questions-chat-1 channel
+            .move 10 #questions-chat-1
+        """
+
+        # Clear the bot command message
+        await ctx.message.delete()
+
+        messages = []
+        async for message in ctx.message.channel.history(limit):
+            embed = Embed(description=message.content)
+
+            embed.set_author(name=message.author.name,
+                             icon_url=message.author.avatar_url)
+
+            embed.timestamp = message.created_at
+            messages.append(embed)
 
     @commands.command(description="Deletes messages")
     @commands.has_permissions(manage_messages=True)
