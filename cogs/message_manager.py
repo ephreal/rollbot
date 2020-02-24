@@ -62,6 +62,9 @@ class MessageManager(commands.Cog):
             embed.timestamp = message.created_at
             messages.append(embed)
 
+        for i in messages[::-1]:
+            await channel.send(embed=i)
+
     @commands.command(description="Deletes messages")
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, limit: int, flags=""):
