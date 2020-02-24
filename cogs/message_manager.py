@@ -53,7 +53,7 @@ class MessageManager(commands.Cog):
         await ctx.message.delete()
 
         messages = []
-        async for message in ctx.message.channel.history(limit):
+        async for message in ctx.message.channel.history(limit=limit):
             embed = Embed(description=message.content)
 
             embed.set_author(name=message.author.name,
