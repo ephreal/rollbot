@@ -165,7 +165,8 @@ class musicPlayer(commands.Cog):
             counter = 1
             for i in results:
                 relevance = (i.relevance/total_relevance) * 100
-                message += f"\n{counter}: {i.name} .... relevance: {relevance}%"
+                message += f"\n{counter}: {i.name} .... relevance: " \
+                           f"{relevance:.2f}%"
                 counter += 1
             message += "```"
 

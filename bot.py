@@ -11,7 +11,6 @@ License.
 import os
 import traceback
 
-from classes.games import discord_interface
 from discord import Game
 from discord.ext import commands
 
@@ -20,8 +19,6 @@ def build_bot(prefix, description="Rollbot"):
 
     BOT = commands.Bot(command_prefix=prefix,
                        description=description)
-
-    BOT.cardgame_interface = discord_interface.DiscordInterface()
 
     @BOT.event
     async def on_member_join(member):
