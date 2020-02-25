@@ -51,6 +51,59 @@ class utils(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.command(description="gets a random 'inspirational' quote")
+    async def quote(self, ctx, amount=1):
+        """
+        Gets a random quote created by inspirobot.me
+
+        It's also possible to get multiple quotes.
+
+        Note: I am not responsible for anything the
+        inspirobot creates and sends to you. If you
+        are easily offended, this may not be for
+        you.
+
+        usage:
+            .quote
+
+            Get 5 quotes
+            .quote 5
+        """
+
+        url = "https://inspirobot.me/api?generate=true"
+
+        if amount:
+
+            try:
+                amount = int(amount)
+
+                if amount == 0:
+                    amount = 1
+
+                elif amount > 20:
+                    amount = 20
+
+                for i in range(0, amount):
+                    quote = await self.get_quote(url)
+                    await ctx.send(f"{i+1}\n{quote}")
+                    if i == amount-1:
+                        break
+                    await sleep(7)
+
+                # Let the caller know that quote grabbing
+                # is complete when there are multiple quotes
+                if amount > 1:
+                    await ctx.send("Quote grabbing complete.")
+
+            except Exception as e:
+                await ctx.send(f"I'm sorry, an error occured.\n{e}\n"
+                               "Here is a single quote")
+                quote = self.get_qoute(url)
+                await ctx.send(quote)
+        else:
+            quote = self.get_quote(url)
+            await ctx.send(quote)
+
     @commands.command(description="Timer/Reminder")
     async def timer(self, ctx):
         """
@@ -110,59 +163,6 @@ class utils(commands.Cog):
         except Exception as e:
             await ctx.send("Invalid input received.")
             await ctx.send(f"Error follows:\n{e}")
-
-    @commands.command(description="gets a random 'inspirational' quote")
-    async def quote(self, ctx, amount=1):
-        """
-        Gets a random quote created by inspirobot.me
-
-        It's also possible to get multiple quotes.
-
-        Note: I am not responsible for anything the
-        inspirobot creates and sends to you. If you
-        are easily offended, this may not be for
-        you.
-
-        usage:
-            .quote
-
-            Get 5 quotes
-            .quote 5
-        """
-
-        url = "https://inspirobot.me/api?generate=true"
-
-        if amount:
-
-            try:
-                amount = int(amount)
-
-                if amount == 0:
-                    amount = 1
-
-                elif amount > 20:
-                    amount = 20
-
-                for i in range(0, amount):
-                    quote = await self.get_quote(url)
-                    await ctx.send(f"{i+1}\n{quote}")
-                    if i == amount-1:
-                        break
-                    await sleep(7)
-
-                # Let the caller know that quote grabbing
-                # is complete when there are multiple quotes
-                if amount > 1:
-                    await ctx.send("Quote grabbing complete.")
-
-            except Exception as e:
-                await ctx.send(f"I'm sorry, an error occured.\n{e}\n"
-                               "Here is a single quote")
-                quote = self.get_qoute(url)
-                await ctx.send(quote)
-        else:
-            quote = self.get_quote(url)
-            await ctx.send(quote)
 
     async def get_quote(self, url):
         async with aiohttp.ClientSession() as session:
