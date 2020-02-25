@@ -39,6 +39,8 @@ def build_bot(prefix, description="Rollbot"):
         print("Cog loading complete.")
         print("Connected to server and awaiting commands.")
         help_message = Game(name=f"message '{prefix}help' for help")
+        if not hasattr(BOT, 'appinfo'):
+            BOT.appinfo = await BOT.application_info()
         await BOT.change_presence(activity=help_message)
 
     @BOT.event
