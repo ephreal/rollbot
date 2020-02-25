@@ -1,39 +1,54 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
+
+# from discord import Embed
 
 import aiohttp
 import json
 import random
 
 from asyncio import sleep
+from discord import Embed
 from discord.ext import commands
 
 
 class utils(commands.Cog):
+    """
+    Commands provided by utils:
+        about:
+            Returns an embed with information about the bot
+        timer:
+            Sets a timer for X minutes/seconds/hours
+    """
     def __init__(self, bot):
         self.bot = bot
         self.timers = []
+
+    @commands.command(description="About this bot")
+    async def about(self, ctx):
+        """
+        Gives information about this bot.
+
+        Usage:
+            .about
+        """
+
+        embed = Embed(color=391237)
+
+        description = "About this bot\n"
+        description += f"Author: ephreal#2812\n"
+        description += f"Owner: {self.bot.appinfo.owner}\n\n"
+        description += f"Source Code: https://github.com/ephreal/rollbot\n"
+        description += f"Used in {len(self.bot.guilds)} servers"
+        embed.description = description
+
+        await ctx.send(embed=embed)
 
     @commands.command(description="Timer/Reminder")
     async def timer(self, ctx):
