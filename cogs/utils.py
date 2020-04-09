@@ -173,43 +173,6 @@ class utils(commands.Cog):
         async with session.get(url) as html:
             return await html.text()
 
-    @commands.command(description="gets an XKCD webcomic")
-    async def xkcd(self, ctx):
-        """
-        Gets an XKCD comic. By default, will grab a random comic.
-
-        Examples:
-            Get a random webcomic
-            .xckd
-
-            Get comic number 404
-            .xkcd 404
-        """
-
-        command = ctx.message.content.split(" ")
-        command = "".join(command[1:])
-
-        latest = await self.get_quote("https://xkcd.com/info.0.json")
-        latest = json.loads(latest)
-
-        if command:
-            try:
-                xkcd_num = int(command)
-                if xkcd_num > latest["num"]:
-                    xkcd_num = latest["num"]
-                elif xkcd_num < 1:
-                    xkcd_num = 1
-            except ValueError:
-                await ctx.send("I don't know what to do with that. I'll give "
-                               "you a random comic for now. If you're "
-                               "unsure of how to use this command, run\n"
-                               "```.help xkcd```")
-                xkcd_num = random.randint(1, latest["num"])
-        else:
-            xkcd_num = random.randint(1, latest["num"])
-
-        await ctx.send(f"https://xkcd.com/{xkcd_num}")
-
 
 def setup(bot):
     bot.add_cog(utils(bot))
