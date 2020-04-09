@@ -49,7 +49,16 @@ class Comics(commands.Cog):
             .comic xkcd 101
         """
 
-        pass
+        if comic is None:
+            comic = "sromg"
+
+        if comic == "sromg":
+            url = await self.fetch_sromg(comic_num)
+
+        elif comic == "xkcd":
+            url = await self.fetch_xkcd(comic_num)
+
+        await ctx.send(url)
 
     async def fetch_sromg(self, comic_num=None):
         """
@@ -74,8 +83,44 @@ class Comics(commands.Cog):
 
         return f"{comic_url}comics/{comic_num.zfill(4)}.png"
 
-    @commands.command()
+    async def fetch_xkcd(self, comic_num):
+        """
+        Fetches an sromg comic if comic_num is not None.
+        Fetches a random comic if comic_num is None.
+
+        comic_num: int
+            -> comic_url: String
+        """
+
+        latest = await network.fetch_page("https://xkcd.com/info.0.json")
+        latest = json.loads(latest)
+
+        if comic_num:
+            try:
+                xkcd_num = int(comic_num)
+                if xkcd_num > latest["num"]:
+                    xkcd_num = latest["num"]
+                elif xkcd_num < 1:
+                    xkcd_num = 1
+            except ValueError:
+                xkcd_num = random.randint(1, latest["num"])
+        else:
+            xkcd_num = random.randint(1, latest["num"])
+
+        return f"https://xkcd.com/{xkcd_num}"
+
+    @commands.command(description="SROMG comic")
     async def sromg(self, ctx, comic_num=None):
+        """
+        Gets and SROMG comic. By default, this grabs a random comic.
+
+        Examples:
+            Get a random comic
+            .sromg
+
+            get comic number 404
+            .sromg 404
+        """
         comic_url = await self.fetch_sromg(comic_num)
         await ctx.send(comic_url)
 
@@ -92,26 +137,8 @@ class Comics(commands.Cog):
             .xkcd 404
         """
 
-        latest = await network.fetch_page("https://xkcd.com/info.0.json")
-        latest = json.loads(latest)
-
-        if comic_num:
-            try:
-                xkcd_num = int(comic_num)
-                if xkcd_num > latest["num"]:
-                    xkcd_num = latest["num"]
-                elif xkcd_num < 1:
-                    xkcd_num = 1
-            except ValueError:
-                await ctx.send("I don't know what to do with that. I'll give "
-                               "you a random comic for now. If you're "
-                               "unsure of how to use this command, run\n"
-                               "```.help xkcd```")
-                xkcd_num = random.randint(1, latest["num"])
-        else:
-            xkcd_num = random.randint(1, latest["num"])
-
-        await ctx.send(f"https://xkcd.com/{xkcd_num}")
+        comic_url = await self.fetch_xkcd(comic_num)
+        await ctx.send(comic_url)
 
 
 def setup(bot):
