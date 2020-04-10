@@ -89,14 +89,12 @@ class musicPlayer(commands.Cog):
             return
 
         # Cut to the first 20 results due to discord character limitations
-        results = results[:20]
+        results = results[:40]
         message = f"```css\n{ctx.author.name}, here are your song results.\n"
 
         counter = 1
         for i in results:
-            relevance = (i.relevance/total_relevance) * 100
-            message += f"{counter}: {i.name} .... relevance: " \
-                       f"{relevance:.2f}%\n"
+            message += f"{counter}: {i.name}"
             counter += 1
         message += "```"
         await ctx.send(message)
