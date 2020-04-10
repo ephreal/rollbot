@@ -30,14 +30,20 @@ def build_bot(prefix, description="Rollbot"):
     async def on_ready():
         """
         Post setup hook.
-        Currently lets you know the bot is running
-        and sets the played game to a message on
-        how to get help.
+        Initializes any necessary variables and sets the played game to
+        a message on how to get help.
         """
+        # Initialize needed variables
+        # initialize music players dict
+        BOT.players = {}
+
+        # Load all cogs
         print("Startup complete, loading Cogs....")
         await load_cogs()
         print("Cog loading complete.")
         print("Connected to server and awaiting commands.")
+
+        # Set help message
         help_message = Game(name=f"message '{prefix}help' for help")
         if not hasattr(BOT, 'appinfo'):
             BOT.appinfo = await BOT.application_info()

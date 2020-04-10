@@ -22,27 +22,20 @@ class musicPlayer(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.indexer = Indexer()
-        self.players = {}
         self.searcher = IndexSearch()
 
     async def initialize_voice(self, ctx):
         """
         joins the bot to the voice channel the author is in.
         """
-        join = "audio/bot_sounds/start_click.mp3"
 
         channel = ctx.author.voice.channel
         if not channel:
             return await ctx.send("You must be in a voice channel to do that")
 
         vc = await channel.connect()
-        self.players[ctx.guild.id] = MusicPlayer(voice_client=vc)
+        self.bot.players[ctx.guild.id] = MusicPlayer(voice_client=vc)
 
-        # I have to play SOMETHING otherwise the bot refuses to play anything
-        # later on (is_playing() always returns True)
-        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(join))
-        vc.play(source)
-        await sleep(2)
         return vc
 
     @commands.command()
@@ -56,7 +49,7 @@ class musicPlayer(commands.Cog):
             return await ctx.send("Join a voice channel first.")
 
         try:
-            vc = self.players[ctx.guild.id].voice_client
+            vc = self.bot.players[ctx.guild.id].voice_client
             await vc.move_to(channel)
 
         except KeyError:
@@ -68,14 +61,14 @@ class musicPlayer(commands.Cog):
         Clears the music queue.
         """
 
-        await self.players[ctx.guild.id].clear()
+        await self.bot.players[ctx.guild.id].clear()
 
     @commands.command()
     async def disconnect(self, ctx):
         """
         Disconnects the bot from the voice channel.
         """
-        del(self.players[ctx.guild.id])
+        del(self.bot.players[ctx.guild.id])
         await ctx.voice_client.disconnect()
 
     @commands.command()
@@ -140,7 +133,7 @@ class musicPlayer(commands.Cog):
         """
 
         try:
-            vc = self.players[ctx.guild.id].voice_client
+            vc = self.bot.players[ctx.guild.id].voice_client
         except KeyError:
             vc = await self.initialize_voice(ctx)
 
@@ -148,7 +141,7 @@ class musicPlayer(commands.Cog):
             return
 
         if not keywords:
-            player = self.players[ctx.guild.id]
+            player = self.bot.players[ctx.guild.id]
             return await player.play()
 
         results, total_relevance = await self.search_index(ctx, keywords)
@@ -183,7 +176,7 @@ class musicPlayer(commands.Cog):
             choice = 0
 
         choice = results[choice]
-        if await self.players[ctx.guild.id].enqueue(choice.path):
+        if await self.bot.players[ctx.guild.id].enqueue(choice.path):
             await ctx.send("Queueing your song for playback")
         else:
             await ctx.send("The music queue is full, please try again later.")
@@ -193,7 +186,7 @@ class musicPlayer(commands.Cog):
         """
         Advances the player to the next song in the queue.
         """
-        player = self.players[ctx.guild.id]
+        player = self.bot.players[ctx.guild.id]
         await player.next()
 
     @commands.command()
@@ -202,7 +195,7 @@ class musicPlayer(commands.Cog):
         Resumes playing the paused song.
         """
 
-        player = self.players[ctx.guild.id]
+        player = self.bot.players[ctx.guild.id]
         await player.resume()
 
     @commands.command()
@@ -210,7 +203,7 @@ class musicPlayer(commands.Cog):
         """
         Stops the bot from playing audio
         """
-        player = self.players[ctx.guild.id]
+        player = self.bot.players[ctx.guild.id]
         await player.stop()
         await ctx.send("Stopped voice client")
 
@@ -220,7 +213,7 @@ class musicPlayer(commands.Cog):
         Pauses the voice client from playing
         """
 
-        player = self.players[ctx.guild.id]
+        player = self.bot.players[ctx.guild.id]
         await player.pause()
         await ctx.send("Song paused...")
 
@@ -229,7 +222,7 @@ class musicPlayer(commands.Cog):
         Plays a song in the queue, whether it be mp3, m4a, or otherwise.
         """
 
-        player = self.players[ctx.guild.id]
+        player = self.bot.players[ctx.guild.id]
         await player.play()
 
     @commands.command()
@@ -237,15 +230,15 @@ class musicPlayer(commands.Cog):
         """
         Lists available songs.
         """
-        player = self.players[ctx.guild.id]
+        player = self.bot.players[ctx.guild.id]
         path = " ".join(path)
         await ctx.send(await player.available_songs(path))
 
     @commands.command()
     async def state(self, ctx):
-        player = self.players[ctx.guild.id]
+        player = self.bot.players[ctx.guild.id]
         vc = player.voice_client
-        queue = self.players[ctx.guild.id].music_queue
+        queue = self.bot.players[ctx.guild.id].music_queue
         message = f"```css\nmusic queue: {queue.items}\n" \
                   f"up next: {await queue.peek()}\n" \
                   f"playing state: {vc.is_playing()}\n" \
