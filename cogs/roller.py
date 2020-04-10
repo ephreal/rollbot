@@ -127,7 +127,5 @@ class roller(commands.Cog):
         return formatted_rolls
 
 
-
-
 def setup(bot):
     bot.add_cog(roller(bot))
