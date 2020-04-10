@@ -7,11 +7,8 @@ Please see the license for any restrictions or rights granted to you by the
 License.
 """
 
-# from discord import Embed
 
 import aiohttp
-import json
-import random
 
 from asyncio import sleep
 from discord import Embed
@@ -23,6 +20,8 @@ class utils(commands.Cog):
     Commands provided by utils:
         about:
             Returns an embed with information about the bot
+        quote:
+            Gets and returns quotes
         timer:
             Sets a timer for X minutes/seconds/hours
     """
@@ -58,10 +57,8 @@ class utils(commands.Cog):
 
         It's also possible to get multiple quotes.
 
-        Note: I am not responsible for anything the
-        inspirobot creates and sends to you. If you
-        are easily offended, this may not be for
-        you.
+        Note: I am not responsible for anything the inspirobot creates and
+        sends to you. If you are easily offended, this may not be for you.
 
         usage:
             .quote

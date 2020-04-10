@@ -41,6 +41,12 @@ from discord import Colour
 
 
 class MemberManager(commands.Cog):
+    """
+    Commands provided by this cog
+
+    .ban
+    .kick
+    """
 
     def __init__(self, bot):
         self.bot = bot

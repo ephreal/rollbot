@@ -30,35 +30,14 @@ from utils import network
 
 
 class Comics(commands.Cog):
+    """
+    Commands provided by this module
+
+    .sromg
+    .xkcd
+    """
     def __init__(self, bot=None):
         self.bot = bot
-
-    @commands.command(description="Fetches webcomics")
-    async def comic(self, ctx, comic=None, comic_num=None):
-        """
-        Fetches a webcomic and places a link to the comic picture in
-        the chat. If no comic is provided, this will fetch a random xkcd comic.
-
-        currently supported comics are
-
-        sromg
-        xkcd
-
-        examples:
-            Get xkcd comic 101
-            .comic xkcd 101
-        """
-
-        if comic is None:
-            comic = "sromg"
-
-        if comic == "sromg":
-            url = await self.fetch_sromg(comic_num)
-
-        elif comic == "xkcd":
-            url = await self.fetch_xkcd(comic_num)
-
-        await ctx.send(url)
 
     async def fetch_sromg(self, comic_num=None):
         """
@@ -85,7 +64,7 @@ class Comics(commands.Cog):
 
     async def fetch_xkcd(self, comic_num):
         """
-        Fetches an sromg comic if comic_num is not None.
+        Fetches an xkcd comic if comic_num is not None.
         Fetches a random comic if comic_num is None.
 
         comic_num: int

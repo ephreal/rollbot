@@ -34,30 +34,19 @@ from subprocess import Popen, PIPE
 
 
 class admin(commands.Cog):
+    """
+    Available commands
+    .halt
+    .member_activity
+    .reboot
+    .reload
+    .rename
+    .spam
+    """
     def __init__(self, bot):
         self.bot = bot
         self.analytics = analytics.GuildAnalytics()
         self.prefix = {self.bot.command_prefix}
-
-    @commands.command(hidden=True,
-                      description="Reboots the bot")
-    @commands.is_owner()
-    async def reboot(self, ctx):
-        f"""
-        Reboots the bot so all files can be reloaded.
-        Requires administrator permissions.
-
-        usage: {self.prefix}reboot
-        """
-
-        cmd = Popen(["git", "pull"], stdout=PIPE)
-        out, _ = cmd.communicate()
-        out = out.decode()
-        if "+" in out:
-            await ctx.send(f"Updated:\n{out}")
-
-        await ctx.send(f"rebooting....")
-        await client.Client.logout(self.bot)
 
     @commands.command(hidden=True,
                       description="Shuts down the bot")
@@ -82,10 +71,130 @@ class admin(commands.Cog):
     @halt.error
     async def halt_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You must be an administrator to use this command.")
+            await ctx.send("You must be an administrator")
         else:
             await ctx.send("Something is wrong with your command.\n"
                            f"Error message: {error}")
+
+    async def load_cogs(self):
+        """
+        Handles loading all cogs in for the bot.
+        """
+
+        cogs = [cog for cog in os.listdir('cogs')
+                if os.path.isfile(f"cogs/{cog}")]
+
+        cogs = [cog.replace(".py", "") for cog in cogs]
+
+        for cog in cogs:
+            try:
+                print(f"Unloading {cog}")
+                self.bot.unload_extension(f"cogs.{cog}")
+            except commands.errors.ExtensionNotLoaded:
+                print(f"Cog {cog} is already unloaded.")
+
+        for cog in cogs:
+            try:
+                print(f"Loading {cog}...")
+                self.bot.load_extension(f"cogs.{cog}")
+                print(f"Loaded {cog.split('.')[-1]}")
+
+            except ModuleNotFoundError:
+                print(f"Could not find {cog}. Does it exist?")
+
+            except OSError as lib_error:
+                print("Opus is probably not installed")
+                print(f"{lib_error}")
+
+            except commands.errors.ExtensionAlreadyLoaded:
+                print(f"The cog {cog} is already loaded.\n"
+                      "Skipping the load process for this cog.")
+
+            except SyntaxError as e:
+                print(f"The cog {cog} has a syntax error.")
+                traceback.print_tb(e.__traceback__)
+
+    @commands.command(hidden=True, description="Show guild member activity.")
+    @commands.has_permissions(administrator=True)
+    async def member_activity(self, ctx):
+        f"""
+        Gets a list of all members in the discord guild (discord server) and
+        then returns the date they joined.
+
+        {self.prefix}member_activity
+        """
+
+        guild = ctx.guild
+        members = guild.members
+
+        for i in members:
+            await ctx.send(f"```css\n"
+                           f"{i.name}\n"
+                           f"Joined on: {i.joined_at}```")
+
+    @commands.command(hidden=True,
+                      description="Reboots the bot")
+    @commands.is_owner()
+    async def reboot(self, ctx):
+        f"""
+        Reboots the bot so all files can be reloaded.
+        Requires administrator permissions.
+
+        usage: {self.prefix}reboot
+        """
+
+        cmd = Popen(["git", "pull"], stdout=PIPE)
+        out, _ = cmd.communicate()
+        out = out.decode()
+        if "+" in out:
+            await ctx.send(f"Updated:\n{out}")
+
+        await ctx.send(f"rebooting....")
+        await client.Client.logout(self.bot)
+
+    @commands.command(hidden=True,
+                      description="Reloads bot cogs")
+    @commands.is_owner()
+    async def reload(self, ctx, pull=None):
+        """
+        Reloads all bot cogs so updates can be performed while the bot is
+        running. Reloading can be from local files OR can pull the most
+        recent version of the files from the git repository.
+
+        This reloads files locally by default.
+
+        Examples:
+            Reload cogs locally
+            .reload
+
+            Pull files from github and reload the cogs
+            .reload pull
+        """
+
+        if pull == "pull":
+            cmd = Popen(["git", "pull"], stdout=PIPE)
+            out, _ = cmd.communicate()
+            await ctx.send(f"Attempted to pull files from github.\n"
+                           f"{out.decode()}")
+
+        await self.load_cogs()
+        await ctx.send("Reloaded")
+
+    @commands.command(hidden=True, description="Rename the bot")
+    @commands.has_permissions(manage_nicknames=True)
+    async def rename(self, ctx, *new_name):
+        f"""
+        Rename the bot in discord.
+
+        Note: If the bot has a nickname, this will not change the nickname.
+
+        Examples:
+            Rename the bot to fred
+            {self.prefix}rename fred
+        """
+
+        await ctx.guild.me.edit(nick=" ".join(new_name))
+        await ctx.send("Bot's name has been changed.")
 
     @commands.command(hidden=True,
                       description="Channel message spammer")
@@ -140,125 +249,7 @@ class admin(commands.Cog):
             await ctx.send("Something is wrong with your command.\n"
                            f"Error message: {error}")
 
-    @commands.command(hidden=True, description="Rename the bot")
-    @commands.has_permissions(manage_nicknames=True)
-    async def rename(self, ctx, *new_name):
-        f"""
-        Rename the bot in discord.
-
-        Note: If the bot has a nickname, this will not change the nickname.
-
-        Examples:
-            Rename the bot to fred
-            {self.prefix}rename fred
-        """
-
-        await ctx.guild.me.edit(nick=" ".join(new_name))
-        await ctx.send("Bot's name has been changed.")
-
-    @commands.command(hidden=True, description="Show guild member activity.")
-    @commands.has_permissions(administrator=True)
-    async def member_activity(self, ctx):
-        f"""
-        Gets a list of all members in the discord guild (discord server) and
-        then returns the date they joined.
-
-        {self.prefix}member_activity
-        """
-
-        guild = ctx.guild
-        members = guild.members
-
-        for i in members:
-            await ctx.send(f"```css\n"
-                           f"{i.name}\n"
-                           f"Joined on: {i.joined_at}```")
-
         await ctx.send("Complete")
-
-    @commands.command(hidden=True,
-                      description="Stats guild/member status data collection")
-    @commands.has_permissions(administrator=True)
-    async def start_analytics(self, ctx):
-        f"""
-        Starts tracking whether users are active in the guild or not.
-
-        This is useful for tracking users that are in your guild, but do
-        not actually communicate with anyone in the guild. It's possible
-        that they have lost interest, no longer use discord, etc.
-
-        Examples:
-            Start analytics
-            {self.prefix}start_analytics
-        """
-
-        await ctx.send("This feature is not ready for use yet.")
-
-    @commands.command(hidden=True,
-                      description="Reloads bot cogs")
-    @commands.is_owner()
-    async def reload(self, ctx, pull=None):
-        """
-        Reloads all bot cogs so updates can be performed while the bot is
-        running. Reloading can be from local files OR can pull the most
-        recent version of the files from the git repository.
-
-        This reloads files locally by default.
-
-        Examples:
-            Reload cogs locally
-            .reload
-
-            Pull files from github and reload the cogs
-            .reload pull
-        """
-
-        if pull == "pull":
-            cmd = Popen(["git", "pull"], stdout=PIPE)
-            out, _ = cmd.communicate()
-            await ctx.send(f"Attempted to pull files from github.\n"
-                           f"{out.decode()}")
-
-        await self.load_cogs()
-        await ctx.send("Reloaded")
-
-    async def load_cogs(self):
-        """
-        Handles loading all cogs in for the bot.
-        """
-
-        cogs = [cog for cog in os.listdir('cogs')
-                if os.path.isfile(f"cogs/{cog}")]
-
-        cogs = [cog.replace(".py", "") for cog in cogs]
-
-        for cog in cogs:
-            try:
-                print(f"Unloading {cog}")
-                self.bot.unload_extension(f"cogs.{cog}")
-            except commands.errors.ExtensionNotLoaded:
-                print(f"Cog {cog} is already unloaded.")
-
-        for cog in cogs:
-            try:
-                print(f"Loading {cog}...")
-                self.bot.load_extension(f"cogs.{cog}")
-                print(f"Loaded {cog.split('.')[-1]}")
-
-            except ModuleNotFoundError:
-                print(f"Could not find {cog}. Does it exist?")
-
-            except OSError as lib_error:
-                print("Opus is probably not installed")
-                print(f"{lib_error}")
-
-            except commands.errors.ExtensionAlreadyLoaded:
-                print(f"The cog {cog} is already loaded.\n"
-                      "Skipping the load process for this cog.")
-
-            except SyntaxError as e:
-                print(f"The cog {cog} has a syntax error.")
-                traceback.print_tb(e.__traceback__)
 
 
 def setup(bot):

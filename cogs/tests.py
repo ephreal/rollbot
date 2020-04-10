@@ -27,67 +27,19 @@ from discord.ext import commands
 
 
 class tests(commands.Cog):
+    """
+    Commands
+
+    .all_info
+    .get_guilds
+    .get_roles
+    .info
+    .ping
+    .users
+    """
 
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.command(description="Bot connectivity test")
-    async def ping(self, ctx):
-        """
-        Checks bot availability
-
-        Ping lets you know if the bot can hear and respond
-        to you. In usual network fashion, a ping receives
-        a pong packet in response.
-
-        usage: .ping
-        """
-        await ctx.send("pong!")
-
-    @commands.command(description="Gets basic server info")
-    async def info(self, ctx):
-        """
-        Basic server, channel, and user info
-
-        This is the shortened version of the .all_info command.
-
-        It does not return as much information as .all_info, but
-        it dows give you a quick and dirty rundown of server
-        info, current channel info, and your user info.
-
-        usage: .info
-        """
-        info = {
-                "server":      ctx.message.guild,
-                "server_id":   ctx.message.guild.id,
-                "channel":     ctx.message.channel,
-                "channel_id":  ctx.message.channel.id,
-                "author":      ctx.message.author,
-                "author_id":   ctx.message.author.id
-               }
-
-        message = f"""```CSS
-server:     {info['server']}
-server id:  {info['server_id']}
-channel:    {info['channel']}
-channel id: {info['channel_id']}
-author:     {info['author']}
-author id:  {info['author_id']}
-```
-"""
-        await ctx.send(message)
-
-
-    @commands.command()
-    async def get_roles(self, ctx):
-        await ctx.send(ctx.guild.roles)
-
-    @commands.command()
-    async def get_guilds(self, ctx):
-        guilds = [guild.name for guild in self.bot.guilds]
-        guilds = "\n".join(guilds)
-        await ctx.send(f"I am currently in {len(self.bot.guilds)} guilds.\n"
-                       f"The guilds are {guilds}\n")
 
     @commands.command(description="Get a large amount of useful "
                       "server channel/user info")
@@ -127,6 +79,17 @@ author id:  {info['author_id']}
             await sleep(1)
         await ctx.send("All info complete.")
 
+    @commands.command()
+    async def get_guilds(self, ctx):
+        guilds = [guild.name for guild in self.bot.guilds]
+        guilds = "\n".join(guilds)
+        await ctx.send(f"I am currently in {len(self.bot.guilds)} guilds.\n"
+                       f"The guilds are {guilds}\n")
+
+    @commands.command()
+    async def get_roles(self, ctx):
+        await ctx.send(ctx.guild.roles)
+
     async def format_channel(self, channel):
         """
         Takes a dictionary of {"channel name" : "channel id"}.
@@ -156,6 +119,52 @@ author id:  {info['author_id']}
         user_message += f"\tID:    {user_id}\n"
         user_message += f"\tRoles: {roles}\n```"
         return user_message
+
+    @commands.command(description="Gets basic server info")
+    async def info(self, ctx):
+        """
+        Basic server, channel, and user info
+
+        This is the shortened version of the .all_info command.
+
+        It does not return as much information as .all_info, but
+        it dows give you a quick and dirty rundown of server
+        info, current channel info, and your user info.
+
+        usage: .info
+        """
+        info = {
+                "server":      ctx.message.guild,
+                "server_id":   ctx.message.guild.id,
+                "channel":     ctx.message.channel,
+                "channel_id":  ctx.message.channel.id,
+                "author":      ctx.message.author,
+                "author_id":   ctx.message.author.id
+               }
+
+        message = f"""```CSS
+server:     {info['server']}
+server id:  {info['server_id']}
+channel:    {info['channel']}
+channel id: {info['channel_id']}
+author:     {info['author']}
+author id:  {info['author_id']}
+```
+"""
+        await ctx.send(message)
+
+    @commands.command(description="Bot connectivity test")
+    async def ping(self, ctx):
+        """
+        Checks bot availability
+
+        Ping lets you know if the bot can hear and respond
+        to you. In usual network fashion, a ping receives
+        a pong packet in response.
+
+        usage: .ping
+        """
+        await ctx.send("pong!")
 
     @commands.command(description="Gives a usercount")
     async def users(self, ctx):
