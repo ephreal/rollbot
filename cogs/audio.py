@@ -7,7 +7,6 @@ Please see the license for any restrictions or rights granted to you by the
 License.
 """
 
-# import youtube_dl
 from discord.ext import commands
 
 
@@ -21,6 +20,16 @@ class musicPlayer(commands.Cog):
         self.bot = bot
         self.indexer = Indexer()
         self.searcher = IndexSearch()
+
+    def check(self, author):
+        """
+        Checks to see if the author of a message is the same as the author
+        passed in.
+        """
+
+        def check_message(message):
+            return message.author == author
+        return check_message
 
     async def initialize_voice(self, ctx):
         """
@@ -94,7 +103,7 @@ class musicPlayer(commands.Cog):
 
         counter = 1
         for i in results:
-            message += f"{counter}: {i.name}"
+            message += f"\n{counter}: {i.name}"
             counter += 1
         message += "```"
         await ctx.send(message)
@@ -153,15 +162,14 @@ class musicPlayer(commands.Cog):
 
             counter = 1
             for i in results:
-                relevance = (i.relevance/total_relevance) * 100
-                message += f"\n{counter}: {i.name} .... relevance: " \
-                           f"{relevance:.2f}%"
+                message += f"\n{counter}: {i.name}"
                 counter += 1
             message += "```"
 
             await ctx.send(message)
 
-            msg = await self.bot.wait_for('message', timeout=30)
+            msg = await self.bot.wait_for('message', timeout=30,
+                                          check=self.check(ctx.message.author))
             choice = msg.content
 
             try:
