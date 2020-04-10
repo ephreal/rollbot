@@ -7,9 +7,7 @@ Please see the license for any restrictions or rights granted to you by the
 License.
 """
 
-import discord
 # import youtube_dl
-from asyncio import sleep
 from discord.ext import commands
 
 
@@ -235,7 +233,7 @@ class musicPlayer(commands.Cog):
         await ctx.send(await player.available_songs(path))
 
     @commands.command()
-    async def state(self, ctx):
+    async def queue(self, ctx):
         player = self.bot.players[ctx.guild.id]
         vc = player.voice_client
         queue = self.bot.players[ctx.guild.id].music_queue
