@@ -25,10 +25,19 @@ class Statistics(commands.Cog):
         """
         curr_time = datetime.now()
         difference = curr_time - self.bot.boot_time
-        days = difference.seconds // 86400
-        minutes = (difference.seconds - (days * 86400)) // 60
+        difference = difference.seconds
+
+        days = difference // 86400
+        difference %= 86400
+
+        hours = difference // 3600
+        difference %= 3600
+
+        minutes = difference // 60
+        seconds = difference % 60
+
         message = f"The bot has been up for {days} days, " \
-                  f"and {minutes} minutes"
+                  f"{hours} hours, {minutes} minutes, and {seconds} seconds"
 
         await ctx.send(message)
 
