@@ -10,7 +10,6 @@ License.
 
 from discord import Colour
 from discord import Permissions
-from discord import PermissionOverwrite
 from discord.ext import commands
 
 
@@ -40,6 +39,7 @@ class GuildManager(commands.Cog):
         bottester = bottester[0]
         await ctx.author.add_roles(bottester)
 
+    @commands.has_permissions(manage_guild=True)
     @commands.command()
     async def create_channels(self, ctx):
         """
@@ -48,7 +48,6 @@ class GuildManager(commands.Cog):
         """
         channels = ["bottesting", "nsfw", "rolling", "tabletop"]
         category = ctx.guild.categories
-        await ctx.send([i.name for i in category])
         category = [i for i in category if i.name == "Text Channels"]
         category = category[0]
 
@@ -67,7 +66,7 @@ class GuildManager(commands.Cog):
         await ctx.send("Created text channels!")
 
     @commands.command(description="Setup roles for bot")
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(manage_guild=True)
     async def create_roles(self, ctx):
         if not ctx.guild.me.guild_permissions.manage_roles:
             return await ctx.send("I need the manage roles permission.")
