@@ -8,11 +8,11 @@ License.
 """
 
 from discord.ext import commands
-
-
 from classes.indexer import Indexer
 from classes.music_player import MusicPlayer
 from classes.searcher import IndexSearch
+
+import os
 
 
 class musicPlayer(commands.Cog):
@@ -173,8 +173,14 @@ class musicPlayer(commands.Cog):
         player = self.bot.players[ctx.guild.id]
         vc = player.voice_client
         queue = self.bot.players[ctx.guild.id].music_queue
-        message = f"```css\nmusic queue: {queue.items}\n" \
-                  f"up next: {await queue.peek()}\n" \
+        queue_items = queue.items
+        if queue_items:
+            queue_items = [os.path.basename(item) for item in queue_items]
+        up_next = await queue.peek()
+        if up_next:
+            up_next = os.path.basename(up_next)
+        message = f"```css\nmusic queue: {', '.join(queue_items)}\n" \
+                  f"up next: {up_next}\n" \
                   f"playing state: {vc.is_playing()}\n" \
                   f"Now playing: {player.now_playing}\n" \
                   "```"
