@@ -169,11 +169,17 @@ class musicPlayer(commands.Cog):
             choice = [0]
 
         choice = [results[i] for i in choice]
+        queued = False
         for i in choice:
             if await self.bot.players[ctx.guild.id].enqueue(i.path):
-                await ctx.send("Queueing your song for playback")
+                queued = True
             else:
                 await ctx.send("The music queue is full, please try later.")
+        if queued:
+            if len(choice) > 1:
+                await ctx.send("Your songs were queued.")
+            else:
+                await ctx.send("Your song has been queued.")
 
     async def play_song(self, ctx):
         """
