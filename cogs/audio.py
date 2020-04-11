@@ -205,8 +205,8 @@ class musicPlayer(commands.Cog):
         up_next = await queue.peek()
         if up_next:
             up_next = os.path.basename(up_next)
-        message = f"Now playing: {player.now_playing}\n" \
-                  f"```css\nup next: {up_next}\n" \
+        message = f"```css\nNow playing: {player.now_playing}\n" \
+                  f"up next: {up_next}\n" \
                   f"playing state: {vc.is_playing()}\n" \
                   "```"
         return await ctx.send(message)
