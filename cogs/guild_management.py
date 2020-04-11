@@ -1,41 +1,70 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
-
-
-Commands provided by this cog:
-
-    create_roles : Creates the roles for the bot's member promotion command
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 
-from discord.ext import commands
 from discord import Colour
 from discord import Permissions
+from discord import PermissionOverwrite
+from discord.ext import commands
 
 
-class RoleManager(commands.Cog):
+class GuildManager(commands.Cog):
+    """
+    Commands
+    .bottester
+        Adds the bottester role to the user
+    create_channels
+        Creates all text channels needed for full use of this bot
+    create_roles
+        Creates all roles needed for full use of this bot
+    nsfw
+        Adds the nsfw role to a user so they can access the nsfw channel
+    """
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command()
+    async def bottester(self, ctx):
+        """
+        Adds the bottester role to the user
+        """
+
+        bottester = ctx.guild.roles
+        bottester = [role for role in bottester if role.name == "bottester"]
+        bottester = bottester[0]
+        await ctx.author.add_roles(bottester)
+
+    @commands.command()
+    async def create_channels(self, ctx):
+        """
+        Creates all the text channels that the server should have by default
+        for this bot to fully function.
+        """
+        channels = ["bottesting", "nsfw", "rolling", "tabletop"]
+        category = ctx.guild.categories
+        await ctx.send([i.name for i in category])
+        category = [i for i in category if i.name == "Text Channels"]
+        category = category[0]
+
+        guild_channels = ctx.guild.text_channels
+        guild_channels = [channel.name for channel in guild_channels]
+
+        for channel in channels:
+            if channel not in guild_channels:
+                if channel == 'nsfw':
+                    await ctx.guild.create_text_channel(channel,
+                                                        category=category,
+                                                        nsfw=True)
+                else:
+                    await ctx.guild.create_text_channel(channel,
+                                                        category=category)
+        await ctx.send("Created text channels!")
 
     @commands.command(description="Setup roles for bot")
     @commands.has_permissions(manage_roles=True)
@@ -57,7 +86,6 @@ class RoleManager(commands.Cog):
         guildmate_permissions = Permissions(133684289)
         lurker_permissions = Permissions(36822081)
         unverified_permissions = Permissions(84992)
-        nsfw_permissions = Permissions(84992)
 
         current_roles = ctx.guild.roles
         current_roles = [role.name for role in current_roles]
@@ -68,6 +96,13 @@ class RoleManager(commands.Cog):
                                         colour=admin_colour,
                                         mentionable=True,
                                         hoist=True,
+                                        reason=role_reason)
+        if "bottester" not in current_roles:
+            await ctx.guild.create_role(name="bottester",
+                                        permissions=unverified_permissions,
+                                        color=unverified_colour,
+                                        mentionable=False,
+                                        hoist=False,
                                         reason=role_reason)
         if "mods" not in current_roles:
             await ctx.guild.create_role(name="mods",
@@ -92,7 +127,7 @@ class RoleManager(commands.Cog):
                                         reason=role_reason)
         if "nsfw" not in current_roles:
             await ctx.guild.create_role(name="nsfw",
-                                        permissions=nsfw_permissions,
+                                        permissions=unverified_permissions,
                                         color=unverified_colour,
                                         mentionable=False,
                                         hoist=False,
@@ -121,4 +156,4 @@ class RoleManager(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(RoleManager(bot))
+    bot.add_cog(GuildManager(bot))
