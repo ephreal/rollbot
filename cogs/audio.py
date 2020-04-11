@@ -128,7 +128,7 @@ class musicPlayer(commands.Cog):
         if results is None:
             return
 
-        results = results[:20]
+        results = results[:40]
 
         if len(results) > 1:
             # The user must choose a song.
