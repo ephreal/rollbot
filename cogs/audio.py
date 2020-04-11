@@ -45,26 +45,34 @@ class musicPlayer(commands.Cog):
             return message.author == author
         return check_message
 
-    @commands.command()
+    @commands.command(description="Clear music queue")
     async def clear(self, ctx):
         """
         Clears the music queue.
+        usage:
+            .clear
         """
 
         await self.bot.players[ctx.guild.id].clear()
 
-    @commands.command()
+    @commands.command(description="Disconnect from voice")
     async def disconnect(self, ctx):
         """
         Disconnects the bot from the voice channel.
+
+        usage:
+            .disconnect
         """
         del(self.bot.players[ctx.guild.id])
         await ctx.voice_client.disconnect()
 
-    @commands.command()
+    @commands.command(description="Indexes songs")
     async def index(self, ctx):
         """
         Builds the song index.
+
+        usage:
+            .index
         """
 
         self.indexer.update_index()
@@ -84,25 +92,31 @@ class musicPlayer(commands.Cog):
 
         return vc
 
-    @commands.command()
+    @commands.command(description="Play next song")
     async def next(self, ctx):
         """
         Advances the player to the next song in the queue.
+
+        usage:
+            .next
         """
         player = self.bot.players[ctx.guild.id]
         await player.next()
 
-    @commands.command()
+    @commands.command(description="Pause music")
     async def pause(self, ctx):
         """
         Pauses the voice client from playing
+
+        usage:
+            .pause
         """
 
         player = self.bot.players[ctx.guild.id]
         await player.pause()
         await ctx.send("Song paused...")
 
-    @commands.command()
+    @commands.command(description="Play music")
     async def play(self, ctx, *keywords):
         """
         Search the song database and immediately queue up or play a song.
@@ -132,8 +146,8 @@ class musicPlayer(commands.Cog):
 
         if len(results) > 1:
             # The user must choose a song.
-            message = f"```css\n{ctx.author.name}, choose a song number " \
-                      f"for playback"
+            message = f"```css\n{ctx.author.name}, choose one or more song " \
+                      f"numbers for playback"
 
             counter = 1
             for i in results:
@@ -148,17 +162,18 @@ class musicPlayer(commands.Cog):
             choice = msg.content
 
             try:
-                choice = int(choice) - 1
+                choice = [int(i)-1 for i in choice.split(" ")]
             except ValueError:
                 return await ctx.send("That seems to be an invalid choice.")
         else:
-            choice = 0
+            choice = [0]
 
-        choice = results[choice]
-        if await self.bot.players[ctx.guild.id].enqueue(choice.path):
-            await ctx.send("Queueing your song for playback")
-        else:
-            await ctx.send("The music queue is full, please try again later.")
+        choice = [results[i] for i in choice]
+        for i in choice:
+            if await self.bot.players[ctx.guild.id].enqueue(i.path):
+                await ctx.send("Queueing your song for playback")
+            else:
+                await ctx.send("The music queue is full, please try later.")
 
     async def play_song(self, ctx):
         """
@@ -168,8 +183,15 @@ class musicPlayer(commands.Cog):
         player = self.bot.players[ctx.guild.id]
         await player.play()
 
-    @commands.command()
+    @commands.command(description="View music queue")
     async def queue(self, ctx):
+        """
+        Displays the music queue to see what songs are up next, what is
+        currently playing, etc.
+
+        usage:
+            .queue
+        """
         player = self.bot.players[ctx.guild.id]
         vc = player.voice_client
         queue = self.bot.players[ctx.guild.id].music_queue
@@ -186,19 +208,25 @@ class musicPlayer(commands.Cog):
                   "```"
         return await ctx.send(message)
 
-    @commands.command()
+    @commands.command(description="Resume playing")
     async def resume(self, ctx):
         """
         Resumes playing the paused song.
+
+        usage:
+            .resume
         """
 
         player = self.bot.players[ctx.guild.id]
         await player.resume()
 
-    @commands.command()
+    @commands.command(description="Search songs")
     async def search(self, ctx, *keywords):
         """
         Searches the song index for a particular song.
+
+        usage:
+            .search <keywords>
         """
 
         results, total_relevance = await self.search_index(ctx, keywords)
@@ -235,19 +263,27 @@ class musicPlayer(commands.Cog):
 
         return results, total_relevance
 
-    @commands.command()
+    @commands.command(descrption="Stop playing")
     async def stop(self, ctx):
         """
-        Stops the bot from playing audio
+        Stops the bot from playing it's current song and pauses the audio.
+
+        usage:
+            .stop
+
+        This command may be removed in future updates.
         """
         player = self.bot.players[ctx.guild.id]
         await player.stop()
         await ctx.send("Stopped voice client")
 
-    @commands.command()
+    @commands.command(description="Summon bot to voice")
     async def summon(self, ctx):
         """
         Summons the bot to your voice channel
+
+        usage:
+            .summon
         """
 
         channel = ctx.author.voice.channel
