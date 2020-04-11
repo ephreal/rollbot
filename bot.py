@@ -11,6 +11,7 @@ License.
 import os
 import traceback
 
+from datetime import datetime
 from discord import Game
 from discord.ext import commands
 
@@ -36,6 +37,9 @@ def build_bot(prefix, description="Rollbot"):
         # Initialize needed variables
         # initialize music players dict
         BOT.players = {}
+
+        # Uptime statistic
+        BOT.boot_time = datetime.now()
 
         # Load all cogs
         print("Startup complete, loading Cogs....")
