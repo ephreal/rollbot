@@ -18,8 +18,17 @@ from classes.searcher import IndexSearch
 class musicPlayer(commands.Cog):
     """
     Commands provided by this module
+    .clear
+    .disconnect
+    .index
+    .next
+    .pause
+    .play
+    .queue
+    .resume
+    .search
+    .stop
     .summon
-
     """
     def __init__(self, bot):
         self.bot = bot
@@ -219,15 +228,6 @@ class musicPlayer(commands.Cog):
             total_relevance += i.relevance
 
         return results, total_relevance
-
-    @commands.command()
-    async def songs(self, ctx, *path):
-        """
-        Lists available songs.
-        """
-        player = self.bot.players[ctx.guild.id]
-        path = " ".join(path)
-        await ctx.send(await player.available_songs(path))
 
     @commands.command()
     async def stop(self, ctx):
