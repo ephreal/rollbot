@@ -8,6 +8,7 @@ License.
 """
 
 
+import logging
 import os
 import traceback
 
@@ -40,6 +41,12 @@ def build_bot(prefix, description="Rollbot"):
 
         # Uptime statistic
         BOT.boot_time = datetime.now()
+
+        BOT.logger = logging.getLogger('discord')
+        BOT.logger.setLevel(logging.DEBUG)
+        BOT.handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+        BOT.handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+        BOT.logger.addHandler(BOT.handler)
 
         # Load all cogs
         print("Startup complete, loading Cogs....")
