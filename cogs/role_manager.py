@@ -43,6 +43,9 @@ class RoleManager(commands.Cog):
         if not ctx.guild.me.guild_permissions.manage_roles:
             return await ctx.send("I need the manage roles permission.")
 
+        role_reason = "This role was auto-created by a bot because the role "\
+                      "was missing from the guild."
+
         admin_colour = Colour.from_rgb(218, 245, 66)
         mod_colour = Colour.from_rgb(214, 77, 13)
         guildmate_colour = Colour.from_rgb(98, 227, 43)
@@ -54,34 +57,67 @@ class RoleManager(commands.Cog):
         guildmate_permissions = Permissions(133684289)
         lurker_permissions = Permissions(36822081)
         unverified_permissions = Permissions(84992)
+        nsfw_permissions = Permissions(84992)
 
-        await ctx.guild.create_role(name="admins",
-                                    permissions=admin_permissions,
-                                    colour=admin_colour,
-                                    mentionable=True,
-                                    hoist=True)
-        await ctx.guild.create_role(name="mods",
-                                    permissions=mod_permissions,
-                                    colour=mod_colour,
-                                    mentionable=True,
-                                    hoist=True)
-        await ctx.guild.create_role(name="guildmates",
-                                    permissions=guildmate_permissions,
-                                    colour=guildmate_colour,
-                                    mentionable=True,
-                                    hoist=True)
-        await ctx.guild.create_role(name="lurkers",
-                                    permissions=lurker_permissions,
-                                    colour=lurker_colour,
-                                    mentionable=True,
-                                    hoist=True)
-        await ctx.guild.create_role(name="unverified",
-                                    permissions=unverified_permissions,
-                                    colour=unverified_colour,
-                                    mentionable=True,
-                                    hoist=True)
+        current_roles = ctx.guild.roles
+        current_roles = [role.name for role in current_roles]
+
+        if "admins" not in current_roles:
+            await ctx.guild.create_role(name="admins",
+                                        permissions=admin_permissions,
+                                        colour=admin_colour,
+                                        mentionable=True,
+                                        hoist=True,
+                                        reason=role_reason)
+        if "mods" not in current_roles:
+            await ctx.guild.create_role(name="mods",
+                                        permissions=mod_permissions,
+                                        colour=mod_colour,
+                                        mentionable=True,
+                                        hoist=True,
+                                        reason=role_reason)
+        if "guildmates" not in current_roles:
+            await ctx.guild.create_role(name="guildmates",
+                                        permissions=guildmate_permissions,
+                                        colour=guildmate_colour,
+                                        mentionable=True,
+                                        hoist=True,
+                                        reason=role_reason)
+        if "lurkers" not in current_roles:
+            await ctx.guild.create_role(name="lurkers",
+                                        permissions=lurker_permissions,
+                                        colour=lurker_colour,
+                                        mentionable=True,
+                                        hoist=True,
+                                        reason=role_reason)
+        if "nsfw" not in current_roles:
+            await ctx.guild.create_role(name="nsfw",
+                                        permissions=nsfw_permissions,
+                                        color=unverified_colour,
+                                        mentionable=False,
+                                        hoist=False,
+                                        reason=role_reason)
+        if "unverified" not in current_roles:
+            await ctx.guild.create_role(name="unverified",
+                                        permissions=unverified_permissions,
+                                        colour=unverified_colour,
+                                        mentionable=True,
+                                        hoist=True,
+                                        reason=role_reason)
 
         await ctx.send("Roles created!")
+
+    @commands.command()
+    async def nsfw(self, ctx):
+        """
+        Adds the nsfw role to a user. This would allow them to view the nsfw
+        channel.
+        """
+        # This assumes that the guild has one, and only one, role named nsfw
+        nsfw_role = ctx.guild.roles
+        nsfw_role = [role for role in nsfw_role if role.name == "nsfw"]
+        nsfw_role = nsfw_role[0]
+        await ctx.author.add_roles(nsfw_role)
 
 
 def setup(bot):
