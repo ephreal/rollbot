@@ -135,6 +135,7 @@ class musicPlayer(commands.Cog):
             return
 
         if not keywords:
+            # Assume player is paused and try resume
             player = self.bot.players[ctx.guild.id]
             return await player.play()
 
@@ -142,8 +143,15 @@ class musicPlayer(commands.Cog):
         if results is None:
             return
 
-        results = results[:40]
+        results = results
+        await self.play_from_results(ctx, results)
 
+    async def play_from_results(self, ctx, results):
+        """
+        Queues up songs in results to play.
+        """
+
+        queued = False
         if len(results) > 1:
             # The user must choose a song.
             message = f"```css\n{ctx.author.name}, choose one or more song " \
@@ -157,7 +165,7 @@ class musicPlayer(commands.Cog):
 
             await ctx.send(message)
 
-            msg = await self.bot.wait_for('message', timeout=30,
+            msg = await self.bot.wait_for('message', timeout=60,
                                           check=self.check(ctx.message.author))
             choice = msg.content
 
@@ -169,7 +177,6 @@ class musicPlayer(commands.Cog):
             choice = [0]
 
         choice = [results[i] for i in choice]
-        queued = False
         for i in choice:
             if await self.bot.players[ctx.guild.id].enqueue(i.path):
                 queued = True
@@ -232,11 +239,14 @@ class musicPlayer(commands.Cog):
             .search <keywords>
         """
 
+        if not keywords:
+            return await ctx.send("What would you like to search for?")
+
         results, total_relevance = await self.search_index(ctx, keywords)
         if results is None:
             return
 
-        # Cut to the first 20 results due to discord character limitations
+        # Cut to the first 40 results due to discord character limitations
         results = results[:40]
         message = f"```css\n{ctx.author.name}, here are your song results.\n"
 
