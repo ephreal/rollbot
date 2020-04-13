@@ -21,8 +21,7 @@ from utils import messages
 
 def build_bot(prefix, restrict_rolling, description):
 
-    BOT = commands.Bot(command_prefix=prefix,
-                       description=description)
+    BOT = commands.Bot(command_prefix=prefix, description=description)
 
     @BOT.event
     async def on_member_join(member):

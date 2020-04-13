@@ -70,7 +70,7 @@ if TOKEN == "YOUR_BOT_TOKEN_HERE":
     TOKEN, ROLL_RESTRICT = first_time_setup(CONFIG)
 
 while not os.path.exists("poweroff"):
-    BOT = bot.build_bot(PREFIX, DESC, ROLL_RESTRICT)
+    BOT = bot.build_bot(PREFIX, ROLL_RESTRICT, DESC)
     run_client(BOT, TOKEN)
     importlib.reload(bot)
 
