@@ -1,29 +1,13 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 import os
-import random
 import traceback
 
 from asyncio import sleep
@@ -31,6 +15,7 @@ from classes import analytics
 from discord import client
 from discord.ext import commands
 from subprocess import Popen, PIPE
+from utils import admin_utils
 
 
 class admin(commands.Cog):
@@ -49,22 +34,20 @@ class admin(commands.Cog):
         self.prefix = {self.bot.command_prefix}
 
     @commands.command(hidden=True,
-                      description="Shuts down the bot")
+                      description="Shuts down the bot",
+                      aliases=['po'])
     @commands.is_owner()
     async def halt(self, ctx):
         f"""
         Shuts the bot down.
         Requires administrator permissions to run.
 
-        usage: {self.prefix}halt
+        usage: {self.prefix}po
         """
 
-        shutdown_message = "The bot is currently shutting down. Good bye"
-        shutdown_message = shutdown_message[0:random.randint(0,
-                                            len(shutdown_message)-1)]
-
-        with open("poweroff", "w") as f:
-            f.write("Poweroff the bot.")
+        shutdown_message = await admin_utils.shutdown_message()
+        await admin_utils.write_shutdown_file()
+        # Add some dots to clarify that the shortened message is intentional
         await ctx.send(f"{shutdown_message}"+shutdown_message[-1]*4+"....")
         await client.Client.logout(self.bot)
 

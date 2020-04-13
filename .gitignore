@@ -5,3 +5,4 @@ __pycache__
 pybot
 song_index.json
 *.log
+env

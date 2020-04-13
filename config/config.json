@@ -1,16 +1,1 @@
-{
-	"token" : "YOUR_BOT_TOKEN_HERE",
-	"description" : "A Rollbot",
-	"name" : "Your bot name here",
-	"avatar" : "config/avatar.jpg",
-	"prefix" : ".",
-	"rolling_channels" : [
-                              "ROLLING_CHANNEL",
-                              "ROLLING_CHANNEL"
-                             ],
-        "sr_tweaks"   : {
-                           "glitch_more_than_half"          : true,
-                           "glitch_fails_extended"          : false,
-                           "critical_glitch_fails_extended" : true
-                         }
-}
+{"token": "MzcxMTI5MTY2Njg4NTUwOTI0.XgDTcg.BXQMm3TfI9D1hXQtjPGkmCsFNPk", "description": "A Rollbot", "prefix": "?", "restrict_rolling": true, "sr_tweaks": {"glitch_more_than_half": true, "glitch_fails_extended": false, "critical_glitch_fails_extended": true}, "roll_restrict": false}

@@ -13,20 +13,26 @@ import os
 import traceback
 
 from datetime import datetime
+from discord import Colour, Embed
 from discord import Game
 from discord.ext import commands
+from utils import messages
 
 
-def build_bot(prefix, description="Rollbot"):
+def build_bot(prefix, restrict_rolling, description):
 
     BOT = commands.Bot(command_prefix=prefix,
                        description=description)
 
     @BOT.event
     async def on_member_join(member):
-        await member.send("Welcome to our server. Please be kind and "
-                          "courteous. If you wish to test the bots, please ask"
-                          " to be given the bot testing role.")
+        welcome_message = Embed(title=f"Welcome to {member.guild.name}!")
+        welcome_message.colour = Colour.green()
+        welcome_message.set_thumbnail(url=member.guild.icon_url)
+        welcome_message.thumbnail.height = 128
+        welcome_message.thumbnail.width = 128
+        welcome_message.description = messages.on_join_message(member)
+        await member.send(embed=welcome_message)
 
     @BOT.event
     async def on_ready():
@@ -42,10 +48,15 @@ def build_bot(prefix, description="Rollbot"):
         # Uptime statistic
         BOT.boot_time = datetime.now()
 
+        # Whether or not rolling is restricted to rolling channels only
+        BOT.restrict_rolling = restrict_rolling
+
         BOT.logger = logging.getLogger('discord')
         BOT.logger.setLevel(logging.DEBUG)
-        BOT.handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-        BOT.handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+        BOT.handler = logging.FileHandler(filename='discord.log',
+                                          encoding='utf-8', mode='w')
+        BOT.handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:'
+                                                   '%(name)s: %(message)s'))
         BOT.logger.addHandler(BOT.handler)
 
         # Load all cogs
@@ -72,20 +83,7 @@ def build_bot(prefix, description="Rollbot"):
 
         if "+endorse" in message.content:
             bot_nick = message.guild.me.nick
-            await message.channel.send(f"My name is {bot_nick}, and I endorse "
-                                       "the above message.\nNote that my "
-                                       "endorsement in no way reflects the "
-                                       "opinions of me or my creator, does "
-                                       "not make any guarantee about the "
-                                       "correctness of said message, and "
-                                       "may, in fact, not be an actual "
-                                       "endorsement of the sentiments "
-                                       "expressed in said message. Any "
-                                       "statements claiming my endorsing of "
-                                       "this message implies that I agree "
-                                       "with said message is taken horribly "
-                                       "out of context.")
-
+            await message.channel.send(messages.endorseme(bot_nick))
             await message.add_reaction('👍')
 
         if message.content.startswith(prefix):

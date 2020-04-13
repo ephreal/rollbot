@@ -8,13 +8,15 @@ License.
 """
 
 
-class DiscordUser():
+class MockUser():
     """
     Mock user to test the discord interface with
 
     Class Variables
         id (int):
             represents the member.id from discord.member
+        guild (MockGuild)
+            retpresents the guild object
 
     Class Methods
         send(message: str) -> None:
@@ -22,18 +24,19 @@ class DiscordUser():
             that conatins the message. The message can then be verified.
     """
 
-    def __init__(self, userid=None, name=None):
+    def __init__(self, userid=None, name=None, guild=None):
         self.id = userid
         self.name = name
+        self.guild = guild
 
     async def send(self, message):
         """
-        Creates a file in the same folder with the name "player_message" that
+        Creates a file in the same folder with the name "message" that
         conatins the message. The message can then be verified.
 
         mesasge: str
             -> None
         """
 
-        with open("player_message", "w") as f:
+        with open("message", "w") as f:
             f.write(message)

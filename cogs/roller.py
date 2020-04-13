@@ -9,7 +9,7 @@ License.
 
 from discord.ext import commands
 from classes.dice_rolling.base_roll_functions import roller as rl
-from classes.bot_utils import utils
+from utils import rolling_utils
 
 import sys
 
@@ -18,7 +18,6 @@ class roller(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.dice_roller = rl()
-        self.utils = utils(self.bot)
 
     @commands.command(pass_context=True)
     async def roll(self, ctx, *rolls):
@@ -52,16 +51,12 @@ class roller(commands.Cog):
 
         """
 
-        # Check to make sure the bot isn't replying to any bots.
-
-        if ctx.message.author.bot:
-            return
+        if self.bot.restrict_rolling:
+            channel = await rolling_utils.check_roll_channel(ctx)
+        else:
+            channel = ctx.channel
 
         message = f"```CSS\nRan by {ctx.author.name}\n"
-
-        # Channel checks. Rolling is restricted to a few channels
-        # on my discord server.
-        channel = await self.utils.check_roll_channel(ctx)
 
         try:
 

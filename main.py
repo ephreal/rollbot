@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 import asyncio
@@ -38,6 +23,34 @@ def load_config():
         return json.load(config_file)
 
 
+def first_time_setup(CONFIG):
+    """
+    Walks the user through for first time setup.
+
+    CONFIG: JSON dict
+        -> TOKEN: str
+    """
+    token = input("Please input your discord bot token here: ")
+    roll_restrict = input("Restrict rolling to rolling channels? y/n: ")
+    roll_restrict = roll_restrict.lower().strip()
+    print(repr(roll_restrict))
+    while not (roll_restrict == 'n') and not (roll_restrict == 'y'):
+        roll_restrict = input("Restrict rolling to rolling channels? y/n: ")
+
+    if roll_restrict == "y":
+        roll_restrict = True
+    else:
+        roll_restrict = False
+
+    CONFIG["token"] = token
+    CONFIG["roll_restrict"] = roll_restrict
+
+    with open("config/config.json", 'w') as config_file:
+        config_file.write(json.dumps(CONFIG))
+
+    return token, roll_restrict
+
+
 def run_client(client, *args, **kwargs):
     loop = asyncio.get_event_loop()
     try:
@@ -51,9 +64,13 @@ CONFIG = load_config()
 TOKEN = CONFIG["token"]
 PREFIX = CONFIG["prefix"]
 DESC = CONFIG["description"]
+ROLL_RESTRICT = CONFIG["restrict_rolling"]
+
+if TOKEN == "YOUR_BOT_TOKEN_HERE":
+    TOKEN, ROLL_RESTRICT = first_time_setup(CONFIG)
 
 while not os.path.exists("poweroff"):
-    BOT = bot.build_bot(PREFIX, DESC)
+    BOT = bot.build_bot(PREFIX, DESC, ROLL_RESTRICT)
     run_client(BOT, TOKEN)
     importlib.reload(bot)
 

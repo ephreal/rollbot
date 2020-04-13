@@ -22,57 +22,11 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import json
-import discord
-from discord.utils import get
-
 
 class utils():
     def __init__(self, bot):
         self.bot = bot
         self.rolls = {}
-
-        try:
-            with open("config/config.json", 'r') as f:
-                self.rolling_channels = json.load(f)["rolling_channels"]
-        except FileNotFoundError:
-            self.rolling_channels = None
-
-    async def check_roll_channel(self, ctx):
-        """
-        Verifies that bot is allowed to send the output
-        of roll commands to this channel.
-        """
-
-        # Return the current channel if no rolling channels are defined
-        if not self.rolling_channels or "quote" in ctx.message.content:
-            return ctx.message.channel
-
-        # Allow rolling in DM channels
-        if isinstance(ctx.message.channel, discord.DMChannel):
-            return ctx.message.channel
-
-        channel = ctx.message.channel.name
-        server = ctx.message.guild
-
-        if channel not in self.rolling_channels:
-            # PM author if in wrong channel
-            await ctx.author.send("Please limit rolling commands to"
-                                  "the rolling or bottesting channels.\n"
-                                  "The results of your command will be"
-                                  "found in the rolling channel")
-
-            await ctx.message.delete()
-
-            channel = get(server.channels, name=self.rolling_channels[0],
-                          type=discord.ChannelType.text)
-
-            command = ctx.message.content
-            await channel.send(f"Command was \"{command}\"")
-            return channel
-
-        else:
-            return ctx.message.channel
 
     async def add_roll(self, author_id, roll):
         """
