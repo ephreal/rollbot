@@ -51,10 +51,7 @@ class roller(commands.Cog):
 
         """
 
-        if self.bot.restrict_rolling:
-            channel = await rolling_utils.check_roll_channel(ctx)
-        else:
-            channel = ctx.channel
+        channel = await rolling_utils.check_roll_channel(ctx, self.bot)
 
         message = f"```CSS\nRan by {ctx.author.name}\n"
 

@@ -23,7 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 from classes.dice_rolling.base_roll_functions import roller
-from classes.bot_utils import utils
+from utils import rolling_utils
 
 from discord.ext import commands
 
@@ -32,7 +32,6 @@ class dnd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.roller = roller()
-        self.utils = utils(self.bot)
 
     @commands.command(description="DnD bot roller")
     async def dnd(self, ctx):
@@ -54,7 +53,7 @@ class dnd(commands.Cog):
         disadvantage = False
         modifier = 0
 
-        channel = await self.utils.check_roll_channel(ctx)
+        channel = await rolling_utils.check_roll_channel(ctx, self.bot)
 
         command = ctx.message.content.lower().split()
         command = command[1:]

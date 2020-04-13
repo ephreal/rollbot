@@ -20,15 +20,32 @@ class TestRollingUtils(unittest.TestCase):
     def test_check_roll_channel(self):
         """Verifies roll channel is properly found"""
         # This SHOULD find the rolling channel
-        channel = run(rolling_utils.check_roll_channel(mockables.context1))
+        ctx = mockables.context1
+        bot1 = mockables.bot1
+        bot2 = mockables.bot2
+
+        channel = run(rolling_utils.check_roll_channel(ctx, bot1))
         self.assertNotEqual(mockables.context1.channel.name, channel.name)
 
+        channel = run(rolling_utils.check_roll_channel(ctx, bot2))
+        self.assertEqual(mockables.context1.channel.name, channel.name)
+
+        ctx = mockables.context2
+
         # These should return the same channel
-        channel = run(rolling_utils.check_roll_channel(mockables.context2))
+        channel = run(rolling_utils.check_roll_channel(ctx, bot1))
         self.assertEqual(mockables.context2.channel.name, channel.name)
 
-        channel = run(rolling_utils.check_roll_channel(mockables.context3))
+        channel = run(rolling_utils.check_roll_channel(ctx, bot2))
+        self.assertNotEqual(mockables.context1.channel.name, channel.name)
+
+        ctx = mockables.context3
+
+        channel = run(rolling_utils.check_roll_channel(ctx, bot1))
         self.assertEqual(mockables.context3.channel.name, channel.name)
+
+        channel = run(rolling_utils.check_roll_channel(ctx, bot2))
+        self.assertNotEqual(mockables.context1.channel.name, channel.name)
 
 
 def run(coroutine):

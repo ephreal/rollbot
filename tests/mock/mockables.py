@@ -8,6 +8,7 @@ License.
 """
 
 
+from tests.mock.MockBot import MockBot
 from tests.mock.MockChannel import MockChannel
 from tests.mock.MockContext import MockContext
 from tests.mock.MockGuild import MockGuild
@@ -47,3 +48,6 @@ for i in range(0, len(users3)):
 context1 = MockContext(guild1.users[3], guild1.text_channels[2], guild1)
 context2 = MockContext(guild2.users[0], guild2.text_channels[2], guild2)
 context3 = MockContext(guild3.users[3], guild3.text_channels[1], guild3)
+
+bot1 = MockBot(restrict_rolling=True)
+bot2 = MockBot(restrict_rolling=False)

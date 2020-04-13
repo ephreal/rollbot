@@ -31,24 +31,24 @@ def first_time_setup(CONFIG):
         -> TOKEN: str
     """
     token = input("Please input your discord bot token here: ")
-    roll_restrict = input("Restrict rolling to rolling channels? y/n: ")
-    roll_restrict = roll_restrict.lower().strip()
-    while not (roll_restrict == 'n') and not (roll_restrict == 'y'):
-        roll_restrict = input("Restrict rolling to rolling channels? y/n: ")
+    restrict_rolling = input("Restrict rolling to rolling channels? y/n: ")
+    restrict_rolling = restrict_rolling.lower().strip()
+    while not (restrict_rolling == 'n') and not (restrict_rolling == 'y'):
+        restrict_rolling = input("Restrict rolling to rolling channels? y/n: ")
 
-    if roll_restrict == "y":
-        roll_restrict = True
+    if restrict_rolling == "y":
+        restrict_rolling = True
     else:
-        roll_restrict = False
+        restrict_rolling = False
 
     CONFIG["token"] = token
-    CONFIG["roll_restrict"] = roll_restrict
+    CONFIG["restrict_rolling"] = restrict_rolling
 
     with open("config/config.json", 'w') as config_file:
         config_file.write(json.dumps(CONFIG, sort_keys=True,
                                      indent=4, separators=(',', ': ')))
 
-    return token, roll_restrict
+    return token, restrict_rolling
 
 
 def run_client(client, *args, **kwargs):

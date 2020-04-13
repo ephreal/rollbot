@@ -8,17 +8,30 @@ License.
 """
 
 
-async def check_roll_channel(ctx):
+async def check_roll_channel(ctx, bot):
     """
+    ctx: discord.ext.commands.Context
+    bot: discord.ext.command.Bot
+        -> channel: discord.TextChannel
+    """
+
+    channel = ctx.channel
+
+    if bot.restrict_rolling:
+        channel = await get_roll_channel(ctx)
+
+    return channel
+
+
+async def get_roll_channel(ctx):
+    """
+    Gets the roll channel if rolling is restricted to rolling channels
+
     Checks to see if the context channel name is either 'rolling' or
     'bottesting'. This is to restrict rolling to just those channels.
 
-    If restrict_rolling is false, this will never be called.
-    If the server does not have a rolling channel, this will return the same
-    channel that was passed in
-
     ctx: discord.ext.commands.Context
-        -> roll_channel: discord.TextChannel
+        -> channel: discord.TextChannel
     """
 
     allowed_channels = ["bottesting", "rolling"]
