@@ -46,7 +46,8 @@ def first_time_setup(CONFIG):
     CONFIG["roll_restrict"] = roll_restrict
 
     with open("config/config.json", 'w') as config_file:
-        config_file.write(json.dumps(CONFIG))
+        config_file.write(json.dumps(CONFIG, sort_keys=True,
+                                     indent=4, separators=(',', ': ')))
 
     return token, roll_restrict
 
