@@ -33,7 +33,6 @@ def first_time_setup(CONFIG):
     token = input("Please input your discord bot token here: ")
     roll_restrict = input("Restrict rolling to rolling channels? y/n: ")
     roll_restrict = roll_restrict.lower().strip()
-    print(repr(roll_restrict))
     while not (roll_restrict == 'n') and not (roll_restrict == 'y'):
         roll_restrict = input("Restrict rolling to rolling channels? y/n: ")
 
