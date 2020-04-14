@@ -22,6 +22,7 @@ class admin(commands.Cog):
     """
     Available commands
     .halt
+    .logging
     .member_activity
     .reboot
     .reload
@@ -97,6 +98,29 @@ class admin(commands.Cog):
             except SyntaxError as e:
                 print(f"The cog {cog} has a syntax error.")
                 traceback.print_tb(e.__traceback__)
+
+    @commands.command(hidden=True, description="Change log level")
+    @commands.is_owner()
+    async def logging(self, ctx, log_level):
+        """
+        Changes the log level for the bot. Several log levels are available.
+            CRITICAL
+            ERROR
+            WARNING
+            INFO
+            DEBUG
+
+        usage:
+            set the logging level to debug:
+            .logging debug
+        """
+        logging_levels = ["critical", "error", "warning", "info", "debug"]
+        if log_level.lower() in logging_levels:
+            log_level = log_level.upper()
+            await admin_utils.change_log_level(self.bot, log_level)
+            await ctx.send(f"Log level changed to {log_level}")
+        else:
+            await ctx.send("Invalid logging level specified.")
 
     @commands.command(hidden=True, description="Show guild member activity.")
     @commands.has_permissions(administrator=True)

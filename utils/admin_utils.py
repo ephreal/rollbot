@@ -58,7 +58,6 @@ async def change_log_level(bot, log_level):
         WARNING
         INFO
         DEBUG
-        NOTSET
     DEBUG is the most verbose, CRITICAL is the least verbose
 
     bot: discord.ext.commands.Bot
