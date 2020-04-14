@@ -11,6 +11,21 @@ import logging
 import os
 import random
 
+from subprocess import Popen, PIPE
+
+
+async def git_pull():
+    """
+    Pulls any changes down from github and returns the result of the command.
+
+        _> changed: str
+    """
+
+    cmd = Popen(["git", "pull"], stdout=PIPE)
+    out, _ = cmd.communicate()
+    out = out.decode()
+    return out
+
 
 async def shutdown_message():
     shutdown_message = "The bot is currently shutting down. Good bye"

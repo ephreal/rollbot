@@ -14,13 +14,13 @@ from asyncio import sleep
 from classes import analytics
 from discord import client
 from discord.ext import commands
-from subprocess import Popen, PIPE
 from utils import admin_utils
 
 
 class admin(commands.Cog):
     """
     Available commands
+    .git
     .halt
     .logging
     .member_activity
@@ -35,8 +35,19 @@ class admin(commands.Cog):
         self.prefix = {self.bot.command_prefix}
         admin_utils.setup_logging(bot)
 
-    @commands.command(hidden=True,
-                      description="Shuts down the bot",
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def git(self, ctx):
+        """
+        Pulls changes from github.
+
+        usage:
+            .pull
+        """
+
+        await ctx.send(await admin_utils.git_pull())
+
+    @commands.command(hidden=True, description="Shuts down the bot",
                       aliases=['po'])
     @commands.is_owner()
     async def halt(self, ctx):
@@ -49,6 +60,7 @@ class admin(commands.Cog):
 
         shutdown_message = await admin_utils.shutdown_message()
         await admin_utils.write_shutdown_file()
+
         # Add some dots to clarify that the shortened message is intentional
         await ctx.send(f"{shutdown_message}"+shutdown_message[-1]*4+"....")
         await client.Client.logout(self.bot)
@@ -102,7 +114,7 @@ class admin(commands.Cog):
     @commands.command(hidden=True, description="Change log level")
     @commands.is_owner()
     async def logging(self, ctx, log_level):
-        """
+        f"""
         Changes the log level for the bot. Several log levels are available.
             CRITICAL
             ERROR
@@ -112,10 +124,12 @@ class admin(commands.Cog):
 
         usage:
             set the logging level to debug:
-            .logging debug
+            {self.prefix}logging debug
         """
         logging_levels = ["critical", "error", "warning", "info", "debug"]
-        if log_level.lower() in logging_levels:
+        log_level = log_level.lower()
+
+        if log_level in logging_levels:
             log_level = log_level.upper()
             await admin_utils.change_log_level(self.bot, log_level)
             await ctx.send(f"Log level changed to {log_level}")
@@ -145,17 +159,11 @@ class admin(commands.Cog):
     @commands.is_owner()
     async def reboot(self, ctx):
         f"""
-        Reboots the bot so all files can be reloaded.
+        Reboots the bot
         Requires administrator permissions.
 
         usage: {self.prefix}reboot
         """
-
-        cmd = Popen(["git", "pull"], stdout=PIPE)
-        out, _ = cmd.communicate()
-        out = out.decode()
-        if "+" in out:
-            await ctx.send(f"Updated:\n{out}")
 
         await ctx.send(f"rebooting....")
         await client.Client.logout(self.bot)
@@ -165,26 +173,16 @@ class admin(commands.Cog):
     @commands.is_owner()
     async def reload(self, ctx, pull=None):
         """
-        Reloads all bot cogs so updates can be performed while the bot is
-        running. Reloading can be from local files OR can pull the most
-        recent version of the files from the git repository.
+        Reloads all bot cogs.
 
-        This reloads files locally by default.
+        This allows updates to be performed while the bot is running. Updates
+        to files outside of the cogs directory will require a reboot of the
+        bot.
 
         Examples:
             Reload cogs locally
             .reload
-
-            Pull files from github and reload the cogs
-            .reload pull
         """
-
-        if pull == "pull":
-            cmd = Popen(["git", "pull"], stdout=PIPE)
-            out, _ = cmd.communicate()
-            await ctx.send(f"Attempted to pull files from github.\n"
-                           f"{out.decode()}")
-
         await self.load_cogs()
         await ctx.send("Reloaded")
 
@@ -204,60 +202,38 @@ class admin(commands.Cog):
         await ctx.guild.me.edit(nick=" ".join(new_name))
         await ctx.send("Bot's name has been changed.")
 
-    @commands.command(hidden=True,
-                      description="Channel message spammer")
-    @commands.has_permissions(administrator=True)
-    async def spam(self, ctx):
+    @commands.command(hidden=True, description="Channel message spammer")
+    @commands.has_permissions(manage_messages=True)
+    async def spam(self, ctx, limit=5):
         f"""
         Spams messges to a channel.
 
-        Sometimes you need to test things on a large amount of
-        messages. For those times, the spam command will be
-        your friend. Instead of having to individually create
-        hundreds of messages, why not have a bot do it for you?
-
-        The maximum amount of messages allowed is 1000.
-
-        Requires administrator permissions to run.
-
         usage:
-            send 10 messages to a channel
-                {self.prefix}spam or {self.prefix}spam 10
-
             send 200 messages to a channel
                 {self.prefix}spam 200
         """
 
-        command = ctx.message.content.split()
-        command = command[1:]
-
         try:
-            if len(command) == 0:
-                amount = 10
-            else:
-                amount = int(command[0])
+            limit = int(limit)
+        except ValueError:
+            await ctx.send("The limit must be an integer")
 
-            if amount > 1000:
-                return await ctx.send("I can't spam more than 1000 messages "
-                                      "at a time. Please try again.")
+        if limit > 1000:
+            limit = 1000
+            return await ctx.send("Using max limit of 1000")
 
-            for i in range(0, amount):
-                await ctx.send(f"Message {i}.")
-                await sleep(1)
-
-        except Exception as e:
-            await ctx.send("Invalid input received.")
-            await ctx.send(f"Error follows:\n{e}")
+        for i in range(0, limit):
+            await ctx.send(f"Message {i}.")
+            await sleep(1)
 
     @spam.error
     async def spam_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You must be an administrator to use this command.")
         else:
+            self.bot.logger.log(msg=error, level=40)
             await ctx.send("Something is wrong with your command.\n"
                            f"Error message: {error}")
-
-        await ctx.send("Complete")
 
 
 def setup(bot):
