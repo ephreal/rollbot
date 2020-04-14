@@ -139,7 +139,7 @@ class musicPlayer(commands.Cog):
             player = self.bot.players[ctx.guild.id]
             return await player.play()
 
-        results, total_relevance = await self.search_index(ctx, keywords)
+        results = await self.search_index(ctx, keywords)
         if results is None:
             return
 
@@ -242,7 +242,7 @@ class musicPlayer(commands.Cog):
         if not keywords:
             return await ctx.send("What would you like to search for?")
 
-        results, total_relevance = await self.search_index(ctx, keywords)
+        results = await self.search_index(ctx, keywords)
         if results is None:
             return
 
@@ -270,11 +270,7 @@ class musicPlayer(commands.Cog):
             await ctx.send("Sorry, that does not match any songs.")
             return [None, None]
 
-        total_relevance = 0
-        for i in results:
-            total_relevance += i.relevance
-
-        return results, total_relevance
+        return results
 
     @commands.command(descrption="Stop playing")
     async def stop(self, ctx):
