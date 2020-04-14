@@ -47,6 +47,14 @@ class TestRollingUtils(unittest.TestCase):
         channel = run(rolling_utils.check_roll_channel(ctx, bot2))
         self.assertNotEqual(mockables.context1.channel.name, channel.name)
 
+    def test_roll(self):
+        """Ensures the roll function returns valid results"""
+        roll = run(rolling_utils.roll(200, 20))
+        self.assertEqual(len(roll), 200)
+        for i in roll:
+            self.assertTrue(i <= 20)
+            self.assertTrue(i >= 1)
+
 
 def run(coroutine):
     """

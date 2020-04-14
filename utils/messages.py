@@ -7,6 +7,8 @@ Please see the license for any restrictions or rights granted to you by the
 License.
 """
 
+from discord import Colour, Embed
+
 
 def endorse(bot_nick):
     """
@@ -30,10 +32,19 @@ def on_join_message(member):
     Returns a message to send to the member who joined the server
 
     member: discord.Member
-        -> message: str
+        -> welcome_message: discord.Embed
     """
+
     on_join_message = f"Welcome to {member.guild.name}! Please remember to be"\
                       " kind and courteous. If you would like to join in " \
                       "bot testing, please run '.bottester' to have the role "\
                       "assigned to you."
-    return on_join_message
+
+    welcome_message = Embed(title=f"Welcome to {member.guild.name}!")
+    welcome_message.colour = Colour.green()
+    welcome_message.set_thumbnail(url=member.guild.icon_url)
+    welcome_message.thumbnail.height = 128
+    welcome_message.thumbnail.width = 128
+    welcome_message.description = on_join_message
+
+    return welcome_message

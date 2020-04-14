@@ -24,12 +24,7 @@ def build_bot(prefix, restrict_rolling, description):
 
     @BOT.event
     async def on_member_join(member):
-        welcome_message = Embed(title=f"Welcome to {member.guild.name}!")
-        welcome_message.colour = Colour.green()
-        welcome_message.set_thumbnail(url=member.guild.icon_url)
-        welcome_message.thumbnail.height = 128
-        welcome_message.thumbnail.width = 128
-        welcome_message.description = messages.on_join_message(member)
+        welcome_message = messages.on_join_message(member)
         await member.send(embed=welcome_message)
 
     @BOT.event

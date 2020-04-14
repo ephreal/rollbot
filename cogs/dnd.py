@@ -1,37 +1,20 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
-from classes.dice_rolling.base_roll_functions import roller
+from utils import message_builder
 from utils import rolling_utils
-
 from discord.ext import commands
 
 
-class dnd(commands.Cog):
+class DnD(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.roller = roller()
 
     @commands.command(description="DnD bot roller")
     async def dnd(self, ctx):
@@ -58,12 +41,13 @@ class dnd(commands.Cog):
         command = ctx.message.content.lower().split()
         command = command[1:]
 
-        message = "```"
+        message = ""
         if len(command) < 1:
-            roll = await self.roller.roll(1, 20)
+            roll = await rolling_utils.roll(1, 20)
             message += "You rolled a 20 sided die.\n"\
                        f"Your result was {roll}"
-            return await ctx.send(message + "```")
+            message = await message_builder.embed_reply(ctx.author, message)
+            return await ctx.send(embed=message)
 
         # Check for advantage or disadvantage
         if "adv" in command:
@@ -85,31 +69,28 @@ class dnd(commands.Cog):
 
         if advantage:
             message += "You rolled 2d20 with advantage.\n"
-            roll = await self.roller.roll(2, 20)
+            roll = await rolling_utils.roll(2, 20)
             message += f"Rolls : {roll}\n"
             roll = max(roll)
 
         elif disadvantage:
             message += "You rolled 2d20 with disadvantage.\n"
-            roll = await self.roller.roll(2, 20)
+            roll = await rolling_utils.roll(2, 20)
             message += f"Rolls : {roll}\n"
             roll = min(roll)
 
         else:
             message += "You rolled a d20.\n"
-            roll = await self.roller.roll(1, 20)
+            roll = await rolling_utils.roll(1, 20)
             roll = roll[0]
 
         message += f"\nModifier : {modifier}\n"
         message += f"Roll : {roll}\n"
         message += f"Final result : {roll + modifier}\n"
 
-        # else:
-        #     message += "Please try again. I'm not sure what to do with that."
+        message = await message_builder.embed_reply(ctx.author, message)
 
-        message += "```"
-
-        await channel.send(message)
+        await channel.send(embed=message)
 
 
 if __name__ == "__main__":
@@ -119,4 +100,4 @@ if __name__ == "__main__":
 
 else:
     def setup(bot):
-        bot.add_cog(dnd(bot))
+        bot.add_cog(DnD(bot))
