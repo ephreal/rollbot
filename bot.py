@@ -12,7 +12,6 @@ import os
 import traceback
 
 from datetime import datetime
-from discord import Colour, Embed
 from discord import Game
 from discord.ext import commands
 from utils import messages
