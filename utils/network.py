@@ -12,7 +12,7 @@ import aiohttp
 import urllib
 
 
-async def fetch_page(url, headers={}):
+async def fetch_page(url, headers=None):
     async with aiohttp.ClientSession() as session:
         html = await fetch(session, url, headers)
         return html

@@ -8,7 +8,7 @@ License.
 """
 
 
-from mock import MockUsers
+from mock import MockUser
 import unittest
 from classes.games import player
 from classes.games import card
@@ -33,7 +33,7 @@ class TestPlayersMethods(unittest.TestCase):
             card.Card(name="king", value=10)
         ]
 
-        user = MockUsers.DiscordUser(userid=1234567890, name="test_player")
+        user = MockUser.MockUser(userid=1234567890, name="test_player")
         self.player = player.Player(user, "test_player", 1234567890)
         self.card_player = player.CardPlayer(name="card_player",
                                              player_id=9876543210,
