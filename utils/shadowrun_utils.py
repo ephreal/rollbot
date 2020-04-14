@@ -1,0 +1,153 @@
+# -*- coding: utf-8 -*-
+"""
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
+
+Please see the license for any restrictions or rights granted to you by the
+License.
+"""
+
+# Replace aiohttp with utils/network.py in the future
+import aiohttp
+import json
+from discord import Colour, Embed
+
+
+async def get_quote(quote_type=None):
+    """
+    Fetches a quote from https://shadowrun.needs.management
+
+    quote_type: string
+        -> quote: json
+    """
+
+    url = "https://shadowrun.needs.management/api.php?"
+
+    try:
+        if not quote_type:
+            url += "random=true"
+        elif quote_type == "random":
+            url += "random=true"
+        elif quote_type == "latest":
+            url += "latest=true"
+        elif int(quote_type):
+            url += f"quote_id={quote_type}"
+        else:
+            url += "random=true"
+
+    except Exception:
+        url += "random=true"
+
+    finally:
+
+        async with aiohttp.ClientSession(
+              connector=aiohttp.TCPConnector(verify_ssl=True)) as session:
+
+            html = await fetch(session, url)
+            html = json.loads(html)
+
+    return html
+
+
+async def remove_bbcode(quote):
+    """
+    Removes bbcode content from a quote
+
+    quote: json dict
+        -> quote: json dict
+    """
+
+    bbcode_tags = [
+                    "[b]", "[/b]", "[i]", "[/i]",
+                    "[u]", "[/u]", "[s]", "[/s]"
+                  ]
+
+    for key in list(quote.keys()):
+        if key == "id":
+            continue
+        replaced = quote[key]
+        for i in bbcode_tags:
+            replaced = replaced.replace(i, "")
+        quote[key] = replaced
+
+    return quote
+
+
+async def replace_bbcode(quote):
+    """
+    Replaces certain bbcode with the string equivalents
+
+    quote: json dict
+        -> quote: json dict
+    """
+
+    content = quote['quote']
+
+    # This seems to be buggy: either all "[*]" are replaced by "    *", or
+    # all are replaced with the ol.
+    if "[ul]" in content:
+        content = content.replace("[ul]", "")
+        content = content.replace("[/ul]", "")
+        content = content.replace("[*]", "    *")
+
+    elif "[ol]" in content:
+        count = 1
+        content = content.replace("[ol]", "")
+        content = content.replace("[/ol]", "")
+
+        amount = content.count("[*]")
+
+        for _ in range(0, amount):
+            current = content.find("[*]")
+            start = content[0:current]
+            end = content[current+3:]
+            content = f"{start}{count}) {end}"
+            count += 1
+
+    quote['quote'] = content
+    return quote
+
+
+async def replace_html_escapes(quote):
+    """
+    Replaces html escapes with their string equivalents
+
+    quote: json dict
+        -> quote: json dict
+    """
+
+    html_escaped = {
+                      "&quot;": '"',
+                      "&amp;":  "&"
+                    }
+
+    for key in list(quote.keys()):
+        if key == "id":
+            continue
+        replaced = quote[key]
+        for i in html_escaped.keys():
+            replaced = replaced.replace(i, html_escaped[i])
+        quote[key] = replaced
+
+    return quote
+
+
+async def format_quote(quote):
+    """
+    Formats the quote for final display.
+
+    quote: json string
+        -> discord.Embed
+    """
+    content = Embed(title=f"#{quote['id']}: {quote['title']}")
+    content.set_footer(text=f"Author: {quote['author']}")
+    content.description = quote['quote']
+    content.colour = Colour.lighter_grey()
+    # content += f"written:      {quote['time']}\n"
+
+    return content
+
+
+async def fetch(session, url):
+    async with session.get(url) as html:
+        return await html.text()

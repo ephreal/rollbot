@@ -1,35 +1,20 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 import json
-import aiohttp
-
-from classes.bot_utils import utils
-from classes.context_handlers import shadowrun_handler as sh
-from .cog_command_usage.helptext import shadowrun_help as sr_help
 
 from discord.ext import commands
+from utils import message_builder
+from utils import rolling_utils
+from utils.handlers import shadowrun_handler as sh
+from utils import shadowrun_utils
+from .cog_command_usage.helptext import shadowrun_help as sr_help
 
 
 class shadowrun(commands.Cog):
@@ -37,7 +22,6 @@ class shadowrun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.handler = sh.ShadowrunHandler()
-        self.utils = utils(self.bot)
         self.previous_rolls = []
         # I gotta admit... I chuckled a little writing down "self.help"
         self.help = sr_help()
@@ -46,7 +30,7 @@ class shadowrun(commands.Cog):
             self.sr_tweaks = json.load(f)["sr_tweaks"]
 
     @commands.command(description="Shadowrun dice roller")
-    async def sr(self, ctx):
+    async def sr(self, ctx, *roll_args):
         """
         Shadowrun specific dice rolling.
 
@@ -87,46 +71,40 @@ class shadowrun(commands.Cog):
         are planned on being added in the future.
         """
 
-        author = ctx.message.author.name
-        author = author.split("#")[0]
+        if self.bot.restrict_rolling:
+            channel = await rolling_utils.check_roll_channel(ctx, self.bot)
 
-        message = f"```Please try again {author}, I'm not sure what to do "\
-                  "with that."
+        roll_args = list(roll_args)
 
-        command = ctx.message.content.lower().split()
-        command = command[1:]
+        message = f""
 
-        channel = await self.utils.check_roll_channel(ctx)
+        if len(roll_args) == 0:
+            message += await self.extended(roll_args[1:])
+        elif roll_args[0].startswith("e"):
+            message += await self.extended(roll_args[1:])
+        elif roll_args[0].startswith("h"):
+            message += await self.sr_help(roll_args[1:])
+        elif roll_args[0].startswith("i"):
+            message += await self.roll_initiative(roll_args[1:])
+        elif roll_args[0].startswith("q"):
+            quote = await self.quote(roll_args[1])
+            return await ctx.send(embed=quote)
+        elif roll_args[0].startswith("re"):
+            message += await self.reroll(ctx, roll_args[1:])
+        elif roll_args[0].startswith("ro"):
+            message += await self.roll(ctx.author, roll_args[1:])
+        elif roll_args[0].startswith("v"):
+            message += await self.set_version(roll_args[1:])
 
-        if len(command) == 0:
-            return await channel.send("please run '.help sr' or .sr help for"
-                                      " examples.")
-        message = f"```CSS\nRan by {author}\n"
+        message = await message_builder.embed_reply(ctx.author, message)
 
-        if command[0].startswith("e"):
-            message += await self.extended(command[1:])
-        elif command[0].startswith("h"):
-            message += await self.sr_help(command[1:])
-        elif command[0].startswith("i"):
-            message += await self.roll_initiative(command[1:])
-        elif command[0].startswith("q"):
-            message += await self.quote(command[1:])
-        elif command[0].startswith("re"):
-            message += await self.reroll(ctx, command[1:])
-        elif command[0].startswith("ro"):
-            message += await self.roll(author, command[1:])
-        elif command[0].startswith("v"):
-            message += await self.set_version(command[1:])
-
-        message += "```"
-
-        _, gm_roll = await self.check_gm_roll(command[1:])
+        _, gm_roll = await self.check_gm_roll(roll_args[1:])
 
         if gm_roll:
             await ctx.message.delete()
             return await ctx.author.send(message)
 
-        await channel.send(message)
+        await channel.send(embed=message)
 
     async def check_exploding(self, commands):
         """
@@ -357,77 +335,15 @@ class shadowrun(commands.Cog):
         return helptext
 
     async def quote(self, quote_type):
+        """
+        Fetches a shadowrun quote
+        """
 
-        url = "https://shadowrun.needs.management/api.php?"
-        bbcode_tags = [
-                        "[b]", "[/b]", "[i]", "[/i]",
-                        "[u]", "[/u]", "[s]", "[/s]"
-                      ]
-
-        html_escaped = {
-                          "&quot;": '"',
-                          "&amp;":  "&"
-                        }
-
-        try:
-            if not quote_type:
-                url += "random=true"
-            elif quote_type[0] == "random":
-                url += "random=true"
-            elif quote_type[0] == "latest":
-                url += "latest=true"
-            elif int(quote_type[0]):
-                url += f"quote_id={quote_type[0]}"
-            else:
-                url += "random=true"
-
-        except Exception:
-            url += "random=true"
-
-        finally:
-
-            async with aiohttp.ClientSession(
-                  connector=aiohttp.TCPConnector(verify_ssl=True)) as session:
-
-                html = await self.fetch(session, url)
-                html = json.loads(html)
-                return_string = f"quote id:     {html['id']}\n"
-                return_string += f"written:      {html['time']}\n"
-                return_string += f"quote author: {html['author']}\n\n"
-                return_string += f"quote title:  {html['title']}\n"
-                return_string += f"{html['quote']}"
-
-            for i in bbcode_tags:
-                return_string = return_string.replace(i, "")
-
-            for i in html_escaped.keys():
-                return_string = return_string.replace(i, html_escaped[i])
-
-            if "[ul]" in return_string:
-                return_string = return_string.replace("[ul]", "")
-                return_string = return_string.replace("[/ul]", "")
-                return_string = return_string.replace("[*]", "*")
-
-            elif "[ol]" in return_string:
-                count = 1
-                return_string = return_string.replace("[ol]", "")
-                return_string = return_string.replace("[/ol]", "")
-
-                amount = return_string.count("[*]")
-
-                for _ in range(0, amount):
-                    current = return_string.find("[*]")
-                    start = return_string[0:current]
-                    end = return_string[current+3:]
-                    return_string = f"{start}{count}) {end}"
-                    print(return_string)
-                    count += 1
-
-        return return_string
-
-    async def fetch(self, session, url):
-        async with session.get(url) as html:
-            return await html.text()
+        quote = await shadowrun_utils.get_quote(quote_type)
+        quote = await shadowrun_utils.remove_bbcode(quote)
+        quote = await shadowrun_utils.replace_bbcode(quote)
+        quote = await shadowrun_utils.replace_html_escapes(quote)
+        return await shadowrun_utils.format_quote(quote)
 
 
 def setup(bot):
