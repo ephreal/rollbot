@@ -27,6 +27,15 @@ async def git_pull():
     return out
 
 
+async def log_and_print(bot, msg, level=30):
+    """
+    Logs a message to the bot log file and prints the error to the screen
+    """
+
+    bot.logger.log(msg=msg, level=level)
+    print(msg)
+
+
 async def shutdown_message():
     shutdown_message = "The bot is currently shutting down. Good bye"
     shutdown_message = shutdown_message[0:random.randint(0,

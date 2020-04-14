@@ -73,7 +73,7 @@ def build_bot(prefix, restrict_rolling, description):
 
         if "+endorse" in message.content:
             bot_nick = message.guild.me.nick
-            await message.channel.send(messages.endorseme(bot_nick))
+            await message.channel.send(messages.endorse(bot_nick))
             await message.add_reaction('👍')
 
         if message.content.startswith(prefix):

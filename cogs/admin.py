@@ -97,15 +97,20 @@ class admin(commands.Cog):
                 print(f"Loaded {cog.split('.')[-1]}")
 
             except ModuleNotFoundError:
-                print(f"Could not find {cog}. Does it exist?")
+                msg = f"Could not find {cog}. Does it exist?"
+                admin_utils.log_and_print(self.bot, msg)
 
             except OSError as lib_error:
-                print("Opus is probably not installed")
-                print(f"{lib_error}")
+                msg = "Warning: Opus may not be installed"
+
+                admin_utils.log_and_print(self.bot, msg)
+                admin_utils.log_and_print(self.bot, lib_error)
 
             except commands.errors.ExtensionAlreadyLoaded:
-                print(f"The cog {cog} is already loaded.\n"
-                      "Skipping the load process for this cog.")
+                msg = f"The cog {cog} is already loaded.\n" \
+                      "Skipping the load process for this cog."
+
+                admin_utils.log_and_print(self.bot, msg)
 
             except SyntaxError as e:
                 print(f"The cog {cog} has a syntax error.")
