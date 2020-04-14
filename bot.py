@@ -8,7 +8,6 @@ License.
 """
 
 
-import logging
 import os
 import traceback
 
@@ -49,14 +48,6 @@ def build_bot(prefix, restrict_rolling, description):
 
         # Whether or not rolling is restricted to rolling channels only
         BOT.restrict_rolling = restrict_rolling
-
-        BOT.logger = logging.getLogger('discord')
-        BOT.logger.setLevel(logging.DEBUG)
-        BOT.handler = logging.FileHandler(filename='discord.log',
-                                          encoding='utf-8', mode='w')
-        BOT.handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:'
-                                                   '%(name)s: %(message)s'))
-        BOT.logger.addHandler(BOT.handler)
 
         # Load all cogs
         print("Startup complete, loading Cogs....")

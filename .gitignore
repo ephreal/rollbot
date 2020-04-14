@@ -6,3 +6,5 @@ pybot
 song_index.json
 *.log
 env
+discord.log
+discord.log.bak

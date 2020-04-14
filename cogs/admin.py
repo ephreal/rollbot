@@ -32,6 +32,7 @@ class admin(commands.Cog):
         self.bot = bot
         self.analytics = analytics.GuildAnalytics()
         self.prefix = {self.bot.command_prefix}
+        admin_utils.setup_logging(bot)
 
     @commands.command(hidden=True,
                       description="Shuts down the bot",
