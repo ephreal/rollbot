@@ -9,44 +9,42 @@
 * [nltk](https://www.nltk.org/install.html)
 * [pynacl](https://pypi.org/project/PyNaCl/)
 
-This bot has become a general-purpose discord bot with more server management capabilities and random features slowly being incorporated in when I get hit by something that I really want on it. Along with being good for rolling dice, the bot also has some fun features such as posting a random (or specific) XKCD comic, getting shadowrun/DnD quotes from a quotesite, and more.
+This bot is a general-purpose discord bot with more server management capabilities and random features slowly being incorporated in when I get hit by something that I really want on it. Along with being good for rolling dice, the bot also has some fun features such as posting a random (or specific) XKCD comic, getting shadowrun/DnD quotes from a quotesite, and more.
 
-It is also be possible to connect my bot to your discord server if you'd like to use the same bot that I do. If you'd like to try this, [click here and authorize my bot on your server.](https://discordapp.com/api/oauth2/authorize?client_id=286673190288228362&permissions=502398078&scope=bot) Do note that the bot is currently in a perpetual state of development and I make no guarantees about the uptime of the bot. I do my best to have it up as much as possible. If you'd like to support me in my endeavors to make the bot more awesome and reliable, please consider [supporting me on Patreon.](https://www.patreon.com/ephreal)
+It is also be possible to connect my bot to your discord server if you'd like to use the same bot that I do. [Click here and authorize my bot on your server.](https://discordapp.com/api/oauth2/authorize?client_id=286673190288228362&permissions=502398078&scope=bot) I do my best to have it up as much as possible. If you'd like to support me in my endeavors to make the bot more awesome and reliable, please consider [supporting me on Patreon.](https://www.patreon.com/ephreal)
 
-The bot has been redesigned with better reliability in mind, and it's possible to run the bot in a docker container.
+**Administrative Bot Features**
+* Error logging
+* Rebooting/stopping the bot (Must be bot owner)
+* Renaming the bot (must be the owner of the bot)
+* Setting the bot nickname
 
-**Bot Features (alphabetized)**
+**Guild and member management**
 * Ban users
-* Endorse something with a silly message
+* Create roles needed for the bot
+* Create needed text channels
+* Demote users to a lower role
+* Kick users
+* Move messages from one channel to another
+* Promote users to a higher role
+* Purge messages from channels
+
+**Fun commands**
 * Get quotes
   * Shadowrun/DnD
   * Inspirobot
 * Get jokes
   * dad jokes
   * chuck norris jokes
-* Halt the bot
-* Kick users
-* Ping the bot
 * Play a "guess the number" game
-* Play blackjack (terribly)
 * Play Rock Paper Scissors
 * Play music
-* Purge messages from a channel
-* Reboot the bot
-* Reload bot cogs
-* Rename the bot
 * Roll dice
   * Arbitrary dice types (ie: 3d10)
   * DnD
   * Shadowrun
   * Vampire the Masquerade
-* Show guild information
-* Spam messages to a channel
 * Set a timer
-
-Dice rolling features are still in progress. In particular, Shadowrun has a very complex dice rolling ruleset that I am still adding new items to. Basic dice rolling is always available when a particular type of dice roll is unavailable.
-
-In addition to the above features, I have recently learned how to automatically update all portions of the bot. I'm looking into how to get automatic updates pushed out for those who would like it.
 
 To view progress of new feature and features planned for the future, check out [the bot feature project board.](https://github.com/ephreal/rollbot/projects/1)
 
