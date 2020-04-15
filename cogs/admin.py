@@ -238,7 +238,7 @@ class admin(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You must be an administrator to use this command.")
         else:
-            self.bot.logger.log(msg=error, level=40)
+            self.bot.logger.log(msg=error, level=20)
             await ctx.send("Something is wrong with your command.\n"
                            f"Error message: {error}")
 
