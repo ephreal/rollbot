@@ -55,6 +55,15 @@ class TestRollingUtils(unittest.TestCase):
             self.assertTrue(i <= 20)
             self.assertTrue(i >= 1)
 
+    def test_base_roll_parser(self):
+        """Ensures the base roll parser return the correct results"""
+        roll = ["-d", '6', '-s', '20', '-m', '-6']
+        roll = run(rolling_utils.base_roll_parser(roll))
+
+        self.assertEqual(roll.m, -6)
+        self.assertEqual(roll.d, 6)
+        self.assertEqual(roll.s, 20)
+
 
 def run(coroutine):
     """
