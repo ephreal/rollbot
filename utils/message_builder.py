@@ -21,8 +21,8 @@ async def embed_reply(author, content, color=Colour.blue()):
         -> discord.Embed
     """
 
-    message = Embed(title=f"Ran By {author.name}")
-    message.set_thumbnail(url=author.avatar_url)
+    message = Embed()
+    message.set_author(name=author.name, icon_url=author.avatar_url)
     message.thumbnail.height = 128
     message.thumbnail.width = 128
     message.description = content

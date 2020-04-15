@@ -63,6 +63,8 @@ class admin(commands.Cog):
 
         # Add some dots to clarify that the shortened message is intentional
         await ctx.send(f"{shutdown_message}"+shutdown_message[-1]*4+"....")
+
+        self.bot.logger.log(msg="Bot is shutting down", level="CRITICAL")
         await client.Client.logout(self.bot)
 
     @halt.error

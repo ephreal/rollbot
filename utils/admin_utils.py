@@ -14,6 +14,23 @@ import random
 from subprocess import Popen, PIPE
 
 
+async def change_log_level(bot, log_level):
+    """
+    Change the log level. Available logging levels are
+        CRITICAL
+        ERROR
+        WARNING
+        INFO
+        DEBUG
+    DEBUG is the most verbose, CRITICAL is the least verbose
+
+    bot: discord.ext.commands.Bot
+    log_level: string
+    """
+
+    bot.logger.setLevel(log_level)
+
+
 async def git_pull():
     """
     Pulls any changes down from github and returns the result of the command.
@@ -29,23 +46,11 @@ async def git_pull():
 
 async def log_and_print(bot, msg, level=30):
     """
-    Logs a message to the bot log file and prints the error to the screen
+    Logs a message to the bot log file and prints the message to the screen
     """
 
     bot.logger.log(msg=msg, level=level)
     print(msg)
-
-
-async def shutdown_message():
-    shutdown_message = "The bot is currently shutting down. Good bye"
-    shutdown_message = shutdown_message[0:random.randint(0,
-                                        len(shutdown_message)-1)]
-    return shutdown_message
-
-
-async def write_shutdown_file():
-    with open("poweroff", "w") as f:
-        f.write("Poweroff the bot.")
 
 
 def setup_logging(bot, logfile="discord.log"):
@@ -74,18 +79,13 @@ def setup_logging(bot, logfile="discord.log"):
     bot.logger.addHandler(bot.handler)
 
 
-async def change_log_level(bot, log_level):
-    """
-    Change the log level. Available logging levels are
-        CRITICAL
-        ERROR
-        WARNING
-        INFO
-        DEBUG
-    DEBUG is the most verbose, CRITICAL is the least verbose
+async def shutdown_message():
+    shutdown_message = "The bot is currently shutting down. Good bye"
+    shutdown_message = shutdown_message[0:random.randint(0,
+                                        len(shutdown_message)-1)]
+    return shutdown_message
 
-    bot: discord.ext.commands.Bot
-    log_level: string
-    """
 
-    bot.logger.setLevel(log_level)
+async def write_shutdown_file():
+    with open("poweroff", "w") as f:
+        f.write("Poweroff the bot.")
