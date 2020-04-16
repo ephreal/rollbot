@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 import os
@@ -58,22 +43,18 @@ class SetupBot(ttk.Notebook):
         self.label_name = ttk.Label(self.main_frame, text="Bot name")
         self.label_prefix = ttk.Label(self.main_frame, text="Bot prefix")
         self.label_token = ttk.Label(self.main_frame, text="Bot token")
-        self.label_rolling_channels = ttk.Label(self.main_frame, text="Rolling"
-                                                " channels, comma separated.")
 
         self.bot_avatar = ttk.Entry(self.main_frame, width=60)
         self.bot_description = ttk.Entry(self.main_frame, width=60)
         self.bot_name = ttk.Entry(self.main_frame, width=60)
         self.bot_prefix = ttk.Entry(self.main_frame, width=60)
         self.bot_token = ttk.Entry(self.main_frame, width=60)
-        self.rolling_channels = ttk.Entry(self.main_frame, width=60)
 
         self.bot_avatar.insert(1, config["avatar"])
         self.bot_description.insert(1, config["description"])
         self.bot_name.insert(1, config["name"])
         self.bot_prefix.insert(1, config["prefix"])
         self.bot_token.insert(1, config["token"])
-        self.rolling_channels.insert(1, ",".join(config["rolling_channels"]))
 
         self.button_avatar = ttk.Button(self.main_frame,
                                         text="Select bot image",
@@ -133,9 +114,6 @@ class SetupBot(ttk.Notebook):
         self.label_prefix.grid(row=4, column=0)
         self.bot_prefix.grid(row=4, column=1)
 
-        self.label_rolling_channels.grid(row=5, column=0)
-        self.rolling_channels.grid(row=5, column=1)
-
         self.button_save_config.grid(row=6, column=0)
         self.button_run_bot.grid(row=6, column=1)
 
@@ -163,10 +141,6 @@ class SetupBot(ttk.Notebook):
         writes the configuration back to the config.json file
         """
 
-        rolling_channels = [
-            channel for channel in self.rolling_channels.get().split(",")
-        ]
-
         sr_tweaks = {
             "glitch_more_than_half": self.gmth.get(),
             "glitch_fails_extended": self.gfe.get(),
@@ -179,7 +153,6 @@ class SetupBot(ttk.Notebook):
             "description": self.bot_description.get(),
             "avatar": self.bot_avatar.get(),
             "prefix": self.bot_prefix.get(),
-            "rolling_channels": rolling_channels,
             "sr_tweaks": sr_tweaks
         }
 

@@ -2,16 +2,17 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c18a361a7f2f4d209a4b24a2f3eb1f50)](https://app.codacy.com/app/ephreal/rollbot?utm_source=github.com&utm_medium=referral&utm_content=ephreal/rollbot&utm_campaign=Badge_Grade_Dashboard)
 
-**Requirements**
+This is a general-purpose discord bot with more server management capabilities and random features slowly being incorporated in when I get hit by something that I really want on it. Along with being good for rolling dice, the bot also has some fun features such as posting a random (or specific) XKCD comic, getting shadowrun/DnD quotes from a quotesite, and more. If you'd like to receive updates on a regular basis or receive help with the bot, please [join the discord guild for the bot.](https://discord.gg/cZXeDPX)
+
+It is also be possible to connect my bot to your discord server if you'd like to use the same bot that I do. [Click here and authorize my bot on your server.](https://discordapp.com/api/oauth2/authorize?client_id=286673190288228362&permissions=502398078&scope=bot) I do my best to have it up as much as possible. If you'd like to support me in my endeavors to make the bot more awesome and reliable, please consider [supporting me on Patreon.](https://www.patreon.com/ephreal)
+
+**Requirements to run this bot yourself**
 * [python 3.7+](https://www.python.org/downloads/release/python-373)
 * [discord.py](https://github.com/Rapptz/discord.py)
 * [aiohttp](https://github.com/aio-libs/aiohttp)
 * [nltk](https://www.nltk.org/install.html)
 * [pynacl](https://pypi.org/project/PyNaCl/)
 
-This bot is a general-purpose discord bot with more server management capabilities and random features slowly being incorporated in when I get hit by something that I really want on it. Along with being good for rolling dice, the bot also has some fun features such as posting a random (or specific) XKCD comic, getting shadowrun/DnD quotes from a quotesite, and more.
-
-It is also be possible to connect my bot to your discord server if you'd like to use the same bot that I do. [Click here and authorize my bot on your server.](https://discordapp.com/api/oauth2/authorize?client_id=286673190288228362&permissions=502398078&scope=bot) I do my best to have it up as much as possible. If you'd like to support me in my endeavors to make the bot more awesome and reliable, please consider [supporting me on Patreon.](https://www.patreon.com/ephreal)
 
 **Administrative Bot Features**
 * Error logging
@@ -88,6 +89,12 @@ python -m pip install -r requirements.txt
 python3 -m pip install -r requirements.txt
 ```
 
+Once the requirements are installed, you must ensure that nltk downloads all things necessary to use it.
+
+```bash
+python -m nltk.downloader all
+```
+
 If you still can't get discord installed, try googling your error. There's probably something else going on that you'll need to fix.
 
 ### Downloading the bot
@@ -100,15 +107,13 @@ Alternatively, the repository can be cloned with git if you have it installed.
 git clone https://github.com/ephreal/rollbot
 ```
 
-### Modifying the configuration file
+### Modifying the configuration file (OPTIONAL)
 
-Once the bot has been downloaded, it's necessary to modify the configuation file and add in your bot token. You can also modify the bot description, bot command prefix, or allowed rolling channels if you desire.
-
-I recommend running the bot_setup.py by double clicking it. It will bring up a window that asks for the required information. Simply fill out the items, click "Save Config", and you are ready to move on. If, for some reason, the setup.py does nothing, continue on in this section.
+Running the bot the first time will walk you through all setup. If you ever need to modify something manually, here is how to do that.
 
 Inside of the downloaded folder, you'll see a folder called "config". Inside here, you'll find a file called "config.json". Open this in notepad/notepad++/sublime/vim/etc. Overwrite YOUR\_TOKEN\_HERE with your bot token. This is necessary to have the bot run.
 
-If you have specific channels you want to limit rolling to, place the name of these channels in the rolling_channels. If you'd like to change the description of the bot, modify description. If you want the bot to use something else as the command prefix ("." by default), then change that too.
+If you would like to limit the bot to only allow rolling in tabletop, bottesting, and rolling channels, set restrict_rolling to "True".
 
 If you do not have a token yet, refer to here: <https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token>
 
