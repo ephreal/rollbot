@@ -172,7 +172,7 @@ class admin(commands.Cog):
         usage: {self.prefix}reboot
         """
 
-        await ctx.send(f"rebooting....")
+        await ctx.send("rebooting....")
         await client.Client.logout(self.bot)
 
     @commands.command(hidden=True,
