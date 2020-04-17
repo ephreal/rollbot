@@ -31,6 +31,16 @@ class TestBotMetrics(unittest.TestCase):
 
         self.assertEqual(uptime, expected)
 
+    def test_format_all_command_usage(self):
+        """
+        Verifies that the response is in an embed.
+        """
+
+        commands = [["uptime", 1], ["roll", 712], ["po", 1]]
+        reply = run(bot_metrics.format_all_usage(commands))
+        self.assertTrue(len(reply), 1)
+        self.assertTrue("uptime" in reply[0].description)
+
 
 def run(coroutine):
     """

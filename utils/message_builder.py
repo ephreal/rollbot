@@ -29,3 +29,14 @@ async def embed_reply(author, content, color=Colour.blue()):
     message.colour = color
 
     return message
+
+
+def embed_reply_no_author(content, color=Colour.blue()):
+    """
+    Embedded reply for when no author is required. For example, showing command
+    usage.
+    """
+    message = Embed()
+    message.description = content
+    message.colour = color
+    return message

@@ -8,3 +8,4 @@ song_index.json
 env
 discord.log
 discord.log.bak
+*.db

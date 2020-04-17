@@ -15,6 +15,7 @@ from datetime import datetime
 from discord import Game
 from discord.ext import commands
 from utils import messages
+from utils.handlers import db_handler
 
 
 def build_bot(prefix, restrict_rolling, description):
@@ -42,6 +43,9 @@ def build_bot(prefix, restrict_rolling, description):
 
         # Whether or not rolling is restricted to rolling channels only
         BOT.restrict_rolling = restrict_rolling
+
+        # Add in the database handler
+        BOT.db_handler = db_handler.MetricsDB()
 
         # Load all cogs
         print("Startup complete, loading Cogs....")
@@ -72,6 +76,9 @@ def build_bot(prefix, restrict_rolling, description):
 
         if message.content.startswith(prefix):
             await BOT.process_commands(message)
+            command = message.content.split()
+            command = command[0].replace(BOT.command_prefix, "")
+            await BOT.db_handler.update_commands(command, 1)
 
     async def load_cogs(unload_first=False):
         """

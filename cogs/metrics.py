@@ -14,8 +14,9 @@ from utils import bot_metrics
 class Metrics(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.bot.db_handler.init_tables()
 
-    @commands.command(description="")
+    @commands.command(description="Bot uptime")
     async def uptime(self, ctx):
         """
         See the bot's uptime.
@@ -25,6 +26,23 @@ class Metrics(commands.Cog):
         """
 
         await ctx.send(await bot_metrics.uptime_calculation(self.bot))
+
+    @commands.command(description="Command usage", aliases=['cmd'])
+    async def commands(self, ctx, command=None):
+        """
+        View command usage.
+
+        usage:
+            .cmd <command>
+        """
+
+        if not command:
+            usage = await self.bot.db_handler.get_all_usage()
+            for reply in await bot_metrics.format_all_usage(usage):
+                await ctx.send(embed=reply)
+        else:
+            usage = await self.bot.db_handler.get_usage(command)
+            await ctx.send(f"That command has been used {usage} times")
 
 
 def setup(bot):
