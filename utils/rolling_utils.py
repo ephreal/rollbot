@@ -40,13 +40,14 @@ async def get_roll_channel(ctx):
 
     allowed_channels = ["bottesting", "rolling"]
     roll_channel = ctx.channel
+    name = ctx.channel.name
 
     # Check if this is a DM
     if not ctx.guild:
         return roll_channel
 
     # Otherwise check the rolling channel
-    if ctx.channel.name not in allowed_channels:
+    if name not in allowed_channels and "roll" not in name:
         for channel in ctx.guild.text_channels:
             if "roll" in channel.name.lower():
                 roll_channel = channel
