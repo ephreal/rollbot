@@ -53,7 +53,8 @@ class admin(commands.Cog):
     async def halt(self, ctx):
         f"""
         Shuts the bot down.
-        Requires administrator permissions to run.
+
+        Only the owner of the bot may shut the bot down.
 
         usage: {self.prefix}po
         """
@@ -70,7 +71,7 @@ class admin(commands.Cog):
     @halt.error
     async def halt_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You must be an administrator")
+            await ctx.send("https://http.cat/403.jpg")
         else:
             await ctx.send("Something is wrong with your command.\n"
                            f"Error message: {error}")
@@ -236,7 +237,8 @@ class admin(commands.Cog):
     @spam.error
     async def spam_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You must be an administrator to use this command.")
+            await ctx.send("You need manage_message permissions.\n"
+                           "https://http.cat/403.jpg")
         else:
             self.bot.logger.log(msg=error, level=20)
             await ctx.send("Something is wrong with your command.\n"

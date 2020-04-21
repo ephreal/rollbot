@@ -80,6 +80,11 @@ def build_bot(prefix, restrict_rolling, description):
             command = command[0].replace(BOT.command_prefix, "")
             await BOT.db_handler.update_commands(command, 1)
 
+    @BOT.event
+    async def on_command_error(ctx, error):
+        if isinstance(error, commands.CommandNotFound):
+            await ctx.channel.send("https://http.cat/404.jpg")
+
     async def load_cogs(unload_first=False):
         """
         Handles loading all cogs in for the bot.
