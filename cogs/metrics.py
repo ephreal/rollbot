@@ -28,7 +28,7 @@ class Metrics(commands.Cog):
         await ctx.send(await bot_metrics.uptime_calculation(self.bot))
 
     @commands.command(description="Command usage", aliases=['cmd'])
-    async def commands(self, ctx, command=None):
+    async def cmds(self, ctx, command=None):
         """
         View command usage.
 
@@ -43,6 +43,30 @@ class Metrics(commands.Cog):
         else:
             usage = await self.bot.db_handler.get_usage(command)
             await ctx.send(f"That command has been used {usage} times")
+
+    @commands.is_owner()
+    @commands.command(description="Clear low use commands")
+    async def cmd_clear(self, ctx, uses=1):
+        """Clears out low use commands from the database.
+
+        The max amount of uses to clear out by can be passed in.
+
+        Examples
+        --------
+
+        Clear out all commands only used once
+            .cmd_clear
+
+        clear out all commands used 10 times or less
+            .cmd clear 10
+        """
+
+        await self.bot.db_handler.clear_usage(uses)
+        await ctx.send("Usage has been cleared")
+
+    @classmethod
+    async def is_owner(self, ctx):
+        return self.bot.appinfo.owner.id == ctx.author.id
 
 
 def setup(bot):

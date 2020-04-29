@@ -36,6 +36,9 @@ def first_time_setup(CONFIG):
     while not (restrict_rolling == 'n') and not (restrict_rolling == 'y'):
         restrict_rolling = input("Restrict rolling to rolling channels? y/n: ")
 
+    catapi_key = input("Enter your catapi API key now. If you have none, just"
+                       "hit enter: ")
+
     if restrict_rolling == "y":
         restrict_rolling = True
     else:
@@ -43,6 +46,7 @@ def first_time_setup(CONFIG):
 
     CONFIG["token"] = token
     CONFIG["restrict_rolling"] = restrict_rolling
+    CONFIG["catapi_key"] = catapi_key
 
     with open("config/config.json", 'w') as config_file:
         config_file.write(json.dumps(CONFIG, sort_keys=True,
@@ -62,15 +66,17 @@ def run_client(client, *args, **kwargs):
 
 CONFIG = load_config()
 TOKEN = CONFIG["token"]
-PREFIX = CONFIG["prefix"]
-DESC = CONFIG["description"]
-ROLL_RESTRICT = CONFIG["restrict_rolling"]
 
 if TOKEN == "YOUR_BOT_TOKEN_HERE":
     TOKEN, ROLL_RESTRICT = first_time_setup(CONFIG)
 
+PREFIX = CONFIG["prefix"]
+DESC = CONFIG["description"]
+ROLL_RESTRICT = CONFIG["restrict_rolling"]
+CATAPI_KEY = CONFIG["catapi_key"]
+
 while not os.path.exists("poweroff"):
-    BOT = bot.build_bot(PREFIX, ROLL_RESTRICT, DESC)
+    BOT = bot.build_bot(PREFIX, ROLL_RESTRICT, DESC, CATAPI_KEY)
     run_client(BOT, TOKEN)
     importlib.reload(bot)
 

@@ -75,3 +75,64 @@ class MetricsDB():
         except IndexError:
             # The command must not exist
             return 0
+
+    async def clear_usage(self, uses=1):
+        """
+        Clears out anything that has equal or fewer uses than uses. Default
+        uses is 1.
+        """
+        c = self.conn.cursor()
+        c.execute('''delete from commands where usage <= ?''', (uses, ))
+
+
+class TagDB():
+    """Handles connections to the database to store and get custom user tags"""
+
+    def __init__(self, db="discord.db"):
+        self.db = db
+        self.conn = sqlite3.connect(self.db)
+
+    def init_tables(self):
+        """Initializes tables the bot will need.
+
+            tags: Store of all user tags
+        """
+
+        c = self.conn.cursor()
+        c.execute('''CREATE TABLE if not exists tags (
+                        id integer primary key autoincrement not null,
+                        user_id varchar(30),
+                        tag varchar(100),
+                        content varchar(2000),
+                        unique(tag)
+                        )''')
+        self.conn.commit()
+
+    async def create_tag(self, user_id, tag, content):
+        """Adds a tag to the database"""
+
+        c = self.conn.cursor()
+        c.execute('''INSERT or replace into tags (user_id, tag, content)
+                     values (?,?,?)''', (user_id, tag, content))
+        self.conn.commit()
+
+    async def delete_tag(self, user_id, tag):
+        """Deletes a tag from the database"""
+
+        c = self.conn.cursor()
+        c.execute('''delete from tags where user_id=? and tag=?''',
+                  (user_id, tag, ))
+        self.conn.commit()
+
+    async def fetch_tag(self, user_id, tag):
+        """Fetches a tag from the database"""
+
+        c = self.conn.cursor()
+        c.execute('''select content from tags where user_id=? and tag=?''',
+                  (user_id, tag, ))
+
+        content = c.fetchall()
+        if not content:
+            return None
+
+        return content[0][0]

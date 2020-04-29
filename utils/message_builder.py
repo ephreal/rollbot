@@ -40,3 +40,19 @@ def embed_reply_no_author(content, color=Colour.blue()):
     message.description = content
     message.colour = color
     return message
+
+
+async def embed_catapi_image(ctx, image):
+
+    author = ctx.author
+    message = Embed()
+    breed = ""
+    if image.breed:
+        breed = f"breed: {breed.name}    breed_id: {breed.id}\n"
+        message.footer = breed.wikipedia_url
+
+    message.set_author(name=author.name, icon_url=author.avatar_url)
+    message.colour = Colour.green()
+    message.description = f"Image id: {image.id}\n{breed}{image.url}"
+    message.set_image(url=image.url)
+    return message

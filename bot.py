@@ -18,7 +18,7 @@ from utils import messages
 from utils.handlers import db_handler
 
 
-def build_bot(prefix, restrict_rolling, description):
+def build_bot(prefix, restrict_rolling, description, catapi_key=None):
 
     BOT = commands.Bot(command_prefix=prefix, description=description)
 
@@ -44,8 +44,12 @@ def build_bot(prefix, restrict_rolling, description):
         # Whether or not rolling is restricted to rolling channels only
         BOT.restrict_rolling = restrict_rolling
 
-        # Add in the database handler
+        # Add in the database handlers
         BOT.db_handler = db_handler.MetricsDB()
+        BOT.tag_db = db_handler.TagDB()
+
+        # thecatapi.com API key
+        BOT.catapi_key = catapi_key
 
         # Load all cogs
         print("Startup complete, loading Cogs....")
@@ -84,6 +88,8 @@ def build_bot(prefix, restrict_rolling, description):
     async def on_command_error(ctx, error):
         if isinstance(error, commands.CommandNotFound):
             await ctx.channel.send("https://http.cat/404.jpg")
+        else:
+            await ctx.send(error)
 
     async def load_cogs(unload_first=False):
         """
