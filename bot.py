@@ -73,6 +73,9 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
         if message.author.bot:
             return
 
+        if message.content.startswith(f"{BOT.command_prefix*2}"):
+            return
+
         if "+endorse" in message.content:
             bot_nick = message.guild.me.nick
             await message.channel.send(messages.endorse(bot_nick))
