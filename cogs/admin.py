@@ -15,6 +15,7 @@ from classes import analytics
 from discord import client
 from discord.ext import commands
 from utils import admin_utils
+from utils.checks import check_author
 
 
 class admin(commands.Cog):
@@ -22,6 +23,7 @@ class admin(commands.Cog):
     Available commands
     .git
     .halt
+    .leave
     .logging
     .member_activity
     .reboot
@@ -75,6 +77,19 @@ class admin(commands.Cog):
         else:
             await ctx.send("Something is wrong with your command.\n"
                            f"Error message: {error}")
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def leave(self, ctx):
+        """Asks the bot to leave the guild."""
+
+        await ctx.send("Please type 'confirm' to have me leave.")
+
+        msg = await self.bot.wait_for('message', timeout=60,
+                                      check=check_author(ctx.message.author))
+
+        if msg.content.lower() == "confirm":
+            await ctx.guild.leave()
 
     async def load_cogs(self):
         """
