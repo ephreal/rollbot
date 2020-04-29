@@ -8,6 +8,7 @@ License.
 """
 
 from discord.ext import commands
+from utils.checks import check_author
 
 
 class Tag(commands.Cog):
@@ -19,7 +20,7 @@ class Tag(commands.Cog):
         self.db.init_tables()
 
     @commands.command(description="Tag content")
-    async def tag(self, ctx, tag, *content):
+    async def tag(self, ctx, tag=None, delete_tag=None):
         """Tag content for later use
 
         Tagging content allows you to save some data in an easy to remember tag
@@ -39,20 +40,39 @@ class Tag(commands.Cog):
         """
 
         if tag == "delete":
-            tag = content[0]
+            tag = delete_tag
             await self.db.delete_tag(ctx.author.id, tag)
             return await ctx.send(f"{tag} has been deleted")
 
-        if content:
-            content = " ".join(content)
-            await self.db.create_tag(ctx.author.id, tag, content)
-            await ctx.send(f"{tag} has been updated")
+        if not tag:
+            author = ctx.message.author
+            await ctx.send("What would you like your tag to be?")
+            tag = await self.bot.wait_for('message', timeout=60,
+                                          check=check_author(author))
+            tag = tag.content
+            message = await self.create_tag(ctx, tag)
 
         else:
             message = await self.db.fetch_tag(ctx.author.id, tag)
             if not message:
-                return await ctx.send(f"You have no tag: {tag}")
-            return await ctx.send(message)
+                message = await self.create_tag(ctx, tag)
+
+        return await ctx.send(message)
+
+    async def create_tag(self, ctx, tag):
+        author = ctx.message.author
+
+        await ctx.send(f"What would you like '{tag}' to contain?\n"
+                       "Reply 'cancel' to cancel")
+
+        msg = await self.bot.wait_for('message', timeout=600,
+                                      check=check_author(author))
+        if msg.content == "cancel":
+            return await ctx.send("Cancelling")
+
+        msg = msg.content
+        await self.db.create_tag(ctx.author.id, tag, msg)
+        return f"{tag} has been created"
 
 
 def setup(bot):
