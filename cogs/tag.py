@@ -70,7 +70,7 @@ class Tag(commands.Cog):
                                       check=check_author(author))
         if msg.content == "cancel":
             await ctx.send("Cancelling")
-            return
+            return ""
 
         msg = msg.content
         await self.db.create_tag(ctx.author.id, tag, msg)
