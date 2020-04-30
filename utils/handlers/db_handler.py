@@ -30,6 +30,15 @@ class MetricsDB():
                         usage integer default 0,
                         unique(name)
                         )''')
+
+        c.execute('''CREATE TABLE if not exists greetings (
+                        id integer primary key autoincrement not null,
+                        guild_id integer,
+                        message varchar(2000) default null,
+                        active integer default 0,
+                        unique (guild_id)
+                        )''')
+
         self.conn.commit()
 
     async def update_commands(self, name, value):
@@ -83,6 +92,125 @@ class MetricsDB():
         """
         c = self.conn.cursor()
         c.execute('''delete from commands where usage <= ?''', (uses, ))
+
+    async def get_greeting_status(self, guild_id):
+        """
+        Gets the greeting status for the guild_id passed in
+
+        Parameters
+        ----------
+
+        guild_id: :class:`int`
+            An int representing a discord guild id
+        """
+
+        c = self.conn.cursor()
+        # Ensure the row exists in the table.
+        # Note to self: That comma in the binding after name is VERY important
+        c.execute('''INSERT or ignore into greetings (guild_id) values (?)''',
+                  (guild_id, ))
+
+        # Then update the usage
+        c.execute('''select active from greetings where guild_id = ?''',
+                  (guild_id, ))
+        self.conn.commit()
+
+        c = c.fetchall()
+        return c[0][0]
+
+    async def get_greeting(self, guild_id):
+        """
+        Gets the greeting status for the guild_id passed in
+
+        Parameters
+        ----------
+
+        guild_id: :class:`int`
+            An int representing a discord guild id
+        """
+
+        c = self.conn.cursor()
+        # Ensure the row exists in the table.
+        # Note to self: That comma in the binding after name is VERY important
+        c.execute('''INSERT or ignore into greetings (guild_id) values (?)''',
+                  (guild_id, ))
+
+        # Then update the usage
+        c.execute('''select message from greetings where guild_id = ?''',
+                  (guild_id, ))
+        self.conn.commit()
+
+        c = c.fetchall()
+        return c[0][0]
+
+    async def set_greeting_status(self, guild_id, status=0):
+        """
+        Enables or disables the greeting for that guild.
+
+        Parameters
+        ----------
+
+        guild_id: :class:`int`
+            An int representing a discord guild id
+
+        status: :class:`int`
+            May be a 0 (disabled) or a 1 (enabled)
+        """
+
+        c = self.conn.cursor()
+        # Ensure the row exists in the table.
+        # Note to self: That comma in the binding after name is VERY important
+        c.execute('''INSERT or ignore into greetings (guild_id) values (?)''',
+                  (guild_id, ))
+
+        # Then update the usage
+        c.execute('''update greetings set active = ? where guild_id = ?''',
+                  (status, guild_id, ))
+
+        self.conn.commit()
+
+    async def clear_greeting(self, guild_id):
+        """
+        Clears the greeting for that guild.
+
+        Parameters
+        ----------
+
+        guild_id: :class:`int`
+            An int representing a discord guild id
+        """
+
+        c = self.conn.cursor()
+        c.execute('''update greetings set message = null where guild_id = ?''',
+                  (guild_id, ))
+
+        self.conn.commit()
+
+    async def set_greeting(self, guild_id, greeting):
+        """
+        Sets the greeting for the guild.
+
+        Parameters
+        ----------
+
+        guild_id: :class:`int`
+            An int representing a discord guidl id
+
+        greeting: :class:`string`
+            A string containing the greeting for the guild. Max length: 2000
+        """
+
+        c = self.conn.cursor()
+        # Ensure the row exists in the table.
+        # Note to self: That comma in the binding after name is VERY important
+        c.execute('''INSERT or ignore into greetings (guild_id) values (?)''',
+                  (guild_id, ))
+
+        # Then update the usage
+        c.execute('''update greetings set message = ? where guild_id = ?''',
+                  (greeting, guild_id, ))
+
+        self.conn.commit()
 
 
 class TagDB():

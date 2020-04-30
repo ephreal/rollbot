@@ -14,7 +14,7 @@ import traceback
 from datetime import datetime
 from discord import Game
 from discord.ext import commands
-from utils import messages
+from utils.message_builder import on_join_builder
 from utils.handlers import db_handler
 
 
@@ -24,8 +24,11 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
 
     @BOT.event
     async def on_member_join(member):
-        welcome_message = messages.on_join_message(member)
-        await member.send(embed=welcome_message)
+        guild = member.guild.id
+        if await BOT.db_handler.get_greeting_status(guild):
+            message = await BOT.db_handler.get_greeting(guild)
+            message = await on_join_builder(member, message)
+            await member.send(embed=message)
 
     @BOT.event
     async def on_ready():
@@ -75,11 +78,6 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
 
         if message.content.startswith(f"{BOT.command_prefix*2}"):
             return
-
-        if "+endorse" in message.content:
-            bot_nick = message.guild.me.nick
-            await message.channel.send(messages.endorse(bot_nick))
-            await message.add_reaction('👍')
 
         if message.content.startswith(prefix):
             await BOT.process_commands(message)

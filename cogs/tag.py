@@ -29,10 +29,10 @@ class Tag(commands.Cog):
         Examples
         --------
 
-        Create a tag called greeting with the contents "Hello there!":
-            .tag greeting Hello there!
+        Create a tag called greeting:
+            .tag greeting
 
-        Have the bot print out the greeting
+        Have the bot print out the contents of greeting
             .tag greeting
 
         Delete the tag greeting

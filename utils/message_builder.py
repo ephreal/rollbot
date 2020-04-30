@@ -56,3 +56,33 @@ async def embed_catapi_image(ctx, image):
     message.description = f"Image id: {image.id}\n{breed}{image.url}"
     message.set_image(url=image.url)
     return message
+
+
+async def on_join_builder(member, message=None):
+    """
+    Returns a message to send to the member who joined the server
+
+    member: discord.Member
+        -> welcome_message: discord.Embed
+    """
+
+    welcome_message = Embed(title=f"Welcome to {member.guild.name}!")
+
+    if not message:
+        message = f"Welcome to {member.guild.name}! Please remember to be"\
+                  " kind and courteous. If you would like to join in " \
+                  "bot testing, please run '.bottester' to have the role "\
+                  "assigned to you."
+    else:
+        footer = "Note: This message was not created by the bot author.\n" \
+                 "If you find it offensive, contact the moderation team for "\
+                 f"{member.guild.name}"
+        welcome_message.set_footer(text=footer)
+
+    welcome_message.colour = Colour.green()
+    welcome_message.set_thumbnail(url=member.guild.icon_url)
+    welcome_message.thumbnail.height = 128
+    welcome_message.thumbnail.width = 128
+    welcome_message.description = message
+
+    return welcome_message

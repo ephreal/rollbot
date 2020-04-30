@@ -16,11 +16,13 @@ from discord import client
 from discord.ext import commands
 from utils import admin_utils
 from utils.checks import check_author
+from utils.message_builder import on_join_builder
 
 
 class admin(commands.Cog):
     """
     Available commands
+    .greeting
     .git
     .halt
     .leave
@@ -33,6 +35,7 @@ class admin(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
+        self.db = bot.db_handler
         self.analytics = analytics.GuildAnalytics()
         self.prefix = {self.bot.command_prefix}
         admin_utils.setup_logging(bot)
@@ -48,6 +51,69 @@ class admin(commands.Cog):
         """
 
         await ctx.send(await admin_utils.git_pull())
+
+    @commands.command(description="Toggle server greeting")
+    @commands.has_permissions(administrator=True)
+    async def greeting(self, ctx, setting):
+        """SErver Greeting options
+
+        You can toggle the bot message to users joining the guild here.
+        Valid options: on or off
+
+        You can also personalize the greeting the bot sends to anyone joining
+        the guild.
+
+        Examples
+        --------
+
+        Disable server greeting:
+            .greeting on
+
+        Enable server greeting
+            .greeting off
+
+        Set the greeting:
+            .greeting set
+
+        Clear any personalized greetings
+            .greeting clear
+
+        View your greeting
+            .greeting view
+        """
+
+        if setting == "on":
+            await self.db.set_greeting_status(ctx.guild.id, 1)
+            await ctx.send("Enabled greeting")
+
+        elif setting == "off":
+            await self.db.set_greeting_status(ctx.guild.id, 0)
+            await ctx.send("Disbled greeting")
+
+        elif setting == "clear":
+            await self.db.clear_greeting(ctx.guild.id)
+            await ctx.send("Greeting has been cleared.")
+
+        elif setting == "set":
+            await ctx.send("What would you like your greeting to say?")
+            msg = await self.bot.wait_for('message', timeout=60,
+                                          check=check_author(ctx.author))
+            if msg.content == 'cancel':
+                return await ctx.send("Cancelling.")
+
+            await self.db.set_greeting(ctx.guild.id, msg.content)
+            await ctx.send("Your greeting has been set. It looks like this")
+            msg = await on_join_builder(ctx.author, msg.content)
+            await ctx.send(embed=msg)
+
+        elif setting == "view":
+            greeting = await self.db.get_greeting(ctx.guild.id)
+            greeting = await on_join_builder(ctx.author, greeting)
+            await ctx.send(embed=greeting)
+
+        else:
+            await ctx.send("Valid options are 'on', 'off', or 'set', or "
+                           "'view'")
 
     @commands.command(hidden=True, description="Shuts down the bot",
                       aliases=['po'])

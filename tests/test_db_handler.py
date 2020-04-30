@@ -93,6 +93,41 @@ class TestDBHandler(unittest.TestCase):
         self.assertEqual(len(usage), 5)
         self.assertEqual(usage[0][0], 'halt')
 
+    def test_set_greeting_status(self):
+        """
+        Verifies that the greeting status can be properly added
+        """
+        # Enable the greeting for guild 111
+        run(self.cmd_handler.set_greeting_status(111, 1))
+        status = run(self.cmd_handler.get_greeting_status(111))
+        self.assertEqual(status, 1)
+
+        # Disable the greeting for guild 111
+        run(self.cmd_handler.set_greeting_status(111, 0))
+        status = run(self.cmd_handler.get_greeting_status(111))
+        self.assertEqual(status, 0)
+
+    def test_set_greeting(self):
+        """
+        Verifies that the greeting is set properly
+        """
+
+        greeting = "Hello world!"
+        run(self.cmd_handler.set_greeting(111, greeting))
+        greeting = run(self.cmd_handler.get_greeting(111))
+        self.assertEqual(greeting, "Hello world!")
+
+    def test_clear_greeting(self):
+        """
+        Verifies that the greeting can be properly cleared
+        """
+
+        greeting = "Delete me"
+        run(self.cmd_handler.set_greeting(111, greeting))
+        run(self.cmd_handler.clear_greeting(111))
+        greeting = run(self.cmd_handler.get_greeting(111))
+        self.assertEqual(greeting, None)
+
     def test_tag_table_init(self):
         """
         Verifies that the tables:
