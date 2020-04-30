@@ -57,7 +57,8 @@ class Tag(commands.Cog):
             if not message:
                 message = await self.create_tag(ctx, tag)
 
-        return await ctx.send(message)
+        if message:
+            return await ctx.send(message)
 
     async def create_tag(self, ctx, tag):
         author = ctx.message.author
@@ -68,7 +69,8 @@ class Tag(commands.Cog):
         msg = await self.bot.wait_for('message', timeout=600,
                                       check=check_author(author))
         if msg.content == "cancel":
-            return await ctx.send("Cancelling")
+            await ctx.send("Cancelling")
+            return
 
         msg = msg.content
         await self.db.create_tag(ctx.author.id, tag, msg)

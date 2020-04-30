@@ -55,7 +55,7 @@ class admin(commands.Cog):
     @commands.command(description="Toggle server greeting")
     @commands.has_permissions(administrator=True)
     async def greeting(self, ctx, setting):
-        """SErver Greeting options
+        """Server Greeting options
 
         You can toggle the bot message to users joining the guild here.
         Valid options: on or off
