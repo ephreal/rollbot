@@ -60,6 +60,25 @@ class Tag(commands.Cog):
         if message:
             return await ctx.send(message)
 
+    @commands.command()
+    async def tags(self, ctx):
+        """
+        Gets all tags you currently have defined.
+
+        Example
+        -------
+
+        Get all your tags
+            .tags
+        """
+
+        tags = await self.db.fetch_all_tags(ctx.author.id)
+        if not tags:
+            await ctx.send("You have no tags")
+        else:
+            tags = "\n".join(tags)
+            await ctx.send(f'Your tags are: \n{tags}')
+
     async def create_tag(self, ctx, tag):
         author = ctx.message.author
 

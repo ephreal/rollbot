@@ -264,3 +264,14 @@ class TagDB():
             return None
 
         return content[0][0]
+
+    async def fetch_all_tags(self, user_id):
+        """Returns all tags a user_id has"""
+        c = self.conn.cursor()
+        c.execute('''select tag from tags where user_id=?''', (user_id, ))
+        tags = c.fetchall()
+
+        if tags:
+            return [tag[0] for tag in tags]
+        else:
+            return None

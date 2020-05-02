@@ -41,10 +41,10 @@ class utils(commands.Cog):
         embed = Embed(color=391237)
 
         description = "About this bot\n"
-        description += f"Author: ephreal#2812\n"
+        description += "Author: ephreal#2812\n"
         description += f"Bot owner: {self.bot.appinfo.owner}\n\n"
-        description += f"Source Code: https://github.com/ephreal/rollbot\n\n"
-        description += f"Statistics:\n"
+        description += "Source Code: https://github.com/ephreal/rollbot\n\n"
+        description += "Statistics:\n"
         description += f"Used in {len(self.bot.guilds)} servers"
         embed.description = description
 

@@ -8,9 +8,9 @@ It is also be possible to connect my bot to your discord server if you'd like to
 
 **Requirements to run this bot yourself**
 * [python 3.7+](https://www.python.org/downloads/release/python-373)
-* [discord.py](https://github.com/Rapptz/discord.py)
-* [aiohttp](https://github.com/aio-libs/aiohttp)
-* [nltk](https://www.nltk.org/install.html)
+* [discord.py](https://pypi.org/project/discord.py/)
+* [catapi.py](https://pypi.org/project/catapi.py/)
+* [nltk](https://pypi.org/project/nltk/)
 * [pynacl](https://pypi.org/project/PyNaCl/)
 
 
@@ -19,6 +19,7 @@ It is also be possible to connect my bot to your discord server if you'd like to
 * Rebooting/stopping the bot (Must be bot owner)
 * Renaming the bot (must be the owner of the bot)
 * Setting the bot nickname
+* Setting/disabling bot greeting when new members join the server
 
 **Guild and member management**
 * Ban users
@@ -31,9 +32,13 @@ It is also be possible to connect my bot to your discord server if you'd like to
 * Purge messages from channels
 
 **Fun commands**
+* Get cat pictures
+* Get web comics
+  * [SROMG](https://www.mezzacotta.net/garfield/)
+  * [XKCD](https://xkcd.com)
 * Get quotes
-  * Shadowrun/DnD
-  * Inspirobot
+  * [Shadowrun](https://shadowrun.needs.management)/DnD
+  * [Inspirobot](https://inspirobot.me)
 * Get jokes
   * dad jokes
   * chuck norris jokes
@@ -46,6 +51,7 @@ It is also be possible to connect my bot to your discord server if you'd like to
   * Shadowrun
   * Vampire the Masquerade
 * Set a timer
+* Tagging text for later use
 
 To view progress of new feature and features planned for the future, check out [the bot feature project board.](https://github.com/ephreal/rollbot/projects/1)
 
