@@ -11,7 +11,7 @@ import json
 
 from discord.ext import commands
 from utils import message_builder
-from utils import rolling_utils
+from utils.rolling import rolling_utils
 from utils.handlers import shadowrun_handler as sh
 from utils import shadowrun_utils
 from .cog_command_usage.helptext import shadowrun_help as sr_help
@@ -70,6 +70,10 @@ class shadowrun(commands.Cog):
         This command is currently unfinished. More features
         are planned on being added in the future.
         """
+
+        await ctx.send(await self.handler.parse(roll_args))
+
+        channel = ctx.channel
 
         if self.bot.restrict_rolling:
             channel = await rolling_utils.check_roll_channel(ctx, self.bot)

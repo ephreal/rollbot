@@ -8,7 +8,7 @@ License.
 """
 
 from utils import message_builder
-from utils import rolling_utils
+from utils.rolling import rolling_utils
 from discord.ext import commands
 
 

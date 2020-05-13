@@ -8,7 +8,6 @@ License.
 """
 
 
-import argparse
 import random
 
 
@@ -59,20 +58,3 @@ async def get_roll_channel(ctx):
 async def roll(dice_pool=1, sides=6):
     # Weirdly, randrange seems to be way faster than randint
     return [random.randrange(sides) + 1 for _ in range(0, dice_pool)]
-
-
-async def base_roll_parser(roll):
-    """
-    Parses command line arguments for a roll.
-
-    -d : dice pool
-    -m : dice modifier
-    -s : dice sides
-    """
-    parser = argparse.ArgumentParser(description="Dice roll parser",
-                                     prog="base_roll_parser")
-    parser.add_argument('-m', metavar='modifiers', type=int)
-    parser.add_argument('-d', metavar="dice_pool", type=int)
-    parser.add_argument('-s', metavar="sides", type=int)
-
-    return parser.parse_args(roll)

@@ -1,30 +1,16 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 
 from classes.dice_rolling import shadowrun_rolling as sr
 from classes.formatters import shadowrun_formatter as sf
+from utils.rolling import parsers
 
 
 class BaseHandler():
@@ -46,6 +32,7 @@ class BaseHandler():
     """
 
     def __init__(self):
+        self.parser = parsers.BaseRollParser()
         self.past_rolls = {}
 
     async def add_roll(self, author, roll, checked):
@@ -61,6 +48,9 @@ class BaseHandler():
         """
 
         self.past_rolls[author] = {"roll": roll, "checked": checked}
+
+    async def parse(self, args):
+        return self.parser.parse_args(args)
 
     async def format_initiative(self, initiative, roll, verbose=False):
         """
@@ -133,6 +123,7 @@ class ShadowrunHandler(BaseHandler):
     def __init__(self):
         super().__init__()
         self.edition = 5
+        self.parser = parsers.Sr5RollParser()
         self.roller = sr.Shadowrun5Roller()
         self.formatter = sf.Shadowrun5Formatter()
 
@@ -283,6 +274,7 @@ class Shadowrun1Handler(BaseHandler):
 
     def __init__(self):
         super().__init__()
+        self.parser = parsers.Sr1RollParser()
         self.roller = sr.Shadowrun1Roller()
         self.formatter = sf.Shadowrun1Formatter()
 

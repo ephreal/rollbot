@@ -23,7 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 
-from . import base_roll_functions
+from utils.rolling import rolling_utils
 
 
 class Shadowrun1Roller():
@@ -57,7 +57,7 @@ class Shadowrun1Roller():
     """
 
     def __init__(self):
-        self.roller = base_roll_functions.roller()
+        pass
 
     async def check_successes(self, target, rolls):
         """
@@ -108,7 +108,7 @@ class Shadowrun1Roller():
             -> list[int]
         """
 
-        rolls = await self.roller.roll(dice_pool)
+        rolls = await rolling_utils.roll(dice_pool)
 
         if 6 in rolls:
             # Get the sixes and remove them from the original list.
@@ -132,7 +132,7 @@ class Shadowrun1Roller():
 
         # Adding 6's does not apply to initiative. Therefore use the general
         # roller.
-        initiative_roll = await self.roller.roll(dice_pool)
+        initiative_roll = await rolling_utils.roll(dice_pool)
         for i in initiative_roll:
             modifier += i
 
@@ -190,7 +190,7 @@ class Shadowrun5Roller():
             SR5E CORE pg. 159
     """
     def __init__(self):
-        self.roller = base_roll_functions.roller()
+        pass
 
     async def buy_hits(self, dice_pool=0):
         """
@@ -306,7 +306,7 @@ class Shadowrun5Roller():
             -> list[int]
         """
 
-        rolls = await self.roller.roll(dice_pool=dice_pool, sides=6)
+        rolls = await rolling_utils.roll(dice_pool=dice_pool, sides=6)
         if exploding:
             sixes = [x for x in rolls if x == 6]
             rolls.extend(await self.roll(len(sixes)))
