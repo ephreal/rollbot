@@ -71,8 +71,6 @@ class shadowrun(commands.Cog):
         are planned on being added in the future.
         """
 
-        await ctx.send(await self.handler.parse(roll_args))
-
         channel = ctx.channel
 
         if self.bot.restrict_rolling:
