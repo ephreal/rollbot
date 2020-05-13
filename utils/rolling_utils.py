@@ -57,7 +57,8 @@ async def get_roll_channel(ctx):
 
 
 async def roll(dice_pool=1, sides=6):
-    return [random.randint(1, sides) for _ in range(0, dice_pool)]
+    # Weirdly, randrange seems to be way faster than randint
+    return [random.randrange(sides) + 1 for _ in range(0, dice_pool)]
 
 
 async def base_roll_parser(roll):
