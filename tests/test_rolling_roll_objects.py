@@ -49,6 +49,39 @@ class TestBaseRoll(unittest.TestCase):
         self.assertTrue(isinstance(roll, str))
 
 
+class TestSr1Roll(unittest.TestCase):
+    def setUp(self):
+        self.parser = parsers.Sr1RollParser()
+
+    def test_initialization(self):
+        roll = ["6", "5", "-n", "hello", "world"]
+        roll = self.parser.parse_args(roll)
+        roll = rolls.Sr1Roll(roll)
+        run(roll.roll())
+
+        self.assertEqual(roll.threshold, 5)
+        self.assertEqual(roll.dice, 6)
+        self.assertEqual(roll.note, ["hello", "world"])
+
+    def test_format(self):
+        """Ensures format returns a string"""
+        roll = ["6", "5", "-n", "hello", "world"]
+        roll = self.parser.parse_args(roll)
+        roll = rolls.Sr1Roll(roll)
+        roll = run(roll.format())
+        self.assertTrue(isinstance(roll, str))
+        self.assertTrue("Initiative" not in roll)
+
+    def test_initiative_format(self):
+        """Ensures that "Initiative" appears in formatted string when an
+        initiative roll is made"""
+        roll = self.parser.parse_args(["6", "-i", "10"])
+        roll = rolls.Sr1Roll(roll)
+        roll = run(roll.format())
+        self.assertTrue("Initiative" in roll)
+        self.assertTrue("Hits" not in roll)
+
+
 def run(coroutine):
     """
     Runs and returns the data from the couroutine passed in. This is to

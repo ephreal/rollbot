@@ -39,8 +39,10 @@ class Sr1RollParser(BaseRollParser):
 
     def __init__(self):
         super().__init__()
-        # Currently nothing else required for SR1E beyond the base roller. I
-        # have yet to read through the docs to get this sorted.
+        self.add_argument("threshold", default=0, nargs="?", type=int,
+                          help="Threshold dice must meet or exceed")
+        self.add_argument("-i", "--initiative", "--init", default=0, nargs="?",
+                          type=int, help="Initiative score to add to roll")
 
 
 class Sr5RollParser(BaseRollParser):

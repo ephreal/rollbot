@@ -69,7 +69,7 @@ class Shadowrun1Roller():
             -> dict{successes: int, rolls[int], failure: Bool}
         """
 
-        rolls = [roll for roll in rolls if roll > target]
+        rolls = [roll for roll in rolls if roll >= target]
 
         successes = {"successes": len(rolls),
                      "rolls": rolls

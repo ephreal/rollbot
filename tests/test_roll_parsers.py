@@ -46,7 +46,23 @@ class TestBaseRoller(unittest.TestCase):
 class TestSr1Roller(unittest.TestCase):
     def setUp(self):
         self.parser = parsers.Sr1RollParser()
-    # Nothing to test on this yet
+
+    def test_thresholds(self):
+        """
+        Ensures that thresholds are able to be captured properly
+        """
+
+        roll = self.parser.parse_args(["6", "7"])
+        self.assertEqual(roll.threshold, 7)
+        self.assertEqual(roll.dice, "6")
+
+    def test_initiative(self):
+        """
+        Ensures that initiative modifiers can be added properly
+        """
+
+        roll = self.parser.parse_args(["6", "7", "-i", "12"])
+        self.assertEqual(roll.initiative, 12)
 
 
 class TestSr5Roller(unittest.TestCase):

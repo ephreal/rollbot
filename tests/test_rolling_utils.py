@@ -55,6 +55,18 @@ class TestRollingUtils(unittest.TestCase):
             self.assertTrue(i <= 20)
             self.assertTrue(i >= 1)
 
+    def test_sr1_roll(self):
+        """Checks to ensure sr1 rolling returns the correct amounts and
+        works properly when rolling a 6"""
+
+        roll = run(rolling_utils.sr1_roll(5))
+        self.assertEqual(len(roll), 5)
+
+        roll = run(rolling_utils.sr1_roll(100))
+        self.assertEqual(len(roll), 100)
+        roll.sort()
+        self.assertTrue(roll[99] > 6)
+
 
 def run(coroutine):
     """

@@ -70,7 +70,7 @@ class TestShadowrunHandler(unittest.TestCase):
         checked = self.handler.check_roll(roll)
         checked = run(checked)
 
-        self.assertEqual(checked['successes'], 4)
+        self.assertEqual(checked['successes'], 5)
 
     def test_extended_test(self):
         """
@@ -163,7 +163,7 @@ class TestShadowrun1Handler(unittest.TestCase):
         roll = [1, 2, 3, 4, 5, 6]
         checked = run(self.handler.check_roll(roll))
 
-        self.assertEqual(checked['successes'], 4)
+        self.assertEqual(checked['successes'], 5)
 
     def test_format_roll(self):
         """

@@ -7,7 +7,7 @@ Please see the license for any restrictions or rights granted to you by the
 License.
 """
 
-from utils.rolling.rolling_utils import roll
+from utils.rolling import rolling_utils
 
 
 class BaseRoll:
@@ -72,4 +72,51 @@ class BaseRoll:
         Makes a roll with XdY dice
         """
 
-        self.result = await roll(self.dice, self.sides)
+        self.result = await rolling_utils.roll(self.dice, self.sides)
+
+
+class Sr1Roll(BaseRoll):
+    def __init__(self, sr1_roll):
+        super().__init__(sr1_roll)
+        # shadowrun is all D6's
+        self.sides = 6
+        self.threshold = sr1_roll.threshold
+        self.initiative = sr1_roll.initiative
+        if self.mod:
+            self.threshold -= self.mod
+
+    async def format(self):
+        """
+        Formats the roll for SR1E rolls. This includes thresholds, hits, ones,
+        and results
+        """
+
+        if not self.result:
+            await self.roll()
+
+        message = []
+        message.append(f"You rolled {self.dice} six-sided dice")
+        if self.initiative:
+            message.append(f"Initiative: {sum(self.result) + self.initiative}"
+                           f" ({sum(self.result)} + {self.initiative})")
+        else:
+            if len(self.ones) == self.dice:
+                message.append("CRITICAL FAILURE")
+            elif self.hits == 0:
+                message.append("FAILURE")
+            message.append(f"Total hits: {len(self.hits)}")
+            message.append(f"Threshold: {self.threshold}")
+        message.append(f"Rolls: {self.result}")
+        if self.note:
+            message.append(f"Note: {' '.join(self.note)}")
+
+        return "\n".join(message)
+
+    async def roll(self):
+        """
+        Rolls dice with a SR1E dice roller.
+        """
+        self.result = await rolling_utils.sr1_roll(self.dice, self.sides)
+        self.result.sort()
+        self.hits = [x for x in self.result if x >= self.threshold]
+        self.ones = [x for x in self.result if x == 1]
