@@ -28,6 +28,7 @@ class BaseRollHandler():
 
     def __init__(self):
         self.parser = parsers.BaseRollParser()
+        self.roll_type = rolls.BaseRoll
 
     async def parse(self, args):
         return self.parser.parse_args(args)
@@ -38,7 +39,13 @@ class BaseRollHandler():
             -> roll: Result
         """
         roll = self.parser.parse_args(args)
-        roll = rolls.BaseRoll(roll)
+        roll = self.roll_type(roll)
         await roll.roll()
 
         return roll
+
+
+class Sr1RollHandler(BaseRollHandler):
+    def __init__(self):
+        self.parser = parsers.Sr1RollParser()
+        self.roll_type = rolls.Sr1Roll

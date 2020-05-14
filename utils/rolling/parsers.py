@@ -21,6 +21,7 @@ class BaseRollParser(argparse.ArgumentParser):
     """
     def __init__(self):
         super().__init__()
+        self.prog = "BaseRoller"
         self.add_argument('dice', metavar="XdY", default="", nargs="?",
                           help="dice, in XdY format")
         self.add_argument('-m', "--mod", type=int, default=0,
@@ -39,6 +40,7 @@ class Sr1RollParser(BaseRollParser):
 
     def __init__(self):
         super().__init__()
+        self.prog = "Sr1Roller"
         self.add_argument("threshold", default=5, nargs="?", type=int,
                           help="Threshold dice must meet or exceed")
         self.add_argument("-i", "--initiative", "--init", default=0, nargs="?",

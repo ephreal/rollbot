@@ -28,11 +28,24 @@ class Shadowrun1Commands(commands.Cog):
 
     @commands.command()
     async def sr1(self, ctx, *roll_args):
-        """
-        Handles all shadowrun 1E commands. Valid commands are:
+        """Rolls dice for SR1E
 
-        .sr1 roll
-        .sr1 initiative
+        Roll args: <dice> <threshold> [-m <modifier>, -n <note>]
+        ---------
+        dice: how many dice to roll
+        threshold: the threshold dice must meet or exceed to be a success
+                   Default threshold is 5.
+        modifier: A modifier for the threshold difficulty
+        note: A note to display with the roll
+
+        Examples
+        --------
+
+        roll 4d6 with a threshold of 6
+            .sr1 4 6
+
+        roll 4d6, threshold of 5, and a note to explain the roll
+            .sr1 4 -n Attempting to bash the ganger's face in
         """
 
         channel = await rolling_utils.check_roll_channel(ctx, self.bot)

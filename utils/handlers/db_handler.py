@@ -17,7 +17,7 @@ class MetricsDB():
 
     def init_tables(self):
         """
-        Initializes the tables used for the bot. These include
+        Initializes the tables used for bot metrics. These include
             commands: tracking how often commands are used in order to know
                       which commands would have the greatest impact if broken
                       or needing to be updated.
@@ -275,3 +275,26 @@ class TagDB():
             return [tag[0] for tag in tags]
         else:
             return None
+
+
+class ConfigurationDB():
+    def __init__(self, db="discord.db"):
+        self.db = db
+        self.conn = sqlite3.connect(self.db)
+
+    def init_tables(self):
+        """Initializes tables the bot will need.
+
+            config: Server configuration options
+        """
+
+        c = self.conn.cursor()
+        c.execute('''CREATE TABLE if not exists configs (
+                        id integer primary key autoincrement not null,
+                        guild_id varchar(30),
+                        roll_type varchar(10) default "basic",
+                        message varchar(2000) default null,
+                        active integer default 0,
+                        unique(guild_id)
+                        )''')
+        self.conn.commit()

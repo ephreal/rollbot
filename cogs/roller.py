@@ -7,6 +7,7 @@ Please see the license for any restrictions or rights granted to you by the
 License.
 """
 
+from discord import Colour
 from discord.ext import commands
 from utils import message_builder
 from utils.rolling import rolling_utils
@@ -39,12 +40,36 @@ class roller(commands.Cog):
         """
 
         channel = await rolling_utils.check_roll_channel(ctx, self.bot)
+        if "-h" in roll_args:
+            message = self.handler.parser.format_help()
+            message = f"```{message}```"
+            return await ctx.send(message)
 
         roll = await self.handler.roll(roll_args)
         message = await roll.format()
-        message = await message_builder.embed_reply(ctx.author, message)
+
+        if "CRITICAL" in message or "FAILURE" in message:
+            message = await message_builder.embed_reply(ctx.author, message,
+                                                        Colour.red())
+        else:
+            message = await message_builder.embed_reply(ctx.author, message)
 
         await channel.send(embed=message)
+
+    @commands.command(description="Sets current rolling mode")
+    async def roll_config(self, ctx, mode):
+        """Sets the current rolling mode.
+
+        Valid options are "basic" and "sr1"
+        """
+
+        if mode == "basic":
+            self.handler = handlers.BaseRollHandler()
+        elif mode == "sr1":
+            self.handler = handlers.Sr1RollHandler()
+        else:
+            return await ctx.send("That is an invalid mode")
+        await ctx.send(f"Mode changed to {mode}")
 
 
 def setup(bot):
