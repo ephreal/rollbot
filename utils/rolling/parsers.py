@@ -39,7 +39,7 @@ class Sr1RollParser(BaseRollParser):
 
     def __init__(self):
         super().__init__()
-        self.add_argument("threshold", default=0, nargs="?", type=int,
+        self.add_argument("threshold", default=5, nargs="?", type=int,
                           help="Threshold dice must meet or exceed")
         self.add_argument("-i", "--initiative", "--init", default=0, nargs="?",
                           type=int, help="Initiative score to add to roll")

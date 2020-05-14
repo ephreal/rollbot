@@ -102,7 +102,7 @@ class Sr1Roll(BaseRoll):
         else:
             if len(self.ones) == self.dice:
                 message.append("CRITICAL FAILURE")
-            elif self.hits == 0:
+            elif not self.hits:
                 message.append("FAILURE")
             message.append(f"Total hits: {len(self.hits)}")
             message.append(f"Threshold: {self.threshold}")

@@ -8,7 +8,7 @@ License.
 """
 
 
-from utils.handlers import shadowrun_handler as sh
+from discord import Colour
 from discord.ext import commands
 from utils.rolling import parsers
 from utils.rolling import rolls
@@ -41,7 +41,11 @@ class Shadowrun1Commands(commands.Cog):
         roll = rolls.Sr1Roll(roll)
         await(roll.roll())
         message = await(roll.format())
-        message = await message_builder.embed_reply(ctx.author, message)
+        if "FAILURE" in message:
+            message = await message_builder.embed_reply(ctx.author, message,
+                                                        Colour.red())
+        else:
+            message = await message_builder.embed_reply(ctx.author, message)
         await channel.send(embed=message)
 
 
