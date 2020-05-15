@@ -97,6 +97,10 @@ class Sr1Roll(BaseRoll):
         message = []
         message.append(f"You rolled {self.dice} six-sided dice")
         if self.initiative:
+            too_high = [6 for x in self.result if x > 6]
+            result = [x for x in self.result if x <= 6]
+            result.extend(too_high)
+            self.result = result
             message.append(f"Initiative: {sum(self.result) + self.initiative}"
                            f" ({sum(self.result)} + {self.initiative})")
         else:
