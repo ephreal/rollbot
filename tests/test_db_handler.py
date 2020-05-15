@@ -133,6 +133,38 @@ class TestDBHandler(unittest.TestCase):
         content = run(self.handler.tags.fetch_tag(1, "test"))
         self.assertEqual(content, None)
 
+    def test_get_and_set_roll_handler(self):
+        """
+        Ensures the config db is able to insert roll types properly
+        """
+
+        run(self.handler.guilds.set_roll_handler(1234, "basic"))
+        roll_type = run(self.handler.guilds.get_roll_handler(1234))
+        self.assertEqual(roll_type, "basic")
+
+        run(self.handler.guilds.set_roll_handler(1234, "sr3"))
+        roll_type = run(self.handler.guilds.get_roll_handler(1234))
+        self.assertEqual(roll_type, "sr3")
+
+    def test_get_roll_handler_with_no_guild_id(self):
+        """
+        Ensures that a roll handler is set and returned if the guild_id and
+        roll_type does not exist.
+        """
+
+        roll_type = run(self.handler.guilds.get_roll_handler(1234))
+        self.assertEqual(roll_type, "basic")
+
+    def test_get_roll_handler_with_no_roll_type(self):
+        """
+        Ensures that a roll_type of basic is returned when the guild_id exists
+        and has no associated roll_type
+        """
+
+        run(self.handler.guilds.set_greeting_status(111, 1))
+        roll_type = run(self.handler.guilds.get_roll_handler(1234))
+        self.assertEqual(roll_type, "basic")
+
 
 def run(coroutine):
     """

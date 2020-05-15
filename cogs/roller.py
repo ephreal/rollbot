@@ -20,9 +20,8 @@ class roller(commands.Cog):
                     "basic": handlers.BaseRollHandler(),
                     "sr3": handlers.Sr3RollHandler()
         }
-        self.handler = handlers.BaseRollHandler()
         self.guild_handlers = {}
-        self.db = bot.db_handler.guild_config
+        self.db = bot.db_handler.guilds
         self.bot = bot
 
     @commands.command(pass_context=True)
@@ -46,17 +45,19 @@ class roller(commands.Cog):
         """
 
         try:
-            handler = self.handlers[ctx.guild.id]
+            handler = self.guild_handlers[ctx.guild.id]
         except KeyError:
-            handler = self.db.get_handler(ctx.guild.id)
+            handler = await self.db.get_roll_handler(ctx.guild.id)
+            self.guild_handlers[ctx.guild.id] = handler
+            handler = self.handlers[handler]
 
         channel = await rolling_utils.check_roll_channel(ctx, self.bot)
         if "-h" in roll_args:
-            message = self.handler.parser.format_help()
+            message = handler.parser.format_help()
             message = f"```{message}```"
             return await ctx.send(message)
 
-        roll = await self.handler.roll(roll_args)
+        roll = await handler.roll(roll_args)
         message = await roll.format()
 
         if "CRITICAL" in message or "FAILURE" in message:
@@ -75,9 +76,11 @@ class roller(commands.Cog):
         """
 
         if mode == "basic":
-            self.handler = handlers.BaseRollHandler()
+            await self.db.set_roll_handler(ctx.guild.id, "basic")
+            self.handlers[ctx.guild.id] = "basic"
         elif mode == "sr3":
-            self.handler = handlers.Sr3RollHandler()
+            await self.db.set_roll_handler(ctx.guild.id, "sr3")
+            self.handlers[ctx.guild.id] = "sr3"
         else:
             return await ctx.send("That is an invalid mode")
         await ctx.send(f"Mode changed to {mode}")

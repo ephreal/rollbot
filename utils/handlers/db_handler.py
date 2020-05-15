@@ -142,6 +142,43 @@ class GuildConfigDB():
 
         self.conn.commit()
 
+    async def set_roll_handler(self, guild_id, roll_handler):
+        """
+        Sets the default roll handler for the discord guild.
+        """
+
+        cursor = self.conn.cursor()
+        # Ensure the guild_id is in guild_config
+        sql = """insert or ignore into guild_config (guild_id) values (?)"""
+        cursor.execute(sql, (guild_id, ))
+        self.conn.commit()
+
+        sql = """update guild_config set roll_type=? where guild_id=?"""
+        cursor.execute(sql, (roll_handler, guild_id, ))
+        self.conn.commit()
+
+    async def get_roll_handler(self, guild_id):
+        """
+        Returns the roll_type stored in guild_config. If there is None, basic
+        is inserted and then returned.
+        """
+
+        cursor = self.conn.cursor()
+        sql = "select roll_type from guild_config where guild_id=?"
+
+        try:
+            cursor.execute(sql, (guild_id, ))
+            roll_type = cursor.fetchall()[0][0]
+            if roll_type is None:
+                await self.set_roll_handler(guild_id, "basic")
+                roll_type = "basic"
+
+        except IndexError:
+            await self.set_roll_handler(guild_id, "basic")
+            roll_type = "basic"
+
+        return roll_type
+
 
 class MetricsDB():
     def __init__(self, connection=None):
