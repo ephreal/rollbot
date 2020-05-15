@@ -46,6 +46,7 @@ class roller(commands.Cog):
 
         try:
             handler = self.guild_handlers[ctx.guild.id]
+            handler = self.handlers[handler]
         except KeyError:
             handler = await self.db.get_roll_handler(ctx.guild.id)
             self.guild_handlers[ctx.guild.id] = handler
