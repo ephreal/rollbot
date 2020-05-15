@@ -60,12 +60,12 @@ async def roll(dice_pool=1, sides=6):
     return [random.randrange(sides) + 1 for _ in range(0, dice_pool)]
 
 
-async def sr1_roll(dice_pool=1, sides=6):
-    """Rolls dice according to sr1 rules"""
+async def sr3_roll(dice_pool=1, sides=6):
+    """Rolls dice according to sr3 rules"""
     rolls = [random.randrange(sides) + 1 for _ in range(0, dice_pool)]
     sixes = [x for x in rolls if x == 6]
     rolls = [x for x in rolls if x < 6]
     if sixes:
-        sixes = [x+y for x, y in zip(sixes, await sr1_roll(len(sixes), 6))]
+        sixes = [x+y for x, y in zip(sixes, await sr3_roll(len(sixes), 6))]
         rolls.extend(sixes)
     return rolls

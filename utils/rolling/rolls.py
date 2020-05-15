@@ -76,12 +76,13 @@ class BaseRoll:
 
 
 class Sr3Roll(BaseRoll):
-    def __init__(self, sr1_roll):
-        super().__init__(sr1_roll)
+    def __init__(self, sr3_roll):
+        super().__init__(sr3_roll)
         # shadowrun is all D6's
         self.sides = 6
-        self.threshold = sr1_roll.threshold
-        self.initiative = sr1_roll.initiative
+        self.threshold = sr3_roll.threshold
+        self.initiative = sr3_roll.initiative
+        self.open = sr3_roll.open
         if self.mod:
             self.threshold -= self.mod
 
@@ -103,6 +104,12 @@ class Sr3Roll(BaseRoll):
             self.result = result
             message.append(f"Initiative: {sum(self.result) + self.initiative}"
                            f" ({sum(self.result)} + {self.initiative})")
+        elif self.open:
+            highest = 0
+            for roll in self.result:
+                if roll > highest:
+                    highest = roll
+            message.append("The open ended test threshold is {highest}")
         else:
             if len(self.ones) == self.dice:
                 message.append("CRITICAL FAILURE")
@@ -118,9 +125,9 @@ class Sr3Roll(BaseRoll):
 
     async def roll(self):
         """
-        Rolls dice with a SR1E dice roller.
+        Rolls dice with a SR3E dice roller.
         """
-        self.result = await rolling_utils.sr1_roll(self.dice, self.sides)
+        self.result = await rolling_utils.sr3_roll(self.dice, self.sides)
         self.result.sort()
         self.hits = [x for x in self.result if x >= self.threshold]
         self.ones = [x for x in self.result if x == 1]

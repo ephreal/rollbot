@@ -44,7 +44,7 @@ class TestBasicRollParser(unittest.TestCase):
         self.assertEqual(roll.mod, 5)
 
 
-class TestSr1Roller(unittest.TestCase):
+class TestSr3Roller(unittest.TestCase):
     def setUp(self):
         self.parser = parsers.Sr3RollParser()
 
@@ -64,6 +64,14 @@ class TestSr1Roller(unittest.TestCase):
 
         roll = self.parser.parse_args(["6", "7", "-i", "12"])
         self.assertEqual(roll.initiative, 12)
+
+    def test_open_ended_test(self):
+        """
+        Ensures that the open ended test flag is found properly
+        """
+
+        roll = self.parser.parse_args(["6", "-o"])
+        self.assertTrue(roll.open)
 
 
 class TestSr5Roller(unittest.TestCase):

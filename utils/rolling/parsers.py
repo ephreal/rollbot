@@ -56,6 +56,8 @@ class Sr3RollParser(BaseRollParser):
                           help="modifier to add to final result")
         self.add_argument("-i", "--initiative", "--init", default=0, nargs="?",
                           type=int, help="Initiative score to add to roll")
+        self.add_argument("-o", "--open", action="store_true",
+                          help="Gets open ended test threshold")
 
 
 class Sr5RollParser(BaseRollParser):
