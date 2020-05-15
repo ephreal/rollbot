@@ -11,6 +11,7 @@ import asyncio
 import os
 import unittest
 from utils.handlers import db_handler
+from utils.db import db_migration_handler
 
 
 class TestDBHandler(unittest.TestCase):
@@ -18,25 +19,15 @@ class TestDBHandler(unittest.TestCase):
         self.db = "test.db"
         self.cmd_handler = db_handler.MetricsDB(self.db)
         self.tag_handler = db_handler.TagDB(self.db)
-        self.cmd_handler.init_tables()
-        self.tag_handler.init_tables()
+        self.migrations = db_migration_handler.DBMigrationHandler(self.db)
+        self.migrations.prepare_next_migration()
+        while self.migrations.current_version != -1:
+            self.migrations.migrate()
+            self.migrations.prepare_next_migration()
 
     def tearDown(self):
         if os.path.exists(self.db):
             os.remove(self.db)
-
-    def test_cmd_init_tables(self):
-        """
-        Verifies that the tables:
-            1) can be initialized properly.
-            2) won't throw errors if initialized multiple times
-        """
-
-        self.cmd_handler.init_tables()
-        c = self.cmd_handler.conn.cursor()
-        values = c.execute('''select * from commands''')
-        values = values.fetchall()
-        self.assertEqual(values, [])
 
     def test_cmd_update_commands(self):
         """
@@ -127,19 +118,6 @@ class TestDBHandler(unittest.TestCase):
         run(self.cmd_handler.clear_greeting(111))
         greeting = run(self.cmd_handler.get_greeting(111))
         self.assertEqual(greeting, None)
-
-    def test_tag_table_init(self):
-        """
-        Verifies that the tables:
-            1) can be initialized properly.
-            2) won't throw errors if initialized multiple times
-        """
-
-        self.tag_handler.init_tables()
-        c = self.tag_handler.conn.cursor()
-        values = c.execute('''select * from tags''')
-        values = values.fetchall()
-        self.assertEqual(values, [])
 
     def test_create_fetch_delete_tag(self):
         """
