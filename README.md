@@ -25,10 +25,8 @@ It is also be possible to connect my bot to your discord server if you'd like to
 * Ban users
 * Create roles needed for the bot
 * Create needed text channels
-* Demote users to a lower role
 * Kick users
 * Move messages from one channel to another
-* Promote users to a higher role
 * Purge messages from channels
 
 **Fun commands**
