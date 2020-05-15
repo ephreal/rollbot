@@ -17,8 +17,7 @@ from utils.db import db_migration_handler
 class TestDBHandler(unittest.TestCase):
     def setUp(self):
         self.db = "test.db"
-        self.cmd_handler = db_handler.MetricsDB(self.db)
-        self.tag_handler = db_handler.TagDB(self.db)
+        self.handler = db_handler.DBHandler(self.db)
         self.migrations = db_migration_handler.DBMigrationHandler(self.db)
         self.migrations.prepare_next_migration()
         while self.migrations.current_version != -1:
@@ -36,8 +35,8 @@ class TestDBHandler(unittest.TestCase):
             2) update values in the database when they do exist
         """
 
-        run(self.cmd_handler.update_commands("uptime", 1))
-        c = self.cmd_handler.conn.cursor()
+        run(self.handler.metrics.update_commands("uptime", 1))
+        c = self.handler.metrics.conn.cursor()
 
         # Also good to know: the ' ' are required here
         z = c.execute("select name, usage from commands where name = 'uptime'")
@@ -45,7 +44,7 @@ class TestDBHandler(unittest.TestCase):
         self.assertEqual(z[0], "uptime")
         self.assertEqual(z[1], 1)
 
-        run(self.cmd_handler.update_commands("uptime", 4))
+        run(self.handler.metrics.update_commands("uptime", 4))
         z = c.execute("select name, usage from commands where name = 'uptime'")
         z = z.fetchall()[0]
         self.assertEqual(z[0], "uptime")
@@ -57,11 +56,11 @@ class TestDBHandler(unittest.TestCase):
             1) does not error out if the value does not exist
             2) returns the correct value
         """
-        usage = run(self.cmd_handler.get_usage("uptime"))
+        usage = run(self.handler.metrics.get_usage("uptime"))
         self.assertEqual(usage, 0)
 
-        run(self.cmd_handler.update_commands("uptime", 7))
-        usage = run(self.cmd_handler.get_usage("uptime"))
+        run(self.handler.metrics.update_commands("uptime", 7))
+        usage = run(self.handler.metrics.get_usage("uptime"))
         self.assertEqual(usage, 7)
 
     def test_cmd_get_all_usage(self):
@@ -70,17 +69,17 @@ class TestDBHandler(unittest.TestCase):
         """
 
         # First verify that it returns nothing if the database is empty
-        usage = run(self.cmd_handler.get_all_usage())
+        usage = run(self.handler.metrics.get_all_usage())
         self.assertEqual(len(usage), 0)
 
         # Insert several things into the db
-        run(self.cmd_handler.update_commands("uptime", 7))
-        run(self.cmd_handler.update_commands("dnd", 120))
-        run(self.cmd_handler.update_commands("halt", 2933182))
-        run(self.cmd_handler.update_commands("git", 12344))
-        run(self.cmd_handler.update_commands("roll", 22222))
+        run(self.handler.metrics.update_commands("uptime", 7))
+        run(self.handler.metrics.update_commands("dnd", 120))
+        run(self.handler.metrics.update_commands("halt", 2933182))
+        run(self.handler.metrics.update_commands("git", 12344))
+        run(self.handler.metrics.update_commands("roll", 22222))
 
-        usage = run(self.cmd_handler.get_all_usage())
+        usage = run(self.handler.metrics.get_all_usage())
         self.assertEqual(len(usage), 5)
         self.assertEqual(usage[0][0], 'halt')
 
@@ -89,13 +88,13 @@ class TestDBHandler(unittest.TestCase):
         Verifies that the greeting status can be properly added
         """
         # Enable the greeting for guild 111
-        run(self.cmd_handler.set_greeting_status(111, 1))
-        status = run(self.cmd_handler.get_greeting_status(111))
+        run(self.handler.guilds.set_greeting_status(111, 1))
+        status = run(self.handler.guilds.get_greeting_status(111))
         self.assertEqual(status, 1)
 
         # Disable the greeting for guild 111
-        run(self.cmd_handler.set_greeting_status(111, 0))
-        status = run(self.cmd_handler.get_greeting_status(111))
+        run(self.handler.guilds.set_greeting_status(111, 0))
+        status = run(self.handler.guilds.get_greeting_status(111))
         self.assertEqual(status, 0)
 
     def test_set_greeting(self):
@@ -104,8 +103,8 @@ class TestDBHandler(unittest.TestCase):
         """
 
         greeting = "Hello world!"
-        run(self.cmd_handler.set_greeting(111, greeting))
-        greeting = run(self.cmd_handler.get_greeting(111))
+        run(self.handler.guilds.set_greeting(111, greeting))
+        greeting = run(self.handler.guilds.get_greeting(111))
         self.assertEqual(greeting, "Hello world!")
 
     def test_clear_greeting(self):
@@ -114,9 +113,9 @@ class TestDBHandler(unittest.TestCase):
         """
 
         greeting = "Delete me"
-        run(self.cmd_handler.set_greeting(111, greeting))
-        run(self.cmd_handler.clear_greeting(111))
-        greeting = run(self.cmd_handler.get_greeting(111))
+        run(self.handler.guilds.set_greeting(111, greeting))
+        run(self.handler.guilds.clear_greeting(111))
+        greeting = run(self.handler.guilds.get_greeting(111))
         self.assertEqual(greeting, None)
 
     def test_create_fetch_delete_tag(self):
@@ -126,12 +125,12 @@ class TestDBHandler(unittest.TestCase):
         test one piece.
         """
 
-        run(self.tag_handler.create_tag(1, "test", "content is here"))
-        content = run(self.tag_handler.fetch_tag(1, "test"))
+        run(self.handler.tags.create_tag(1, "test", "content is here"))
+        content = run(self.handler.tags.fetch_tag(1, "test"))
         self.assertEqual(content, "content is here")
 
-        run(self.tag_handler.delete_tag(1, "test"))
-        content = run(self.tag_handler.fetch_tag(1, "test"))
+        run(self.handler.tags.delete_tag(1, "test"))
+        content = run(self.handler.tags.fetch_tag(1, "test"))
         self.assertEqual(content, None)
 
 

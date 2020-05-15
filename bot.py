@@ -50,8 +50,7 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
 
         # Add in the database handlers
         await database_migrations()
-        BOT.db_handler = db_handler.MetricsDB()
-        BOT.tag_db = db_handler.TagDB()
+        BOT.db_handler = db_handler.DBHandler()
         BOT.catapi_key = catapi_key
 
         # Load all cogs
@@ -108,7 +107,7 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
             await BOT.process_commands(message)
             command = message.content.split()
             command = command[0].replace(BOT.command_prefix, "")
-            await BOT.db_handler.update_commands(command, 1)
+            await BOT.db_handler.metrics.update_commands(command, 1)
 
     @BOT.event
     async def on_command_error(ctx, error):

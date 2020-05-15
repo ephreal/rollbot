@@ -14,6 +14,7 @@ from utils import bot_metrics
 class Metrics(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.db = bot.db_handler.metrics
 
     @commands.command(description="Bot uptime")
     async def uptime(self, ctx):
@@ -36,11 +37,11 @@ class Metrics(commands.Cog):
         """
 
         if not command:
-            usage = await self.bot.db_handler.get_all_usage()
+            usage = await self.db.get_all_usage()
             for reply in await bot_metrics.format_all_usage(usage):
                 await ctx.send(embed=reply)
         else:
-            usage = await self.bot.db_handler.get_usage(command)
+            usage = await self.db.get_usage(command)
             await ctx.send(f"That command has been used {usage} times")
 
     @commands.is_owner()
@@ -60,7 +61,7 @@ class Metrics(commands.Cog):
             .cmd clear 10
         """
 
-        await self.bot.db_handler.clear_usage(uses)
+        await self.db.clear_usage(uses)
         await ctx.send("Usage has been cleared")
 
     @classmethod

@@ -35,7 +35,7 @@ class admin(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        self.db = bot.db_handler
+        self.db = bot.db_handler.guilds
         self.analytics = analytics.GuildAnalytics()
         self.prefix = {self.bot.command_prefix}
         admin_utils.setup_logging(bot)
