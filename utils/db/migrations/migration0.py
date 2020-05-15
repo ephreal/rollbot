@@ -16,6 +16,7 @@ class Migration(abc_migration.Migration):
         super().__init__(db)
         self.version = 0
         self.description = "Initial configuration of the database"
+        self.breaks = "Everything. Database features unavailable without this"
 
     def migrate(self):
         """

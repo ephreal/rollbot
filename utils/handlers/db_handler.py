@@ -15,32 +15,6 @@ class MetricsDB():
         self.db = db
         self.conn = sqlite3.connect(self.db)
 
-    def init_tables(self):
-        """
-        Initializes the tables used for bot metrics. These include
-            commands: tracking how often commands are used in order to know
-                      which commands would have the greatest impact if broken
-                      or needing to be updated.
-        """
-
-        c = self.conn.cursor()
-        c.execute('''CREATE TABLE if not exists commands (
-                        id integer primary key autoincrement not null,
-                        name varchar(30),
-                        usage integer default 0,
-                        unique(name)
-                        )''')
-
-        c.execute('''CREATE TABLE if not exists greetings (
-                        id integer primary key autoincrement not null,
-                        guild_id integer,
-                        message varchar(2000) default null,
-                        active integer default 0,
-                        unique (guild_id)
-                        )''')
-
-        self.conn.commit()
-
     async def update_commands(self, name, value):
         """
         Insert values into the commands tale.
@@ -107,11 +81,11 @@ class MetricsDB():
         c = self.conn.cursor()
         # Ensure the row exists in the table.
         # Note to self: That comma in the binding after name is VERY important
-        c.execute('''INSERT or ignore into greetings (guild_id) values (?)''',
-                  (guild_id, ))
+        c.execute('''INSERT or ignore into guild_config (guild_id)
+                     values (?)''', (guild_id, ))
 
         # Then update the usage
-        c.execute('''select active from greetings where guild_id = ?''',
+        c.execute('''select active from guild_config where guild_id = ?''',
                   (guild_id, ))
         self.conn.commit()
 
@@ -132,11 +106,11 @@ class MetricsDB():
         c = self.conn.cursor()
         # Ensure the row exists in the table.
         # Note to self: That comma in the binding after name is VERY important
-        c.execute('''INSERT or ignore into greetings (guild_id) values (?)''',
-                  (guild_id, ))
+        c.execute('''INSERT or ignore into guild_config (guild_id)
+                     values (?)''', (guild_id, ))
 
         # Then update the usage
-        c.execute('''select message from greetings where guild_id = ?''',
+        c.execute('''select message from guild_config where guild_id = ?''',
                   (guild_id, ))
         self.conn.commit()
 
@@ -160,11 +134,11 @@ class MetricsDB():
         c = self.conn.cursor()
         # Ensure the row exists in the table.
         # Note to self: That comma in the binding after name is VERY important
-        c.execute('''INSERT or ignore into greetings (guild_id) values (?)''',
-                  (guild_id, ))
+        c.execute('''INSERT or ignore into guild_config (guild_id)
+                     values (?)''', (guild_id, ))
 
         # Then update the usage
-        c.execute('''update greetings set active = ? where guild_id = ?''',
+        c.execute('''update guild_config set active = ? where guild_id = ?''',
                   (status, guild_id, ))
 
         self.conn.commit()
@@ -181,8 +155,8 @@ class MetricsDB():
         """
 
         c = self.conn.cursor()
-        c.execute('''update greetings set message = null where guild_id = ?''',
-                  (guild_id, ))
+        c.execute('''update guild_config set message = null where
+                     guild_id = ?''', (guild_id, ))
 
         self.conn.commit()
 
@@ -203,11 +177,11 @@ class MetricsDB():
         c = self.conn.cursor()
         # Ensure the row exists in the table.
         # Note to self: That comma in the binding after name is VERY important
-        c.execute('''INSERT or ignore into greetings (guild_id) values (?)''',
-                  (guild_id, ))
+        c.execute('''INSERT or ignore into guild_config (guild_id)
+                     values (?)''', (guild_id, ))
 
         # Then update the usage
-        c.execute('''update greetings set message = ? where guild_id = ?''',
+        c.execute('''update guild_config set message = ? where guild_id = ?''',
                   (greeting, guild_id, ))
 
         self.conn.commit()
@@ -219,22 +193,6 @@ class TagDB():
     def __init__(self, db="discord.db"):
         self.db = db
         self.conn = sqlite3.connect(self.db)
-
-    def init_tables(self):
-        """Initializes tables the bot will need.
-
-            tags: Store of all user tags
-        """
-
-        c = self.conn.cursor()
-        c.execute('''CREATE TABLE if not exists tags (
-                        id integer primary key autoincrement not null,
-                        user_id varchar(30),
-                        tag varchar(100),
-                        content varchar(2000),
-                        unique(tag)
-                        )''')
-        self.conn.commit()
 
     async def create_tag(self, user_id, tag, content):
         """Adds a tag to the database"""
@@ -275,26 +233,3 @@ class TagDB():
             return [tag[0] for tag in tags]
         else:
             return None
-
-
-class ConfigurationDB():
-    def __init__(self, db="discord.db"):
-        self.db = db
-        self.conn = sqlite3.connect(self.db)
-
-    def init_tables(self):
-        """Initializes tables the bot will need.
-
-            config: Server configuration options
-        """
-
-        c = self.conn.cursor()
-        c.execute('''CREATE TABLE if not exists configs (
-                        id integer primary key autoincrement not null,
-                        guild_id varchar(30),
-                        roll_type varchar(10) default "basic",
-                        message varchar(2000) default null,
-                        active integer default 0,
-                        unique(guild_id)
-                        )''')
-        self.conn.commit()

@@ -14,7 +14,6 @@ from utils import bot_metrics
 class Metrics(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.bot.db_handler.init_tables()
 
     @commands.command(description="Bot uptime")
     async def uptime(self, ctx):

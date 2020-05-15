@@ -21,10 +21,15 @@ class TestMigration1(unittest.TestCase):
         self.migration = migration1.Migration(self.db)
         self.handler = db_migration_handler.DBMigrationHandler(self.db)
         self.handler.prepare_next_migration()
-        self.handler.roll_forward()
+        self.handler.migrate()
 
     def tearDown(self):
         os.remove(self.db)
+
+    def get_connection(self):
+        connection = sqlite3.connect(self.db)
+        cursor = connection.cursor()
+        return (connection, cursor)
 
     def test_requisites(self):
         """Ensures the requisites for running the migration return correct"""
@@ -32,23 +37,32 @@ class TestMigration1(unittest.TestCase):
 
     def test_migrate(self):
         """Ensures that migration happens without issue"""
-        connection = sqlite3.connect(self.db)
-        cursor = connection.cursor()
-        greeting = """insert into greetings (guild_id,greeting) values
-                      (195432110, 'This is such an amazing message.')"""
+
+        connection, cursor = self.get_connection()
+        greeting = """insert into greetings (guild_id,message) values
+                      (19543, 'This is such an amazing message.')"""
         cursor.execute(greeting)
+        connection.commit()
+        connection.close()
+
         self.migration.migrate()
-        cursor.execute("select message from config where guild_id=195432110")
+        connection, cursor = self.get_connection()
+        cursor.execute("select message from guild_config where guild_id=19543")
         message = cursor.fetchall()[0][0]
-        # Note: The fact that it didn't error out is evidence of the table's
-        #       existence
         self.assertEqual(message, "This is such an amazing message.")
+
+        cursor.execute("select version from db_versions where db='schema'")
+        version = cursor.fetchall()[0][0]
+        self.assertEqual(version, 1)
+
         with self.assertRaises(sqlite3.OperationalError):
             cursor.execute("select * from greetings")
+        connection.close()
 
     def test_revert_requisites(self):
         """ensures that the reversion requisites are met properly"""
         self.migration.migrate()
+        connection, cursor = self.get_connection()
         self.assertTrue(self.migration.revert_requisites())
 
     def test_revert(self):

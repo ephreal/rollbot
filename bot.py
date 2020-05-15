@@ -15,6 +15,7 @@ from datetime import datetime
 from discord import Game
 from discord.ext import commands
 from utils.message_builder import on_join_builder
+from utils.db import db_migration_handler
 from utils.handlers import db_handler
 
 
@@ -48,10 +49,9 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
         BOT.restrict_rolling = restrict_rolling
 
         # Add in the database handlers
+        await database_migrations()
         BOT.db_handler = db_handler.MetricsDB()
         BOT.tag_db = db_handler.TagDB()
-
-        # thecatapi.com API key
         BOT.catapi_key = catapi_key
 
         # Load all cogs
@@ -65,6 +65,31 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
         if not hasattr(BOT, 'appinfo'):
             BOT.appinfo = await BOT.application_info()
         await BOT.change_presence(activity=help_message)
+
+    async def database_migrations():
+        """
+        Ensures that the bot updates to the most recent database schema
+        """
+
+        handler = db_migration_handler.DBMigrationHandler()
+        handler.prepare_next_migration()
+
+        choice = "n"
+
+        if handler.current_version != -1:
+            print("There are updates available for the bot database.")
+            print(f"Issues if not upgraded: {handler.migration.breaks}")
+            choice = input("Would you like to upgrade? y/n\n")
+
+        if choice.lower() == "y":
+            while handler.current_version != -1:
+                print("\n-----------------------------------------------")
+                print(f"Updating to version {handler.migration.version}")
+                print(f"Description: {handler.migration.description}")
+                print(f"Issues if not updated: {handler.migration.breaks}")
+                print("-----------------------------------------------\n")
+                handler.migrate()
+                handler.prepare_next_migration()
 
     @BOT.event
     async def on_message(message):

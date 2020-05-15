@@ -17,7 +17,6 @@ class Tag(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.tag_db
-        self.db.init_tables()
 
     @commands.command(description="Tag content")
     async def tag(self, ctx, tag=None, delete_tag=None):
