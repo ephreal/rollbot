@@ -45,7 +45,7 @@ class BaseRollHandler():
         return roll
 
 
-class Sr1RollHandler(BaseRollHandler):
+class Sr3RollHandler(BaseRollHandler):
     def __init__(self):
-        self.parser = parsers.Sr1RollParser()
-        self.roll_type = rolls.Sr1Roll
+        self.parser = parsers.Sr3RollParser()
+        self.roll_type = rolls.Sr3Roll

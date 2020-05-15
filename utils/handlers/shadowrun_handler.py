@@ -141,7 +141,7 @@ class ShadowrunHandler(BaseHandler):
             -> SR5: {hits, misses, ones}
         """
 
-        if self.edition == 1:
+        if self.edition == 3:
             checked = await self.roller.check_successes(threshold, roll)
 
         elif self.edition == 5:
@@ -244,10 +244,10 @@ class ShadowrunHandler(BaseHandler):
         edition: int
         """
 
-        if edition == 1:
-            self.roller = sr.Shadowrun1Roller()
-            self.formatter = sf.Shadowrun1Formatter()
-            self.edition = 1
+        if edition == 3:
+            self.roller = sr.Shadowrun3Roller()
+            self.formatter = sf.Shadowrun3Formatter()
+            self.edition = 3
         elif edition == 5:
             self.roller = sr.Shadowrun5Roller()
             self.formatter = sf.Shadowrun5Formatter()
@@ -266,19 +266,19 @@ class ShadowrunHandler(BaseHandler):
         return await self.roller.is_glitch(rolls, hits)
 
 
-class Shadowrun1Handler(BaseHandler):
+class Shadowrun3Handler(BaseHandler):
     """
-    Shadowrun 1E handler that provides an interface to a discord bot for all
-    Shadowrun 1E rolling.
+    Shadowrun 3E handler that provides an interface to a discord bot for all
+    Shadowrun 3E rolling.
     """
 
     def __init__(self):
         super().__init__()
-        self.parser = parsers.Sr1RollParser()
-        self.roller = sr.Shadowrun1Roller()
-        self.formatter = sf.Shadowrun1Formatter()
+        self.parser = parsers.Sr3RollParser()
+        self.roller = sr.Shadowrun3Roller()
+        self.formatter = sf.Shadowrun3Formatter()
 
-    async def check_roll(self, roll, threshold=2):
+    async def check_roll(self, roll, threshold=4):
         """
         Checks the roll to see how many successes/failures are in the roll.
 

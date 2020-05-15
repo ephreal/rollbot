@@ -13,10 +13,10 @@ import unittest
 from classes.dice_rolling import shadowrun_rolling as sr
 
 
-class TestShadowrun1ERolling(unittest.TestCase):
+class TestShadowrun3ERolling(unittest.TestCase):
 
     def setUp(self):
-        self.sr1_roller = sr.Shadowrun1Roller()
+        self.sr3_roller = sr.Shadowrun3Roller()
 
     def test_roll(self):
         """
@@ -24,7 +24,7 @@ class TestShadowrun1ERolling(unittest.TestCase):
         added up correctly.
         """
 
-        rolls = self.sr1_roller.roll(10)
+        rolls = self.sr3_roller.roll(10)
         rolls = run(rolls)
 
         self.assertEqual(len(rolls), 10)
@@ -35,7 +35,7 @@ class TestShadowrun1ERolling(unittest.TestCase):
         Verifies that the initiative roll is returning sane results.
         """
 
-        initiative = self.sr1_roller.roll_initiative(1)
+        initiative = self.sr3_roller.roll_initiative(1)
         _, initiative = run(initiative)
         self.assertTrue(initiative >= 1 and initiative < 8)
 
@@ -45,12 +45,12 @@ class TestShadowrun1ERolling(unittest.TestCase):
         """
 
         rolls = [1, 1, 1, 1, 1]
-        failure = self.sr1_roller.is_failure(rolls)
+        failure = self.sr3_roller.is_failure(rolls)
         failure = run(failure)
         self.assertTrue(failure)
 
         rolls = [1, 1, 1, 1, 2]
-        failure = self.sr1_roller.is_failure(rolls)
+        failure = self.sr3_roller.is_failure(rolls)
         failure = run(failure)
         self.assertFalse(failure)
 
@@ -61,13 +61,13 @@ class TestShadowrun1ERolling(unittest.TestCase):
 
         target = 5
         rolls = [6, 5, 4, 3, 2, 1]
-        successes = self.sr1_roller.check_successes(target, rolls)
+        successes = self.sr3_roller.check_successes(target, rolls)
         successes = run(successes)
         self.assertEqual(successes["successes"], 2)
         self.assertEqual(successes["rolls"], [6, 5])
 
         target = 3
-        successes = self.sr1_roller.check_successes(target, rolls)
+        successes = self.sr3_roller.check_successes(target, rolls)
         successes = run(successes)
         self.assertEqual(successes["successes"], 4)
         self.assertEqual(successes["rolls"], [6, 5, 4, 3])

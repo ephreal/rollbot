@@ -16,7 +16,13 @@ from utils.rolling import handlers
 
 class roller(commands.Cog):
     def __init__(self, bot):
+        self.handlers = {
+                    "basic": handlers.BaseRollHandler(),
+                    "sr3": handlers.Sr3RollHandler()
+        }
         self.handler = handlers.BaseRollHandler()
+        self.guild_handlers = {}
+        self.db = bot.db_handler.guild_config
         self.bot = bot
 
     @commands.command(pass_context=True)
@@ -39,6 +45,11 @@ class roller(commands.Cog):
             .roll 1d6 -n This is a test roll
         """
 
+        try:
+            handler = self.handlers[ctx.guild.id]
+        except KeyError:
+            handler = self.db.get_handler(ctx.guild.id)
+
         channel = await rolling_utils.check_roll_channel(ctx, self.bot)
         if "-h" in roll_args:
             message = self.handler.parser.format_help()
@@ -60,13 +71,13 @@ class roller(commands.Cog):
     async def roll_config(self, ctx, mode):
         """Sets the current rolling mode.
 
-        Valid options are "basic" and "sr1"
+        Valid options are "basic" and "sr3"
         """
 
         if mode == "basic":
             self.handler = handlers.BaseRollHandler()
-        elif mode == "sr1":
-            self.handler = handlers.Sr1RollHandler()
+        elif mode == "sr3":
+            self.handler = handlers.Sr3RollHandler()
         else:
             return await ctx.send("That is an invalid mode")
         await ctx.send(f"Mode changed to {mode}")

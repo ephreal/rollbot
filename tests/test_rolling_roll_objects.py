@@ -49,14 +49,14 @@ class TestBaseRoll(unittest.TestCase):
         self.assertTrue(isinstance(roll, str))
 
 
-class TestSr1Roll(unittest.TestCase):
+class TestSr3Roll(unittest.TestCase):
     def setUp(self):
-        self.parser = parsers.Sr1RollParser()
+        self.parser = parsers.Sr3RollParser()
 
     def test_initialization(self):
         roll = ["6", "5", "-n", "hello", "world"]
         roll = self.parser.parse_args(roll)
-        roll = rolls.Sr1Roll(roll)
+        roll = rolls.Sr3Roll(roll)
         run(roll.roll())
 
         self.assertEqual(roll.threshold, 5)
@@ -67,7 +67,7 @@ class TestSr1Roll(unittest.TestCase):
         """Ensures format returns a string"""
         roll = ["6", "5", "-n", "hello", "world"]
         roll = self.parser.parse_args(roll)
-        roll = rolls.Sr1Roll(roll)
+        roll = rolls.Sr3Roll(roll)
         roll = run(roll.format())
         self.assertTrue(isinstance(roll, str))
         self.assertTrue("Initiative" not in roll)
@@ -76,7 +76,7 @@ class TestSr1Roll(unittest.TestCase):
         """Ensures that "Initiative" appears in formatted string when an
         initiative roll is made"""
         roll = self.parser.parse_args(["6", "-i", "10"])
-        roll = rolls.Sr1Roll(roll)
+        roll = rolls.Sr3Roll(roll)
         roll = run(roll.format())
         self.assertTrue("Initiative" in roll)
         self.assertTrue("Hits" not in roll)

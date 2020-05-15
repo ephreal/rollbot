@@ -42,14 +42,14 @@ class BasicRollParser(BaseRollParser):
                           help="modifier to add to final result")
 
 
-class Sr1RollParser(BaseRollParser):
+class Sr3RollParser(BaseRollParser):
     """
     A roll parser for shadowrun.
     """
 
     def __init__(self):
         super().__init__()
-        self.prog = "Sr1Roller"
+        self.prog = "Sr3Roller"
         self.add_argument("threshold", default=5, nargs="?", type=int,
                           help="Threshold dice must meet or exceed")
         self.add_argument('-m', "--mod", type=int, default=0,

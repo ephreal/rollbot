@@ -46,7 +46,7 @@ class TestBasicRollParser(unittest.TestCase):
 
 class TestSr1Roller(unittest.TestCase):
     def setUp(self):
-        self.parser = parsers.Sr1RollParser()
+        self.parser = parsers.Sr3RollParser()
 
     def test_thresholds(self):
         """

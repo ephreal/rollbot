@@ -75,7 +75,7 @@ class BaseRoll:
         self.result = await rolling_utils.roll(self.dice, self.sides)
 
 
-class Sr1Roll(BaseRoll):
+class Sr3Roll(BaseRoll):
     def __init__(self, sr1_roll):
         super().__init__(sr1_roll)
         # shadowrun is all D6's

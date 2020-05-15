@@ -1,35 +1,20 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 
-class Shadowrun1Formatter():
+class Shadowrun3Formatter():
     """
     class methods:
         format_roll(rolls: list[int], checked: dict, verbose: bool,
             glitch: dict or None)
         -> formatted_roll: str
-            Formats 1E rolls to easily identify successes and failures.
+            Formats 3E rolls to easily identify successes and failures.
 
         format_initiative(initiative: int) -> formatted_initiative: str
             Formats the initiative score to be easier to understand in discord.
@@ -40,7 +25,7 @@ class Shadowrun1Formatter():
 
     async def format_roll(self, rolls, checked, verbose=False, glitch=None):
         """
-        Formats 1E rolls to easily identify successes and failures.
+        Formats 3E rolls to easily identify successes and failures.
         """
 
         if checked["failure"]:

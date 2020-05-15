@@ -16,7 +16,7 @@ from utils.handlers import shadowrun_handler
 class TestBaseHandler(unittest.TestCase):
 
     def setUp(self):
-        self.sr1_handler = shadowrun_handler.Shadowrun1Handler()
+        self.sr3_handler = shadowrun_handler.Shadowrun3Handler()
 
     def test_format_initiative(self):
         """
@@ -24,7 +24,7 @@ class TestBaseHandler(unittest.TestCase):
         """
 
         roll = [3, 3, 3]
-        initiative = run(self.sr1_handler.format_initiative(roll, 12))
+        initiative = run(self.sr3_handler.format_initiative(roll, 12))
         self.assertTrue(isinstance(initiative, str))
 
     def test_roll_initiative(self):
@@ -32,7 +32,7 @@ class TestBaseHandler(unittest.TestCase):
         Verifies the base handler is able to roll initiative with all handlers.
         """
 
-        _, initiative = run(self.sr1_handler.roll_initiative(1, 5))
+        _, initiative = run(self.sr3_handler.roll_initiative(1, 5))
         self.assertTrue(isinstance(initiative, int))
 
 
@@ -46,9 +46,9 @@ class TestShadowrunHandler(unittest.TestCase):
         Verifies the handler is able to set the shadowrun edition
         """
 
-        edition = self.handler.set_sr_edition(1)
+        edition = self.handler.set_sr_edition(3)
         edition = run(edition)
-        self.assertEqual(1, self.handler.edition)
+        self.assertEqual(3, self.handler.edition)
 
         edition = self.handler.set_sr_edition(5)
         edition = run(edition)
@@ -65,7 +65,7 @@ class TestShadowrunHandler(unittest.TestCase):
 
         self.assertEqual(checked['hits'], 2)
 
-        run(self.handler.set_sr_edition(1))
+        run(self.handler.set_sr_edition(3))
 
         checked = self.handler.check_roll(roll)
         checked = run(checked)
@@ -112,15 +112,15 @@ class TestShadowrunHandler(unittest.TestCase):
                                                 glitch=glitch)
         formatted_5e = run(formatted_5e)
 
-        run(self.handler.set_sr_edition(1))
+        run(self.handler.set_sr_edition(3))
 
-        checked_1e = self.handler.check_roll(roll)
-        checked_1e = run(checked_1e)
+        checked_3e = self.handler.check_roll(roll)
+        checked_3e = run(checked_3e)
 
-        formatted_1e = self.handler.format_roll(roll, checked_1e)
-        formatted_1e = run(formatted_1e)
+        formatted_3e = self.handler.format_roll(roll, checked_3e)
+        formatted_3e = run(formatted_3e)
 
-        self.assertFalse(formatted_1e == formatted_5e)
+        self.assertFalse(formatted_3e == formatted_5e)
 
     def test_is_glitch(self):
         """
@@ -150,10 +150,10 @@ class TestShadowrunHandler(unittest.TestCase):
         self.assertEqual(self.handler.past_rolls['test']['roll'], roll)
 
 
-class TestShadowrun1Handler(unittest.TestCase):
+class TestShadowrun3Handler(unittest.TestCase):
 
     def setUp(self):
-        self.handler = shadowrun_handler.Shadowrun1Handler()
+        self.handler = shadowrun_handler.Shadowrun3Handler()
 
     def test_check_roll(self):
         """
@@ -163,7 +163,7 @@ class TestShadowrun1Handler(unittest.TestCase):
         roll = [1, 2, 3, 4, 5, 6]
         checked = run(self.handler.check_roll(roll))
 
-        self.assertEqual(checked['successes'], 5)
+        self.assertEqual(checked['successes'], 3)
 
     def test_format_roll(self):
         """
@@ -194,7 +194,7 @@ class TestShadowrun1Handler(unittest.TestCase):
 
     def test_roll(self):
         """
-        Verifies the handler is able to roll 1E dice and do so properly.
+        Verifies the handler is able to roll 3E dice and do so properly.
         """
 
         roll = run(self.handler.roll(6))
