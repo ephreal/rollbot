@@ -27,7 +27,7 @@ class BaseRollHandler():
     """
 
     def __init__(self):
-        self.parser = parsers.BaseRollParser()
+        self.parser = parsers.BasicRollParser()
         self.roll_type = rolls.BaseRoll
 
     async def parse(self, args):

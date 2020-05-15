@@ -25,22 +25,23 @@ class TestBaseRoller(unittest.TestCase):
 
         self.assertEqual(roll.dice, "6d10")
 
-    def test_modifier_handling(self):
-        roll = ["6d10", "-m", "+5"]
-        roll = self.parser.parse_args(roll)
-
-        self.assertEqual(roll.dice, "6d10")
-        self.assertEqual(roll.mod, 5)
-
-        roll = ["-m", "-5", "6d10"]
-        roll = self.parser.parse_args(roll)
-        self.assertEqual(roll.mod, -5)
-
     def test_note_handling(self):
         roll = ["6d10", "-n", "Roll for initiative"]
         roll = self.parser.parse_args(roll)
 
         self.assertEqual(roll.note[0], "Roll for initiative")
+
+
+class TestBasicRollParser(unittest.TestCase):
+    def setUp(self):
+        self.parser = parsers.BasicRollParser()
+
+    def test_modifier_handling(self):
+        roll = ["6d10", "+5"]
+        roll = self.parser.parse_args(roll)
+
+        self.assertEqual(roll.dice, "6d10")
+        self.assertEqual(roll.mod, 5)
 
 
 class TestSr1Roller(unittest.TestCase):

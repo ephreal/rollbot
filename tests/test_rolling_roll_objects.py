@@ -16,7 +16,7 @@ from utils.rolling import parsers
 
 class TestBaseRoll(unittest.TestCase):
     def setUp(self):
-        self.parser = parsers.BaseRollParser()
+        self.parser = parsers.BasicRollParser()
 
     def test_initialization(self):
         """
@@ -29,7 +29,7 @@ class TestBaseRoll(unittest.TestCase):
         self.assertEqual(roll.dice, 3)
         self.assertEqual(roll.sides, 6)
 
-        roll = ["-m", "6", "6d10", "-n", "This", "is", "a", "test"]
+        roll = ["6d10", "6", "-n", "This", "is", "a", "test"]
         roll = self.parser.parse_args(roll)
         roll = rolls.BaseRoll(roll)
         self.assertEqual(roll.dice, 6)
