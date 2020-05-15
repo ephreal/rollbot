@@ -47,7 +47,7 @@ class admin(commands.Cog):
         Pulls changes from github.
 
         usage:
-            .pull
+            .git
         """
 
         await ctx.send(await admin_utils.git_pull())
