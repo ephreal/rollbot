@@ -49,6 +49,48 @@ class TestBaseRoll(unittest.TestCase):
         self.assertTrue(isinstance(roll, str))
 
 
+class TestDndRoll(unittest.TestCase):
+    def setUp(self):
+        self.parser = parsers.DndRollParser()
+
+    def test_initialization(self):
+        roll = ["1", "+2", "-adv", "-n", "Hello", "world"]
+        roll = self.parser.parse_args(roll)
+        roll = rolls.DndRoll(roll)
+        run(roll.roll())
+
+        self.assertEqual(len(roll.result), 1)
+        self.assertEqual(roll.note, ["Hello", "world"])
+
+    def test_adv_format(self):
+        """Ensures advantage roll formatting works"""
+        roll = ["1", "+2", "-adv", "-n", "Hello", "world"]
+        roll = self.parser.parse_args(roll)
+        roll = rolls.DndRoll(roll)
+        roll = run(roll.format())
+
+        self.assertTrue("Advantage" in roll)
+
+    def test_dis_format(self):
+        """Ensures disadvantage roll formatting works"""
+        roll = ["1", "+2", "-dis", "-n", "Hello", "world"]
+        roll = self.parser.parse_args(roll)
+        roll = rolls.DndRoll(roll)
+        roll = run(roll.format())
+
+        self.assertTrue("Disadvantage" in roll)
+
+    def test_general_format(self):
+        """Ensures general roll formatting works"""
+        roll = ["1", "+2", "-n", "Hello", "world"]
+        roll = self.parser.parse_args(roll)
+        roll = rolls.DndRoll(roll)
+        roll = run(roll.format())
+
+        self.assertFalse("Disadvantage" in roll)
+        self.assertFalse("Advantage" in roll)
+
+
 class TestSr3Roll(unittest.TestCase):
     def setUp(self):
         self.parser = parsers.Sr3RollParser()

@@ -44,6 +44,35 @@ class TestBasicRollParser(unittest.TestCase):
         self.assertEqual(roll.mod, 5)
 
 
+class TestDndRollParser(unittest.TestCase):
+    def setUp(self):
+        self.parser = parsers.DndRollParser()
+
+    def test_adv(self):
+        """
+        Ensures that advantage is found properly
+        """
+
+        roll = self.parser.parse_args(["6", "-adv"])
+        self.assertTrue(roll.adv)
+
+    def test_dis(self):
+        """
+        Ensures that disadvantage is found properly
+        """
+
+        roll = self.parser.parse_args(["6", "-dis"])
+        self.assertTrue(roll.dis)
+
+    def test_mutual_exclusion(self):
+        """
+        Ensures that disadvantage and advantage may never be on the same roll
+        """
+
+        with self.assertRaises(parsers.InvalidArgumentsError):
+            self.parser.parse_args(["6", "-adv", "-dis"])
+
+
 class TestSr3Roller(unittest.TestCase):
     def setUp(self):
         self.parser = parsers.Sr3RollParser()

@@ -76,6 +76,71 @@ class BaseRoll:
         self.result = await rolling_utils.roll(self.dice, self.sides)
 
 
+class DndRoll(BaseRoll):
+    def __init__(self, dnd_roll):
+        super().__init__(dnd_roll)
+        self.adv = dnd_roll.adv
+        self.dis = dnd_roll.dis
+
+    async def format(self):
+        message = ["```md"]
+        if self.adv:
+            message = await self.format_advantage(message)
+        elif self.dis:
+            message = await self.format_disadvantage(message)
+        else:
+            message = await self.general_format(message)
+
+        message.append("```")
+        return "\n".join(message)
+
+    async def format_advantage(self, message):
+        """
+        Formats a roll with advantage
+        """
+        self.sides = 20
+        self.dice = 2
+        await self.roll()
+
+        message.append("< Advantage >")
+        message.append(f"Result: {max(self.result) + self.mod}")
+        message.append("="*len(message[-1]))
+        message.append(f"> Rolls: {self.result}")
+        message.append(f"Highest: {max(self.result)}")
+        message.append(f"Mod: {self.mod}")
+        return message
+
+    async def format_disadvantage(self, message):
+        """
+        Formats a roll with advantage
+        """
+        self.sides = 20
+        self.dice = 2
+        await self.roll()
+
+        message.append("< Disadvantage >")
+        message.append(f"Result: {min(self.result) + self.mod}")
+        message.append("="*len(message[-1]))
+        message.append(f"> Rolls: {self.result}")
+        message.append(f"Lowest: {min(self.result)}")
+        message.append(f"Mod: {self.mod}")
+        return message
+
+    async def general_format(self, message):
+        """
+        General roll formatting
+        """
+
+        await self.roll()
+
+        message.append(f"Result: {sum(self.result) + self.mod}")
+        message.append("="*len(message[-1]))
+        message.append(f"> Rolls: {self.result}")
+        message.append(f"Total: {sum(self.result)}")
+        message.append(f"Modifier: {self.mod}")
+        return message
+
+
 class Sr3Roll(BaseRoll):
     def __init__(self, sr3_roll):
         super().__init__(sr3_roll)

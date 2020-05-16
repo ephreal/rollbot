@@ -18,7 +18,8 @@ class roller(commands.Cog):
     def __init__(self, bot):
         self.handlers = {
                     "basic": handlers.BaseRollHandler(),
-                    "sr3": handlers.Sr3RollHandler()
+                    "sr3": handlers.Sr3RollHandler(),
+                    "dnd": handlers.DndRollHandler()
         }
         self.guild_handlers = {}
         self.db = bot.db_handler.guilds
@@ -74,12 +75,19 @@ class roller(commands.Cog):
     async def roll_config(self, ctx, mode):
         """Sets the current rolling mode.
 
-        Valid options are "basic" and "sr3"
+        Valid options are "basic", "dnd", and "sr3"
         """
+
+        mode = mode.lower()
 
         if mode == "basic":
             await self.db.set_roll_handler(ctx.guild.id, "basic")
             self.guild_handlers[ctx.guild.id] = "basic"
+
+        elif mode == "dnd":
+            await self.db.set_roll_handler(ctx.guild.id, "dnd")
+            self.guild_handlers[ctx.guild.id] = "dnd"
+
         elif mode == "sr3":
             await self.db.set_roll_handler(ctx.guild.id, "sr3")
             self.guild_handlers[ctx.guild.id] = "sr3"

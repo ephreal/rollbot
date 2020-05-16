@@ -42,6 +42,15 @@ class BasicRollParser(BaseRollParser):
                           help="modifier to add to final result")
 
 
+class DndRollParser(BasicRollParser):
+    def __init__(self):
+        super().__init__()
+        self.prog = "DnDRoller"
+        group = self.add_mutually_exclusive_group()
+        group.add_argument("-adv", action="store_true")
+        group.add_argument("-dis", action="store_true")
+
+
 class Sr3RollParser(BaseRollParser):
     """
     A roll parser for shadowrun.
