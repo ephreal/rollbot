@@ -109,7 +109,7 @@ class Sr3Roll(BaseRoll):
             for roll in self.result:
                 if roll > highest:
                     highest = roll
-            message.append("The open ended test threshold is {highest}")
+            message.append(f"The open ended test threshold is {highest}")
         else:
             if len(self.ones) == self.dice:
                 message.append("CRITICAL FAILURE")
