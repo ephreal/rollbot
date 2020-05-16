@@ -65,7 +65,8 @@ class roller(commands.Cog):
             message = await message_builder.embed_reply(ctx.author, message,
                                                         Colour.red())
         else:
-            message = await message_builder.embed_reply(ctx.author, message)
+            message = await message_builder.embed_reply(ctx.author, message,
+                                                        Colour.green())
 
         await channel.send(embed=message)
 
@@ -78,10 +79,10 @@ class roller(commands.Cog):
 
         if mode == "basic":
             await self.db.set_roll_handler(ctx.guild.id, "basic")
-            self.handlers[ctx.guild.id] = "basic"
+            self.guild_handlers[ctx.guild.id] = "basic"
         elif mode == "sr3":
             await self.db.set_roll_handler(ctx.guild.id, "sr3")
-            self.handlers[ctx.guild.id] = "sr3"
+            self.guild_handlers[ctx.guild.id] = "sr3"
         else:
             return await ctx.send("That is an invalid mode")
         await ctx.send(f"Mode changed to {mode}")

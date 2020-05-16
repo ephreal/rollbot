@@ -56,14 +56,15 @@ class BaseRoll:
         if not self.result:
             await self.roll()
 
-        message = []
-        message.append(f"You rolled {self.dice}, {self.sides}-sided dice")
-        message.append(f"Result: {sum(self.result) + self.mod} "
-                       f"({sum(self.result)} + {self.mod})")
+        message = ["```md"]
+        message.append(f"Result: {sum(self.result) + self.mod}")
+        message.append("="*len(message[1]))
+        message.append(f"> Rolls: {self.result}")
+        message.append(f"Roll: {sum(self.result)}")
         message.append(f"Modifier: {self.mod}")
-        message.append(f"Rolls: {self.result}")
         if self.note:
             message.append(f"Note: {' '.join(self.note)}")
+        message.append("```")
 
         return "\n".join(message)
 
@@ -95,33 +96,62 @@ class Sr3Roll(BaseRoll):
         if not self.result:
             await self.roll()
 
-        message = []
-        message.append(f"You rolled {self.dice} six-sided dice")
+        message = ["```md"]
         if self.initiative:
-            too_high = [6 for x in self.result if x > 6]
-            result = [x for x in self.result if x <= 6]
-            result.extend(too_high)
-            self.result = result
-            message.append(f"Initiative: {sum(self.result) + self.initiative}"
-                           f" ({sum(self.result)} + {self.initiative})")
+            message = await self.initiative_formatting(message)
         elif self.open:
-            highest = 0
-            for roll in self.result:
-                if roll > highest:
-                    highest = roll
-            message.append(f"The open ended test threshold is {highest}")
+            message = await self.open_test_formatting(message)
         else:
-            if len(self.ones) == self.dice:
-                message.append("CRITICAL FAILURE")
-            elif not self.hits:
-                message.append("FAILURE")
-            message.append(f"Total hits: {len(self.hits)}")
-            message.append(f"Threshold: {self.threshold}")
-        message.append(f"Rolls: {self.result}")
+            message = await self.general_formatting(message)
         if self.note:
             message.append(f"Note: {' '.join(self.note)}")
 
+        message.append("```")
+
         return "\n".join(message)
+
+    async def open_test_formatting(self, message):
+        """
+        Formats a roll for an open test
+        """
+
+        highest = 0
+        for roll in self.result:
+            if roll > highest:
+                highest = roll
+        message.append(f"Open Test Threshold: {highest}")
+        message.append("="*len(message[1]))
+        message.append(f"> Rolls: {self.result}")
+        return message
+
+    async def initiative_formatting(self, message):
+        """
+        Formats a roll for an initiative roll
+        """
+        too_high = [6 for x in self.result if x > 6]
+        result = [x for x in self.result if x <= 6]
+        result.extend(too_high)
+        self.result = result
+        message.append(f"Initiative: {sum(self.result) + self.initiative}")
+        message.append("="*len(message[1]))
+        message.append(f"> Rolls: {self.result}")
+        message.append(f"Total: {sum(self.result)}")
+        message.append(f"Modifier: {self.initiative}")
+        return message
+
+    async def general_formatting(self, message):
+        """
+        Formatts a roll for a general test
+        """
+        if len(self.ones) == self.dice:
+            message.append("< CRITICAL FAILURE >")
+        elif not self.hits:
+            message.append("< FAILURE >")
+        message.append(f"Hits: {len(self.hits)}")
+        message.append("="*len(message[-1]))
+        message.append(f"> Rolls: {self.result}")
+        message.append(f"Threshold: {self.threshold}")
+        return message
 
     async def roll(self):
         """
