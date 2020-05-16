@@ -63,7 +63,7 @@ class BaseRoll:
         message.append(f"Roll: {sum(self.result)}")
         message.append(f"Modifier: {self.mod}")
         if self.note:
-            message.append(f"Note: {' '.join(self.note)}")
+            message.append(f"< Note: {' '.join(self.note)} >")
         message.append("```")
 
         return "\n".join(message)
