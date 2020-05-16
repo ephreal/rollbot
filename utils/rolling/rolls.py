@@ -91,6 +91,9 @@ class DndRoll(BaseRoll):
         else:
             message = await self.general_format(message)
 
+        if self.note:
+            message.append(f"< Note: {' '.join(self.note)} >")
+
         message.append("```")
         return "\n".join(message)
 
@@ -154,7 +157,7 @@ class Sr3Roll(BaseRoll):
 
     async def format(self):
         """
-        Formats the roll for SR1E rolls. This includes thresholds, hits, ones,
+        Formats the roll for SR3E rolls. This includes thresholds, hits, ones,
         and results
         """
 
@@ -169,7 +172,7 @@ class Sr3Roll(BaseRoll):
         else:
             message = await self.general_formatting(message)
         if self.note:
-            message.append(f"Note: {' '.join(self.note)}")
+            message.append(f"< Note: {' '.join(self.note)} >")
 
         message.append("```")
 
