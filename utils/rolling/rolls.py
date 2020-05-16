@@ -106,11 +106,11 @@ class DndRoll(BaseRoll):
         await self.roll()
 
         message.append("< Advantage >")
-        message.append(f"Result: {max(self.result) + self.mod}")
+        message.append(f"Result: {max(self.result) + self.dice}")
         message.append("="*len(message[-1]))
         message.append(f"> Rolls: {self.result}")
         message.append(f"Highest: {max(self.result)}")
-        message.append(f"Mod: {self.mod}")
+        message.append(f"Mod: {self.dice}")
         return message
 
     async def format_disadvantage(self, message):
@@ -122,11 +122,11 @@ class DndRoll(BaseRoll):
         await self.roll()
 
         message.append("< Disadvantage >")
-        message.append(f"Result: {min(self.result) + self.mod}")
+        message.append(f"Result: {min(self.result) + self.dice}")
         message.append("="*len(message[-1]))
         message.append(f"> Rolls: {self.result}")
         message.append(f"Lowest: {min(self.result)}")
-        message.append(f"Mod: {self.mod}")
+        message.append(f"Mod: {self.dice}")
         return message
 
     async def general_format(self, message):
