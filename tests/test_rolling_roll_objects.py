@@ -82,11 +82,11 @@ class TestSr3Roll(unittest.TestCase):
         self.assertTrue("Hits" not in roll)
 
     def test_open_ended_format(self):
-        """Ensures that "open ended" is in the formatted string"""
+        """Ensures that "Open" is in the formatted string"""
         roll = self.parser.parse_args(["6", "-o"])
         roll = rolls.Sr3Roll(roll)
         roll = run(roll.format())
-        self.assertTrue("open ended" in roll)
+        self.assertTrue("Open" in roll)
         self.assertTrue("Hits" not in roll)
 
 
