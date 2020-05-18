@@ -72,6 +72,12 @@ class roller(commands.Cog):
         Valid options are "basic", "dnd", and "sr3"
         """
 
+        modes = {
+            "basic": "Basic rolling mode",
+            "dnd": "Dungeons and Dragons",
+            "sr3": "Shadowrun 3rd Edition",
+        }
+
         mode = mode.lower()
 
         if mode == "basic":
@@ -87,7 +93,7 @@ class roller(commands.Cog):
             self.guild_handlers[ctx.guild.id] = "sr3"
         else:
             return await ctx.send("That is an invalid mode")
-        await ctx.send(f"Mode changed to {mode}")
+        await ctx.send(f"Mode changed to {modes[mode]}")
 
     async def get_handler(self, ctx, roll_args):
         if "-g" in roll_args:
