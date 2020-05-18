@@ -19,7 +19,7 @@ class Tag(commands.Cog):
         self.db = bot.db_handler.tags
 
     @commands.command(description="Tag content")
-    async def tag(self, ctx, tag=None, delete_tag=None):
+    async def tag(self, ctx, *tag):
         """Tag content for later use
 
         Tagging content allows you to save some data in an easy to remember tag
@@ -38,8 +38,8 @@ class Tag(commands.Cog):
             .tag delete greeting
         """
 
-        if tag == "delete":
-            tag = delete_tag
+        if tag[0] == "delete":
+            tag = " ".join(list(tag)[1:])
             await self.db.delete_tag(ctx.author.id, tag)
             return await ctx.send(f"{tag} has been deleted")
 
@@ -52,6 +52,7 @@ class Tag(commands.Cog):
             message = await self.create_tag(ctx, tag)
 
         else:
+            tag = " ".join(tag)
             message = await self.db.fetch_tag(ctx.author.id, tag)
             if not message:
                 message = await self.create_tag(ctx, tag)
