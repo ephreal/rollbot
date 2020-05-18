@@ -78,7 +78,7 @@ class shadowrun(commands.Cog):
 
         roll_args = list(roll_args)
 
-        message = f""
+        message = ""
 
         if len(roll_args) == 0:
             message += await self.extended(roll_args[1:])

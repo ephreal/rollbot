@@ -45,13 +45,7 @@ class roller(commands.Cog):
             .roll 1d6 -n This is a test roll
         """
 
-        try:
-            handler = self.guild_handlers[ctx.guild.id]
-            handler = self.handlers[handler]
-        except KeyError:
-            handler = await self.db.get_roll_handler(ctx.guild.id)
-            self.guild_handlers[ctx.guild.id] = handler
-            handler = self.handlers[handler]
+        roll_args, handler = await self.get_handler(ctx, list(roll_args))
 
         channel = await rolling_utils.check_roll_channel(ctx, self.bot)
         if "-h" in roll_args:
@@ -72,7 +66,7 @@ class roller(commands.Cog):
         await channel.send(embed=message)
 
     @commands.command(description="Sets current rolling mode")
-    async def roll_config(self, ctx, mode):
+    async def game(self, ctx, mode):
         """Sets the current rolling mode.
 
         Valid options are "basic", "dnd", and "sr3"
@@ -94,6 +88,22 @@ class roller(commands.Cog):
         else:
             return await ctx.send("That is an invalid mode")
         await ctx.send(f"Mode changed to {mode}")
+
+    async def get_handler(self, ctx, roll_args):
+        if "-g" in roll_args:
+            index = roll_args.index("-g")
+            roll_args.pop(index)
+            handler = roll_args.pop(index)
+        else:
+
+            try:
+                handler = self.guild_handlers[ctx.guild.id]
+            except KeyError:
+                handler = await self.db.get_roll_handler(ctx.guild.id)
+                self.guild_handlers[ctx.guild.id] = handler
+
+        handler = self.handlers[handler]
+        return tuple(roll_args), handler
 
 
 def setup(bot):
