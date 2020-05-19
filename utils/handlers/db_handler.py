@@ -253,12 +253,28 @@ class TagDB():
                      values (?,?,?)''', (user_id, tag, content))
         self.conn.commit()
 
+    async def create_guild_tag(self, guild_id, tag, content):
+        """Inserts a tag to the guild_tags table"""
+
+        c = self.conn.cursor()
+        c.execute('''INSERT or replace into guild_tags (guild_id, tag, content)
+                     values (?,?,?)''', (guild_id, tag, content))
+        self.conn.commit()
+
     async def delete_tag(self, user_id, tag):
         """Deletes a tag from the database"""
 
         c = self.conn.cursor()
         c.execute('''delete from tags where user_id=? and tag=?''',
                   (user_id, tag, ))
+        self.conn.commit()
+
+    async def delete_guild_tag(self, guild_id, tag):
+        """Deletes a tag from the guild_tag table"""
+
+        c = self.conn.cursor()
+        c.execute('''delete from guild_tags where guild_id=? and tag=?''',
+                  (guild_id, tag, ))
         self.conn.commit()
 
     async def fetch_tag(self, user_id, tag):
@@ -274,10 +290,35 @@ class TagDB():
 
         return content[0][0]
 
+    async def fetch_guild_tag(self, guild_tag, tag):
+        """Fetches a tag from the guild_tag table"""
+
+        c = self.conn.cursor()
+        c.execute('''select content from guild_tags where guild_id=? and
+                     tag=?''', (guild_tag, tag, ))
+
+        content = c.fetchall()
+        if not content:
+            return None
+
+        return content[0][0]
+
     async def fetch_all_tags(self, user_id):
         """Returns all tags a user_id has"""
         c = self.conn.cursor()
         c.execute('''select tag from tags where user_id=?''', (user_id, ))
+        tags = c.fetchall()
+
+        if tags:
+            return [tag[0] for tag in tags]
+        else:
+            return None
+
+    async def fetch_all_guild_tags(self, guild_id):
+        """Returns all tags a guild has"""
+        c = self.conn.cursor()
+        c.execute('''select tag from guild_tags where guild_id=?''',
+                  (guild_id, ))
         tags = c.fetchall()
 
         if tags:

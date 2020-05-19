@@ -133,6 +133,21 @@ class TestDBHandler(unittest.TestCase):
         content = run(self.handler.tags.fetch_tag(1, "test"))
         self.assertEqual(content, None)
 
+    def test_create_fetch_delete_guild_tag(self):
+        """
+        Ensures that guild tags can be added to the guild_tags table. All
+        commands are tested in one method because using the tags kinda
+        requires using all commands.
+        """
+
+        run(self.handler.tags.create_guild_tag(1, "test", "content is here"))
+        content = run(self.handler.tags.fetch_guild_tag(1, "test"))
+        self.assertEqual(content, "content is here")
+
+        run(self.handler.tags.delete_guild_tag(1, "test"))
+        content = run(self.handler.tags.fetch_guild_tag(1, "test"))
+        self.assertEqual(content, None)
+
     def test_get_and_set_roll_handler(self):
         """
         Ensures the config db is able to insert roll types properly

@@ -82,3 +82,19 @@ class Migration(ABC):
 
         except IndexError:
             pass
+
+    def get_schema_version(self):
+        """Returns the current schema version of the database"""
+
+        cursor = self.connection.cursor()
+        sql = """select version from db_versions where db='schema'"""
+
+        try:
+            cursor.execute(sql)
+            version = cursor.fetchall()[0][0]
+        except sqlite3.OperationalError:
+            version = -1
+        except IndexError:
+            version = -1
+
+        return version

@@ -60,6 +60,53 @@ class Tag(commands.Cog):
         if message:
             return await ctx.send(message)
 
+    @commands.command(description="Tag content")
+    async def gtag(self, ctx, *tag):
+        """Tag content for later use
+
+        Tagging content allows you to save some data in an easy to remember tag
+        and call it back at a later time whenever you'd like.
+
+        Unlike the tag command, gtag is available to everyone in the guild to
+        use. This means that other users have the capability to modify or
+        delete any tags you use here at any time. If you wish to keep your
+        tags safe(er), use the tag command.
+
+        Examples
+        --------
+
+        Create a tag called greeting:
+            .gtag greeting
+
+        Have the bot print out the contents of greeting
+            .gtag greeting
+
+        Delete the tag greeting
+            .gtag delete greeting
+        """
+
+        if tag[0] == "delete":
+            tag = " ".join(list(tag)[1:])
+            await self.db.delete_guild_tag(ctx.guild.id, tag)
+            return await ctx.send(f"{tag} has been deleted")
+
+        if not tag:
+            author = ctx.message.author
+            await ctx.send("What would you like your tag to be?")
+            tag = await self.bot.wait_for('message', timeout=60,
+                                          check=check_author(author))
+            tag = tag.content
+            message = await self.create_guild_tag(ctx, tag)
+
+        else:
+            tag = " ".join(tag)
+            message = await self.db.fetch_guild_tag(ctx.guild.id, tag)
+            if not message:
+                message = await self.create_guild_tag(ctx, tag)
+
+        if message:
+            return await ctx.send(message)
+
     @commands.command()
     async def tags(self, ctx):
         """
@@ -93,6 +140,41 @@ class Tag(commands.Cog):
 
         msg = msg.content
         await self.db.create_tag(ctx.author.id, tag, msg)
+        return f"{tag} has been created"
+
+    @commands.command()
+    async def gtags(self, ctx):
+        """
+        Gets all tags you currently have defined.
+
+        Example
+        -------
+
+        Get all your tags
+            .tags
+        """
+
+        tags = await self.db.fetch_all_guild_tags(ctx.guild.id)
+        if not tags:
+            await ctx.send("Your guild has no tags")
+        else:
+            tags = "\n".join(tags)
+            await ctx.send(f'Your guild tags are: \n{tags}')
+
+    async def create_guild_tag(self, ctx, tag):
+        author = ctx.message.author
+
+        await ctx.send(f"What would you like '{tag}' to contain?\n"
+                       "Reply 'cancel' to cancel")
+
+        msg = await self.bot.wait_for('message', timeout=600,
+                                      check=check_author(author))
+        if msg.content == "cancel":
+            await ctx.send("Cancelling")
+            return ""
+
+        msg = msg.content
+        await self.db.create_guild_tag(ctx.guild.id, tag, msg)
         return f"{tag} has been created"
 
 
