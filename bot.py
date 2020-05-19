@@ -112,7 +112,22 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
     @BOT.event
     async def on_command_error(ctx, error):
         if isinstance(error, commands.CommandNotFound):
-            await ctx.channel.send("https://http.cat/404.jpg")
+            handler = BOT.db_handler.tags
+            cmd = "".join(ctx.message.content)[1:]
+            await BOT.db_handler.metrics.update_commands(cmd, -1)
+
+            # Try get a normal tag
+            content = await handler.fetch_tag(ctx.author.id, cmd)
+            if content:
+                return await ctx.send(content)
+
+            # Try get a guild tag
+            content = await handler.fetch_guild_tag(ctx.guild.id, cmd)
+            if content:
+                return await ctx.send(content)
+
+            else:
+                await ctx.channel.send("https://http.cat/404.jpg")
         else:
             await ctx.send(error)
 

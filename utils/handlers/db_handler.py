@@ -204,6 +204,11 @@ class MetricsDB():
                   (value, name,))
 
         self.conn.commit()
+        amt = await self.get_usage(name)
+
+        if amt == 0:
+            c.execute("delete from commands where name=?", (name, ))
+            self.conn.commit()
 
     async def get_all_usage(self):
         """
