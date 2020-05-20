@@ -308,10 +308,14 @@ class TagDB():
 
         return content[0][0]
 
-    async def fetch_all_tags(self, user_id):
-        """Returns all tags a user_id has"""
+    async def fetch_all_tags(self, user_id, offset=0):
+        """Returns 50 tags a user_id has"""
         c = self.conn.cursor()
-        c.execute('''select tag from tags where user_id=?''', (user_id, ))
+        sql = f'''select tag from tags where user_id=?
+                  order by tag
+                  limit 25
+                  offset {offset * 25}'''
+        c.execute(sql, (user_id, ))
         tags = c.fetchall()
 
         if tags:
@@ -319,11 +323,14 @@ class TagDB():
         else:
             return None
 
-    async def fetch_all_guild_tags(self, guild_id):
+    async def fetch_all_guild_tags(self, guild_id, offset=0):
         """Returns all tags a guild has"""
         c = self.conn.cursor()
-        c.execute('''select tag from guild_tags where guild_id=?''',
-                  (guild_id, ))
+        sql = f'''select tag from guild_tags where guild_id=?
+                  order by tag
+                  limit 25
+                  offset {offset * 25}'''
+        c.execute(sql, (guild_id, ))
         tags = c.fetchall()
 
         if tags:

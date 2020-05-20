@@ -9,6 +9,7 @@ License.
 
 from discord.ext import commands
 from utils.checks import check_author
+from utils import message_builder
 
 
 class Tag(commands.Cog):
@@ -108,23 +109,41 @@ class Tag(commands.Cog):
             return await ctx.send(message)
 
     @commands.command()
-    async def tags(self, ctx):
+    async def tags(self, ctx, page=None):
         """
-        Gets all tags you currently have defined.
+        Gets 25 of your tags that you have defined. To see additional tags,
+        pass in the page number to the command.
 
         Example
         -------
 
-        Get all your tags
+        Get your first 25 tags
             .tags
+
+        get tag numbers 50-75
+            .tags 2
         """
 
-        tags = await self.db.fetch_all_tags(ctx.author.id)
+        try:
+            page = int(page)
+        except ValueError:
+            page = 0
+        except TypeError:
+            page = 0
+
+        message = ["```\nYour tags are:\n"]
+
+        tags = await self.db.fetch_all_tags(ctx.author.id, page)
         if not tags:
-            await ctx.send("You have no tags")
+            message.append("You have no tags")
         else:
-            tags = "\n".join(tags)
-            await ctx.send(f'Your tags are: \n{tags}')
+            message.append("\n".join(tags))
+
+        message.append("```")
+        message = "\n".join(message)
+        message = await message_builder.embed_reply(ctx.author, message)
+        message.set_footer(text="run 'tags <pagenumber> to view more results'")
+        await ctx.send(embed=message)
 
     async def create_tag(self, ctx, tag):
         author = ctx.message.author
@@ -143,23 +162,37 @@ class Tag(commands.Cog):
         return f"{tag} has been created"
 
     @commands.command()
-    async def gtags(self, ctx):
+    async def gtags(self, ctx, page=None):
         """
-        Gets all tags you currently have defined.
+        Gets 25 guild tags that are currently defined
 
         Example
         -------
 
-        Get all your tags
-            .tags
+        Get the first 25 guild tags
+            .gtags
+
+        get tags number 50-75
+            .gtags 2
         """
 
+        try:
+            page = int(page)
+        except ValueError:
+            page = 0
+        except TypeError:
+            page = 0
+
+        message = ["```\nGuild Tags\n==========\n"]
         tags = await self.db.fetch_all_guild_tags(ctx.guild.id)
         if not tags:
-            await ctx.send("Your guild has no tags")
+            message.append("Your guild has no tags")
         else:
-            tags = "\n".join(tags)
-            await ctx.send(f'Your guild tags are: \n{tags}')
+            message.append("\n".join(tags))
+        message.append("```")
+        message = "\n".join(message)
+        message = await message_builder.embed_reply(ctx.author, message)
+        await ctx.send(embed=message)
 
     async def create_guild_tag(self, ctx, tag):
         author = ctx.message.author
