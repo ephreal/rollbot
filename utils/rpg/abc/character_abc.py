@@ -17,23 +17,23 @@ class CharacterABC(abc.ABC):
     def __init__(self):
         pass
 
-    def roll_attribute(self, attribute, modifier):
+    async def roll_attribute(self, attribute, modifier):
         pass
 
-    def roll_skill(self, skill, modifier):
+    async def roll_skill(self, skill, modifier):
         pass
 
-    def roll_spell(self, spell, modifier):
+    async def roll_spell(self, spell, modifier):
         pass
 
-    def to_json(self):
+    async def to_dict(self):
         character = {}
         for attribute in self.__slots__:
             character[attribute] = getattr(self, attribute, None)
         return character
 
     @staticmethod
-    def from_json_file(subclass, path):
+    async def from_json_file(subclass, path):
         # Returns a character subclass of the type passed in.
         # Note: Hi future self. Yes, this probably broke at some point. I don't
         #       know what could be a good fix though, sorry about that.

@@ -25,7 +25,7 @@ class roller(commands.Cog):
         self.db = bot.db_handler.guilds
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    @commands.command(aliases=['r'])
     async def roll(self, ctx, *roll_args):
         """Rolls dice
 
