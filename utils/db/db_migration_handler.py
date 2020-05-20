@@ -9,13 +9,12 @@ License.
 
 import sqlite3
 from utils.db import migrations
+migrations.__all__.sort()
 
 
 class DBMigrationHandler():
     """
-    Handles database updates in a safe manner.
-
-    Rollbacks are not yet supported.
+    Handles database updates and rollbacks in a safe manner.
     """
 
     def __init__(self, db="discord.db"):
@@ -59,6 +58,25 @@ class DBMigrationHandler():
         self.current_version = -1
         self.migration = None
 
+    def prepare_previous_migration(self):
+        """
+        Prepares the previous migration for use for when the database must be
+        rolled back
+        """
+        if self.current_version is None or self.current_version == 0:
+            return None
+
+        if self.current_version == -1:
+            self.migration = getattr(migrations, migrations.__all__[-1])
+            return
+
+        for migration in migrations.__all__:
+            version = int(migration.replace("migration", ""))
+            if version == self.current_version:
+                self.migration = getattr(migrations, migration)
+                self.migration = self.migration.Migration(self.db)
+                return
+
     def migrate(self):
         """
         Rolls the database forward by a single migration.
@@ -72,8 +90,27 @@ class DBMigrationHandler():
         self.current_version = self.migration.version
         self.connection = sqlite3.connect(self.db)
 
+    def migrate_all(self):
+        """
+        Applies all migrations to the database
+        """
+        # Closing the connection prior to running any migrations to prevent the
+        # current connection from locking the database
+        self.connection.close()
+
+        self.prepare_next_migration()
+        while not self.current_version == -1:
+            self.migrate()
+            self.version = self.migration.version
+            self.prepare_next_migration()
+        self.connection = sqlite3.connect(self.db)
+
     def rollback(self):
         """
         Rolls the database back by a single migration
         """
-        pass
+
+        self.connection.close()
+        self.migration.revert()
+        self.current_version = self.migration.version - 1
+        self.connection = sqlite3.connect(self.db)

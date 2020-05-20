@@ -54,6 +54,8 @@ class Migration(abc_migration.Migration):
         self.upgrade_table_version("schema")
         self.connection.commit()
 
+        self.migrated = True
+
     def revert(self):
         """
         reverts the database to the previous state.
@@ -84,6 +86,8 @@ class Migration(abc_migration.Migration):
         self.downgrade_table_version("schema")
         self.upgrade_table_version("greetings")
         self.connection.commit()
+
+        self.migrated = False
 
     def revert_requisites(self):
         """

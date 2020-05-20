@@ -39,6 +39,8 @@ class Migration(abc_migration.Migration):
         self.upgrade_table_version('guild_tags')
         self.connection.commit()
 
+        self.migrated = True
+
     def revert(self):
         """Removes the guild_tags table and drops the schema level"""
 
@@ -52,6 +54,8 @@ class Migration(abc_migration.Migration):
         self.downgrade_table_version("schema")
         self.downgrade_table_version("guild_tags")
         self.connection.commit()
+
+        self.migrated = False
 
     def revert_requisites(self):
         """Verifies that the database is correctly formatted to revert."""

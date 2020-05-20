@@ -13,9 +13,15 @@ import sqlite3
 
 class Migration(ABC):
     def __init__(self, db="discord.db"):
+        self.version = None
         self.connection = sqlite3.connect(db)
         self.description = "This is the abstract base class"
         self.breaks = "These changes break no functionality"
+
+        if self.get_schema_version() == self.version:
+            self.migrated = True
+        else:
+            self.migrated = False
 
     def migrate(self):
         """

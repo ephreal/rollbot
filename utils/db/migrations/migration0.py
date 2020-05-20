@@ -82,6 +82,8 @@ class Migration(abc_migration.Migration):
         cursor.execute(schema_version)
         self.connection.commit()
 
+        self.migrated = True
+
     def revert(self):
         """
         Removes the tables
@@ -102,6 +104,8 @@ class Migration(abc_migration.Migration):
         cursor.execute(db)
 
         self.connection.commit()
+
+        self.migrated = False
 
     def revert_requisites(self):
         """

@@ -19,10 +19,7 @@ class TestDBHandler(unittest.TestCase):
         self.db = "test.db"
         self.handler = db_handler.DBHandler(self.db)
         self.migrations = db_migration_handler.DBMigrationHandler(self.db)
-        self.migrations.prepare_next_migration()
-        while self.migrations.current_version != -1:
-            self.migrations.migrate()
-            self.migrations.prepare_next_migration()
+        self.migrations.migrate_all()
 
     def tearDown(self):
         if os.path.exists(self.db):

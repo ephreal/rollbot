@@ -36,16 +36,24 @@ class TestDBMigrationHandler(unittest.TestCase):
 
         cursor.execute("insert into greetings (guild_id,message) values (1,2)")
 
-    def test_completion_state(self):
+    def test_migrate_all(self):
         """Verifies an invalid current_version is set when rolling forwards is
            completed"""
-        # Note to future self:
-        # This presently works, but it will break as soon as you add in another
-        # migration. You'll need to create a "migrate_all" method or
-        # something to ensure this goes through to completion later.
-        for _ in range(2):
-
-            self.handler.prepare_next_migration()
-            self.handler.migrate()
-        self.handler.prepare_next_migration()
+        self.handler.migrate_all()
         self.assertEqual(self.handler.current_version, -1)
+
+    def test_rollback(self):
+        """Ensures the database can be rolled back safely"""
+        self.handler.migrate_all()
+        version = self.handler.current_version
+        self.handler.connection.close()
+        self.handler = db_migration_handler.DBMigrationHandler(self.db)
+
+        self.assertEqual(version, -1)
+        self.handler.prepare_previous_migration()
+        version = self.handler.current_version
+
+        self.handler.rollback()
+        self.assertNotEqual(self.handler.current_version, version)
+        self.assertFalse(self.handler.migration.revert_requisites())
+        self.assertFalse(self.handler.migration.migrated)
