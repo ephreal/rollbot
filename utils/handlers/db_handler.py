@@ -206,7 +206,7 @@ class MetricsDB():
         self.conn.commit()
         amt = await self.get_usage(name)
 
-        if amt == 0:
+        if amt <= 0:
             c.execute("delete from commands where name=?", (name, ))
             self.conn.commit()
 
