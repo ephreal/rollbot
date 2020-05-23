@@ -32,7 +32,7 @@ class MusicPlayer():
         self.audio_path = audio_path
         self.voice_client = voice_client
         self.currently_playing = None
-        self.music_queue = Queue(10)
+        self.music_queue = Queue(50)
         self.now_playing = None
         loop = asyncio.get_event_loop()
         loop.create_task(self.song_event_loop())
