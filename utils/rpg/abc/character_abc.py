@@ -17,6 +17,24 @@ class CharacterABC(abc.ABC):
     def __init__(self):
         pass
 
+    async def get_attribute(self, attribute):
+        """
+        Gets an attribute. Throws a KeyError if the attribute does not exist.
+        """
+        return self.attributes[attribute]
+
+    async def get_skill(self, skill):
+        """
+        Gets a skill. Throws a KeyError if the attribute does not exist
+        """
+        return self.skills[skill]
+
+    async def get_spell(self, spell_name):
+        """
+        Gets a spell. Throws a KeyError if the attribute does not exist
+        """
+        return self.spells[spell_name]
+
     async def roll_attribute(self, attribute, modifier):
         pass
 

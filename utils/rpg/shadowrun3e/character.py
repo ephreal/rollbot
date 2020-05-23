@@ -8,12 +8,13 @@ License.
 """
 
 from utils.rpg.abc import character_abc
+from utils.rolling.handlers import Sr3RollHandler
 
 
 class SR3Character(character_abc.CharacterABC):
     __slots__ = ("name", "race", "sex", "age", "description", "notes",
                  "attributes", "skills", "karma", "gear", "cyberwear",
-                 "spells", "condition", "contacts")
+                 "spells", "condition", "contacts", "handler")
 
     def __init__(self, **kwargs):
 
@@ -31,9 +32,53 @@ class SR3Character(character_abc.CharacterABC):
         self.spells = kwargs.pop("spells", None)
         self.condition = kwargs.pop("condition", None)
         self.contacts = kwargs.pop("contacts", None)
+        self.handler = Sr3RollHandler()
 
-    def roll_attribute(self, attribute, mod):
-        print("attributes, woo")
+    async def get_skill(self, skill):
+        """
+        Gets a skill. Throws a KeyError if the attribute does not exist
+        """
+        try:
+            return self.skills[skill]
+        except KeyError:
+            skill_keys = list(self.skills.keys())
+            for skill_name in skill_keys:
+                specializations = self.skills[skill_name]['specializations']
+                specialization_names = list(specializations.keys())
+                for specialization_name in specialization_names:
+                    if skill == specialization_name:
+                        skill = specializations[skill]
+                        break
 
-    def roll_skill(self, skill, mod):
-        print("skills, woo")
+        return skill
+
+    async def roll_attribute(self, attribute, threshold=4):
+        attribute = await self.get_attribute(attribute)
+        attr_name = list(attribute.keys())[0].capitalize()
+        roll = [str(threshold), "-n", "rolling", f"{attr_name[0]}"]
+
+        try:
+            if attribute['override']:
+                roll = roll.insert(0, attribute['override'])
+            else:
+                total = attribute['base'] + attribute['modifier']
+                roll = roll.insert(0, str(total))
+            return await self.handler.roll(roll)
+        except KeyError:
+            total = attribute['base'] + attribute['modifier']
+            roll.insert(0, str(total))
+            return await self.handler.roll(roll)
+
+    async def roll_skill(self, skill, threshold=4):
+        skill = await self.get_skill(skill)
+        skill_name = list(skill.keys())[0].capitalize()
+        roll = [str(skill['level']), str(threshold), "-n",
+                f"roll for {skill_name}"]
+        return await self.handler.roll(roll)
+
+    async def roll_spell(self, spell_name, threshold):
+        """
+        Currently rolls the character's sorcery skill if it exists. In the
+        future, this will also return things like damage staging.
+        """
+        return await self.roll_attribute('sorcery')
