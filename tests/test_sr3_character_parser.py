@@ -58,7 +58,7 @@ class TestSr3eCharacterParser(unittest.TestCase):
         attribute = self.parser.parse_args(attribute)
         self.assertFalse(attribute.attribute)
 
-        attribute = ["attr", "strength", "-m" "6"]
+        attribute = ["attr", "strength", "6"]
         attribute = self.parser.parse_args(attribute)
         self.assertEqual(attribute.attribute, "strength")
         self.assertEqual(attribute.modify, "6")

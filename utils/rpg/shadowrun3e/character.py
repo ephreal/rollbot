@@ -8,31 +8,32 @@ License.
 """
 
 from utils.rpg.abc import character_abc
-from utils.rolling.handlers import Sr3RollHandler
 
 
 class SR3Character(character_abc.CharacterABC):
     __slots__ = ("name", "race", "sex", "age", "description", "notes",
-                 "attributes", "skills", "karma", "gear", "cyberwear",
-                 "spells", "condition", "contacts", "handler")
+                 "attributes", "skills", "karma", "gear", "cyberware",
+                 "spells", "condition", "contacts", "handler", "career")
 
     def __init__(self, **kwargs):
 
-        self.name = kwargs.pop("name", None)
-        self.race = kwargs.pop("race", None)
-        self.sex = kwargs.pop("sex", None)
-        self.age = kwargs.pop("age", None)
-        self.description = kwargs.pop("description", None)
-        self.notes = kwargs.pop("notes", None)
+        character = kwargs.pop("character", None)
+        self.name = character.pop('name', None)
+        self.race = character.pop('race', None)
+        self.sex = character.pop('sex', None)
+        self.age = character.pop('age', None)
+        self.description = character.pop('description', None)
+        self.notes = character.pop('notes', None)
+        self.career = character.pop('career', None)
+        self.karma = character.pop('karma', None)
+
         self.attributes = kwargs.pop("attributes", None)
         self.skills = kwargs.pop("skills", None)
-        self.karma = kwargs.pop("karma", None)
         self.gear = kwargs.pop("gear", None)
-        self.cyberwear = kwargs.pop("cyberwear", None)
+        self.cyberware = kwargs.pop("cyberware", None)
         self.spells = kwargs.pop("spells", None)
         self.condition = kwargs.pop("condition", None)
         self.contacts = kwargs.pop("contacts", None)
-        self.handler = Sr3RollHandler()
 
     async def get_skill(self, skill):
         """
@@ -56,21 +57,42 @@ class SR3Character(character_abc.CharacterABC):
         """
         Verifies karma does not drop below 0 when being modified
         """
-        if self.race == 'human':
-            pool_update = 10
-        else:
-            pool_update = 20
 
-        if self.karma['good'] + karma < 0:
+        if self.karma + karma < 0:
             raise ValueError
 
         else:
-            self.karma['good'] += karma
+            self.karma += karma
             if karma > 0:
-                self.karma['total'] += karma
-
-        if (self.karma["total"] % pool_update) == 0 and (
-           not self.karma['total'] == 0):
-            self.karma['pool'] += 1
+                self.career['karma'] += karma
 
         return self.karma
+
+    async def modify_base_attribute(self, attribute, modifier):
+        """
+        Modifies a base attribute safely
+        """
+
+        attribute = self.get_attribute(attribute)
+        if attribute['base'] + modifier < 0:
+            raise ValueError
+
+        attribute['base'] += modifier
+        return attribute
+
+    async def set_attribute_modifier(self, attribute, modifier):
+        """
+        Sets the attribute modifier to the modifier passed in
+        """
+
+        attribute = await self.get_attribute(attribute)
+        attribute['modifier'] = modifier
+        return attribute
+
+    async def set_attribute_override(self, attribute, override):
+        """
+        Sets the attribute override to the override passed in
+        """
+        attribute = self.get_attribute(attribute)
+        attribute['override'] = override
+        return attribute

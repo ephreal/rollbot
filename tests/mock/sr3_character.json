@@ -1,6 +1,16 @@
 {
-    "name": "fred",
-    "race": "human",
+    "character": {
+        "name": "Fred",
+        "race": "Human",
+        "sex": "Male",
+        "age": 19,
+        "description": "",
+        "notes": "",
+        "karma": 5,
+        "career": {
+          "karma": 5
+        }
+    },
     "attributes": {
         "body": {
             "base": 3,
@@ -43,14 +53,9 @@
             "modifier": 0
         }
     },
-    "karma": {
-       "good": 4,
-       "pool": 0,
-       "total": 4
-    },
     "skills": {
         "rifles": {
-            "attribute": "Quickness",
+            "attribute": "quickness",
             "build_repair": true,
             "category": "combat",
             "defaults": "Assault Rifles, Pistols, Shotguns",
@@ -62,7 +67,115 @@
                     "level": 8
                 }
             }
+        },
+        "Megacorporate Policies": {
+          "type": "knowledge",
+          "attribute": "intelligence",
+          "category": "sixth world",
+          "source": "SR3E Core p. 90",
+          "level": 3,
+          "specializations": {
+
+          }
+        }
+    },
+    "inventory" : {
+        "weapons": {
+          "Ares Predator": {
+            "weapon_type": "Heavy Pistol",
+            "damage_type": "ballistic",
+            "range": {
+              "Short": "0-5",
+              "Medium": "6-20",
+              "Long": "21-40",
+              "Extreme": "41-60"
+            },
+            "conceal": 5,
+            "ammo": "15c",
+            "mode": "SA",
+            "damage": {
+              "threshold": "9",
+              "amount": "M",
+              "type": "physical"
+            },
+            "weight": "2.25",
+            "availability": "3/24 hours",
+            "cost": "450",
+            "street_index": ".5",
+            "legal": "6P-E",
+            "rc": "0",
+            "modifications": {
+              "Laser Sight": {
+                "effect": "Threshold -1"
+              }
+            }
+          }
+        },
+        "armor": {
+          "Armor Jacket": {
+            "conceal": 6,
+            "ballistic_rating": 5,
+            "impact_rating": 3,
+            "weight": "2",
+            "availability": "3/36 hours",
+            "cost": "900",
+            "street_index": ".75",
+            "legal": "Legal",
+            "modifications": {
+
+            }
+          }
+        },
+        "vehicles": {
+          "Harley-Davidson Scorpion": {
+            "category": "bikes",
+            "handling": "4/5",
+            "speed": 120,
+            "accel": 6,
+            "body": 2,
+            "armor": 1,
+            "sig": 2,
+            "autonav": 2,
+            "pilot": "none",
+            "sensor": 0,
+            "cargo": 1,
+            "load": 40,
+            "seating": "2",
+            "cost": "13500",
+            "availability": "2/24 hours",
+            "street_index": 1,
+            "modifications": {
+
+            }
+          }
+        },
+        "equipment": {
+
+        },
+        "credsticks": {
+            "Earl Cook" : {
+                "is_fake" : true,
+                "rating" : 3,
+                "currency" : 24750,
+                "permits" : ["Ares Predator"]
+            }
+        },
+        "cyberware": {
+
+        }
+    },
+    "spells" : {
+
+    },
+    "condition" : {
+        "stun": 0,
+        "physical": 0,
+        "overflow": 0
+    },
+    "contacts" : {
+        "Joe Smith" : {
+            "level" : 2,
+            "type" : "Fixer"
         }
     }
-
 }

@@ -79,9 +79,9 @@ class TestSR3eCharacterHandler(unittest.TestCase):
         """
         karma = run(self.handler.parse(["karma", "6"]))
         karma = run(self.handler.modify_karma(karma))
-        self.assertEqual(karma['good'], 10)
-        self.assertEqual(karma['total'], 10)
-        self.assertEqual(karma['pool'], 1)
+        career_karma = self.character.career['karma']
+        self.assertEqual(karma, 11)
+        self.assertEqual(career_karma, 11)
 
     def test_handle_args_roll_parsing(self):
         """
@@ -111,7 +111,7 @@ class TestSR3eCharacterHandler(unittest.TestCase):
         attr = run(self.handler.handle_args(attr))
         self.assertEqual(self.character.attributes['body']['override'], 7)
 
-        attr = ['attr', 'quick', '-m' '10']
+        attr = ['attr', 'quick', '10', '-m']
         current = self.character.attributes['quickness']['modifier']
         self.assertEqual(current, 0)
         attr = run(self.handler.handle_args(attr))
@@ -131,8 +131,8 @@ class TestSR3eCharacterHandler(unittest.TestCase):
         skill = run(self.handler.handle_args(skill))
         self.assertEqual(skill['level'], 1)
         self.assertTrue(self.character.skills['pistols'])
-        karma = self.character.karma['good']
-        self.assertEqual(karma, 3)
+        karma = self.character.karma
+        self.assertEqual(karma, 4)
 
         skill = ['skill', 'pistols', '1', '-m']
         skill = run(self.handler.handle_args(skill))

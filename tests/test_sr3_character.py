@@ -9,79 +9,55 @@ License.
 
 
 import asyncio
+import json
 import unittest
-from utils.rolling.handlers import Sr3RollHandler
 from utils.rpg.shadowrun3e import character
-
-
-attributes = {
-    "name": "Glen",
-    "age": 44,
-    "plazzate": "EEssdDEd",
-    "attributes": {
-        "strength": {
-            "base": 9001,
-            "modifier": 0
-        }
-    },
-    "skills": {
-        "athletics": {
-            "level": 4,
-        }
-    }
-}
 
 
 class TestSR3Character(unittest.TestCase):
     def setUp(self):
-        self.character = character.SR3Character(**attributes)
+        with open('tests/mock/sr3_character.json', 'r') as f:
+            srcharacter = json.loads(f.read())
+        self.character = character.SR3Character(**srcharacter)
 
     def test_initialization(self):
         """Ensures the character can initialize properly"""
-        self.assertEqual(self.character.name, "Glen")
+        self.assertEqual(self.character.name, "Fred")
         with self.assertRaises(AttributeError):
             self.character.plazzate
 
     def test_to_json(self):
         """Ensures that to_dict returns a valid dict."""
         char_dict = run(self.character.to_dict())
-        self.assertEqual(char_dict["age"], 44)
+        self.assertEqual(char_dict["age"], 19)
         attribute = char_dict["attributes"]["strength"]
-        self.assertEqual(attribute['base'], 9001)
+        self.assertEqual(attribute['base'], 5)
 
     def test_get_attribute(self):
         attribute = run(self.character.get_attribute("strength"))
-        self.assertEqual(attribute["base"], 9001)
+        self.assertEqual(attribute["base"], 5)
 
-    def test_roll_handler(self):
+    def test_modify_karma(self):
         """
-        Ensures the roll handler is present and of the correct type.
-        """
-        self.assertTrue(isinstance(self.character.handler, Sr3RollHandler))
-
-    def test_roll_attribute(self):
-        """
-        Ensures the character is able to roll with attributes
-        """
-        ridiculous_roll = run(self.character.roll_attribute("strength", 4))
-        self.assertTrue(ridiculous_roll.dice, 9001)
-
-    def test_roll_skill(self):
-        """
-        Ensures the character is able to roll with skills
+        Ensures that modifying karma is done sanely
         """
 
-        skill_roll = run(self.character.roll_skill("athletics", 4))
-        self.assertEqual(skill_roll.dice, 4)
+        run(self.character.modify_karma(-1))
+        self.assertEqual(self.character.karma, 4)
+        self.assertEqual(self.character.career['karma'], 5)
 
-    def test_roll_spell(self):
+        run(self.character.modify_karma(5))
+        self.assertEqual(self.character.karma, 9)
+        self.assertEqual(self.character.career['karma'], 10)
+
+    def test_set_attribute_modifier(self):
         """
-        Verifies that roll_spell rolls the spell pool for now
+        Ensures the attribute modifier is set properly
         """
 
-        self.character.skills['sorcery'] = 6
-        spell_roll = run(self.character.roll_skill('sorcery'))
-        self.assertEqual(spell_roll.dice, 6)
+        run(self.character.set_attribute_modifier('charisma', 9))
+        modifier = self.character.attributes['charisma']['modifier']
+        self.assertEqual(modifier, 9)
 
 
 def run(coroutine):

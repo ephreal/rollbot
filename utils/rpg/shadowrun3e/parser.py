@@ -56,7 +56,8 @@ attr_parser = subparsers.add_parser("attribute", help="view/modify attributes",
                                     aliases=['a', 'attr'])
 attr_parser.add_argument("attribute", nargs="?", help="attribute to view")
 attr_parser.add_argument("modify", nargs="?", help="modify the attribute")
-attr_parser.add_argument("-m", "--modifier", help="Set the attribute modifier")
+attr_parser.add_argument("-m", "--modifier", action="store_true",
+                         help="Set the attribute modifier")
 attr_parser.add_argument("-o", "--override", help="override an attribute")
 attr_parser.add_argument("-s", "--set", action="store_true",
                          help="set attribute to the value given")

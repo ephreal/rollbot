@@ -109,9 +109,9 @@ class SR3CharacterHandler():
         with open("utils/rpg/shadowrun3e/skills.json", "r") as f:
             skills = json.loads(f.read())
 
-        if self.character.karma['good']:
+        if self.character.karma:
 
-            self.character.karma['good'] -= 1
+            self.character.karma -= 1
             skill = parsed.skill.lower()
             self.character.skills[skill] = skills[skill]
             self.character.skills[skill]['level'] = 1
@@ -136,10 +136,10 @@ class SR3CharacterHandler():
         base = attribute['base']
 
         karma_cost = await self.calculate_skill_karma(value, skill, base)
-        if karma_cost > self.character.karma['good']:
+        if karma_cost > self.character.karma:
             return None
         else:
-            self.character.karma['good'] -= karma_cost
+            self.character.karma -= karma_cost
             skill["level"] += value
             return skill
 
@@ -171,12 +171,11 @@ class SR3CharacterHandler():
         Sets the attribute modifier
         """
 
-        attribute = await self.prepare_attribute(parsed)
-        if not attribute:
-            return None
-
-        attribute['modifier'] = int(parsed.modifier)
-        return attribute
+        attr = parsed.attribute[0]
+        attr = attr.lower()
+        attr = self.attr_abbreviations[attr]
+        mod = int(parsed.modify)
+        return await self.character.set_attribute_modifier(attr, mod)
 
     async def set_attribute(self, parsed):
         """
@@ -235,14 +234,14 @@ class SR3CharacterHandler():
             print("Not yet handled")
 
     async def handle_attributes(self, parsed):
-        if parsed.modify and not parsed.set:
-            return await self.modify_attribute(parsed)
-        elif parsed.override:
+        if parsed.override:
             return await self.override_attribute(parsed)
         elif parsed.modifier:
             return await self.set_attribute_modifier(parsed)
         elif parsed.set:
             return await self.set_attribute(parsed)
+        elif parsed.modify:
+            return await self.modify_attribute(parsed)
 
     async def handle_roll(self, parsed):
         if parsed.attribute:
