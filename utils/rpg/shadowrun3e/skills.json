@@ -1,0 +1,416 @@
+{
+    "assault rifles": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Rifles, Shotguns, Submachine Guns, Pistols",
+        "description": "Assault Rifles covers the use of all multi-firing-rate rifles",
+        "source": "SR3E Core p. 85",
+        "specialization": "Weapon"
+    },
+    "clubs": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Edged Weapons, Pole Arms, Staffs",
+        "description": "Clubs governs the use of hand-held melee weapons that have no edge or blade and are less than one meter long. This skill allows a character to use any short, weighted item as a weapon. Examples are a baseball bat, a tire iron, and a chair leg.",
+        "source": "SR3E Core p. 85",
+        "specialization": "Weapon"
+    },
+    "cyber-implant combat": {
+        "attribute": "strength",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Unarmed Combat",
+        "description": "This new combat discipline was developed since the advent of combat-oriented cyberwear. Combining the quick strikes of edged-fighting weapons with the in-your-face style of unarmed combat, this skill allows those with the right cyberwear to make the most effective use of it.",
+        "source": "SR3E Core p. 85",
+        "specialization": "Weapon"
+    },
+    "edged weapons": {
+        "attribute": "strength",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Clubs, Pole Arms, Staffs",
+        "description": "Edged Weapons covers the use of hand-held melee weapons that have a sharpened edge or a point. This skill allows a character to various knives, swords, and axes effectively as long as they are less than one meter long.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "gunnery": {
+        "attribute": "intelligence",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Launch Weapons",
+        "description": "Gunnery governs the use of all vehicle-mounted weapons, whether in mounts, pintles, or turrets. This skills includes manual and sensor enhanced gunnery.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "heavy weapons": {
+        "attribute": "strength",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "",
+        "description": "The heavy weapons skills gives the user the know-how to handle anything larger than an assault rifle, including large weapons when they are mounted on tripods, pintles, gyro-mounts, or in fixed emplacements (but not on vehicles).",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "laser weapons": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "",
+        "description": "This skill allows the user to handle and fire laser weapons",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "launch weapons": {
+        "attribute": "intelligence",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Gunnery",
+        "description": "This skill covers the use and targeting of any device that fires a missile , rocket, or other explosive projectile (such as grenades) and includes mortars (but not on vehicles). This skill covers manual and sensory enhanced firing and also governs the use of both specific grenade-launching weapons and underbarrel grenade launching mounts. The spotter specialization can be used for any targetting tests.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Missile Type, Rocket Type, Grenade Launchers, Spotter"
+    },
+    "pistols": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Assault Rifles, Rifles, Shotguns, Submachine Guns",
+        "description": "Pistols governs the use of all types of hand-held fireams including hold-out pistols, light pistols, heavy pistols, and tasers. ",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "pole arms": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Edged Weapons, Clubs",
+        "description": "AKA: Staffs.\nThis governs the use of hand-held melee weapons longer than one meter.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "staffs": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Edged Weapons, Clubs",
+        "description": "AKA: Pole Arms.\nThis governs the use of hand-held melee weapons longer than one meter.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "projectile weapons": {
+        "attribute": "strength",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "",
+        "description": "Projectile Weapons covers the use of muscle powered projectile weapons.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Bows, Crossbows"
+    },
+    "rifles": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Assault Rifles, Pistols, Shotguns, Submachine Guns",
+        "description": "Rifles governs the use of all sport and sniper rifles.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "shotguns": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Assault Rifles, Pistols, Rifles, Submachine Guns",
+        "description": "Shotguns governs the use of all shotguns",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "submachine guns": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "Assault Rifles, Rifles, Pistols, Rifles, Shotguns",
+        "description": "Submachine Guns covers the use of lightweight semi-automatic and automatic guns fired from the shoulder or hip.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "throwing weapons": {
+        "attribute": "strength",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "",
+        "description": "Throwing Weapons governs the use of any item thrown by the user.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "unarmed combat": {
+        "attribute": "strength",
+        "build_repair": false,
+        "category": "combat",
+        "defaults": "Cyber-Implant Combat",
+        "description": "Unarmed Combat (Also known as hand-to-hand combat) governs the use of combat techniques based solely on the use of the individual's own body. In addition to boxing, this skill covers such combat styles as Oriental martial arts and Brazilian capoeira.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Subduing Techniques, Martial Art, Body Part"
+    },
+    "underwater combat": {
+        "attribute": "strength",
+        "build_repair": false,
+        "category": "combat",
+        "defaults": "",
+        "description": "Combat underwater is exceedingly difficult. The Underwater Combat skill governs techniques used to effectively maneuver and strike opponents in underwater melee situations.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Unarmed Attack, Armed Attack"
+    },
+    "whips": {
+        "attribute": "quickness",
+        "build_repair": true,
+        "category": "combat",
+        "defaults": "",
+        "description": "This skill governs the use of whips or anything that can be used as a whip.",
+        "source": "SR3E Core p. 86",
+        "specialization": "Weapon"
+    },
+    "aura reading": {
+        "attribute": "intelligence",
+        "build_repair": false,
+        "category": "magic",
+        "defaults": "None",
+        "description": "Aura Reading is the skill of psychometry, learning information from people's auras and astral forms or signatures. Aura reading can function as a complementary skill for Assensing tests. Only characters who have had a magic attribute of 1 or greater can have this skill.",
+        "source": "SR3E Core p. 87",
+        "specialization": "Auras, Signatures, Sorcery, Conjuring"
+    },
+    "sorcery": {
+        "attribute": "willpower",
+        "build_repair": false,
+        "category": "magic",
+        "defaults": "None",
+        "description": "Sorcery governs the control of magical energy, usually in the form of spells. Only characters with a magic rating attribute of 1 or greater can have this skill.",
+        "source": "SR3E Core p. 87",
+        "specialization": "Spellcasting, Spell Defense, Dispelling, Astral Combat, Spell Category"
+    },
+    "conjuring": {
+        "attribute": "willpower",
+        "build_repair": false,
+        "category": "magic",
+        "defaults": "None",
+        "description": "Conjuring governs the calling and banishing of spirits. Only characters with a magic attribute of 1 or greater can have this skill. Mages summon elementals while Shamans summon nature spirits.",
+        "source": "SR3E Core p. 87",
+        "specialization": "Summoning, Banishing, Controlling"
+    },
+    "athletics": {
+        "attribute": "body",
+        "build_repair": false,
+        "category": "physical",
+        "defaults": "",
+        "description": "Athletics reflects the training and honing of the body to perform extreme physical activities. May be used to increase running distance (SR3E Core p. 108)",
+        "source": "SR3E Core p. 87",
+        "specialization": "Running, Climbing, Lifting, Jumping, Escape Artist, Swimming, Specific Sport"
+    },
+    "diving": {
+        "attribute": "body",
+        "build_repair": false,
+        "category": "physical",
+        "defaults": "",
+        "description": "Diving governs all forms of underwater diving, including underwater swimming techniques, and the use of scuba or other underwater gear.",
+        "source": "SR3E Core p. 87",
+        "specialization": "Deep-water diving, Mixed-gas diving"
+    },
+    "stealth": {
+        "attribute": "quickness",
+        "build_repair": false,
+        "category": "physical",
+        "defaults": "",
+        "description": "Stealth governs sneaking around, sleight of hand, and eluding pursuit. This skill also covers camoflage and disguises. In almost all cases, Stealth requires and Open Test (SR3E Core p. 95)",
+        "source": "SR3E Core p. 87",
+        "specialization": "Alertness, Hiding, Sneaking, Theft"
+    },
+    "etiquette": {
+        "attribute": "charisma",
+        "build_repair": false,
+        "category": "social",
+        "defaults": "",
+        "description": "Etiquette allows a character to function within a specific sub-culture without appearing out of place. It also allows a character to recognize prominent figures within the subculture and have a general idea of their strengths, weaknesses, likes, and dislikes (SR3E Core p. 94)",
+        "source": "SR3E Core p. 87",
+        "specialization": "Any Subculture, Matrix, Corporate, Security, Magical Groups, Gangs, Street, Shadowrunner"
+    },
+    "instruction": {
+        "attribute": "charisma",
+        "build_repair": false,
+        "category": "social",
+        "defaults": "",
+        "description": "Instruction allows a character to more efficiently teach something to another character. (SR3E Core p. 95)",
+        "source": "SR3E Core p. 87",
+        "specialization": "Specific Subject"
+    },
+    "interrogation": {
+        "attribute": "charisma",
+        "build_repair": false,
+        "category": "social",
+        "defaults": "Intimidation",
+        "description": "Interrogation governs the extraction of information from an unwilling subject. This skill uses an Open Test (SR3E Core p. 95) to generate a threshold the target mus meet or exceed using his or her willpower in order to withstand the interrogation. A character being interrogated who also has this skill can use it as a complementary skill for their willpower test to resist the interrogation. See Using Charisma Linked Skills (SR3E Core p. 92) for interrogation modifiers",
+        "source": "SR3E Core p. 87",
+        "specialization": "Verbal, Lie Detector, Voice-Stress Analysis, Torture, Drug-Aided"
+    },
+    "intimidation": {
+        "specialization": "Physical, Mental",
+        "attribute": "charisma",
+        "category": "social",
+        "description": "Depending on how you look at it, Intimidation is either a weaker version of Interrogation, or a strong-arm version of Negotiation. Intimidation allows a character to do what they normally may not simply out of fear inspired by the character's in-your-face behaviour or appearance. This skill uses an Open Test (SR3E Core p. 95) to generate a threshold the target mus meet or exceed using his or her willpower in order to withstand the intimidation. A character being intimidated who also has this skill can use it as a complementary skill for their willpower test to resist the intimidation. See Using Charisma Linked Skills (SR3E Core p. 92) for Intimidation modifiers",
+        "defaults": "Interrogation",
+        "build_repair": false,
+        "source": "SR3E Core p. 87"
+    },
+    "leadership": {
+        "attribute": "charisma",
+        "build_repair": false,
+        "category": "social",
+        "defaults": "",
+        "description": "Leadership governs a character's ability to get others to do his bidding through the exercise of example and authority. It includes an aspect of problem solving, but is not intended as a substitute for clear thinking and good planning on the part of the players. Leadership uses the subject's Intelligence as a threshold. See Using Charisma Linked Skills (SR3E Core p. 92) for Leadership modifiers",
+        "source": "SR3E Core p. 87",
+        "specialization": "Political, Military, Commercial, Strategy, Tactics, Morale"
+    },
+    "negotiation": {
+        "attribute": "charisma",
+        "build_repair": false,
+        "category": "social",
+        "defaults": "",
+        "description": "Negotiation governs any interaction in which each side seeks to come out ahead, either through careful and deliberate bartering or through fast talk. It uses the adversary's Intelligence as a threshold. In some cases, the GM may wish to use this skill to perform an Open Test (SR3E Core p. 95) in order to see if someone notices a lie or half-truth. See Using Charisma Linked Skills (SR3E Core p. 92) for Negotiation modifiers",
+        "source": "SR3E Core p. 88",
+        "specialization": "Bargain, Bribe, Con, Fast Talk"
+    },
+    "biotech": {
+        "attribute": "intelligence",
+        "build_repair": false,
+        "category": "technical",
+        "defaults": "",
+        "description": "Biotech governs basic medicine and first aid. A character with this skill understands basic medicine in a hands-on sense, as a paramedic would rather than a physician. Though familiar with the techniques and materials of cyberwear, a character with this skill would still need a computer expert to collaborate on the interface systems.",
+        "source": "SR3E Core p. 88",
+        "specialization": "Cybertechnology Implantation"
+    },
+    "computer": {
+        "attribute": "intelligence",
+        "build_repair": true,
+        "category": "technical",
+        "defaults": "Electronics",
+        "description": "Computer governs the use and understanding of computer technology. This skill is essential to any character who needs to jack into cyberspace and run in the matrix.",
+        "source": "SR3E Core p. 88",
+        "specialization": "Hardware, Decking, Programming, Cybernetics"
+    },
+    "demolitions": {
+        "attribute": "intelligence",
+        "build_repair": false,
+        "category": "technical",
+        "defaults": "",
+        "description": "Demolitions governs the preparation, measuring, and setting of chemical explosives.",
+        "source": "SR3E Core p. 88",
+        "specialization": "Commercial Explosives, Plastic Explosives, Improvised Explosives"
+    },
+    "electronics": {
+        "attribute": "intelligence",
+        "build_repair": true,
+        "category": "technical",
+        "defaults": "Computer",
+        "description": "Electronics governs the use and understanding of electronic devices, which in 2060, is just about everything commonly used in a city.",
+        "source": "SR3E Core p. 88",
+        "specialization": "Control Systems, Electronic Warfare, Maglocks, Linking between Devices, Diagnostics, Cybertechnology"
+    },
+    "bikes": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "",
+        "description": "Bikes governs the use of all motorcycles, motorbikes, and bikes with sidecars",
+        "source": "SR3E Core p. 88",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "cars": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "",
+        "description": "Cars governs the operation of motor vehicles with 4 or more wheels.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "fixed-Wing Aircraft": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "Rotor Aircraft, Vector Thrust Aircraft, LTA Aircraft",
+        "description": "Fixed-Wing Aircraft governs the control of fixed-wing aircraft (jet, prop, or turbo-prop) and unpowered aircraft.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "hovercraft": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "",
+        "description": "Hovercraft governs all hover vehicles, regardless of their purpose.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "lta aircraft": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "Fixed-Wing Aircraft, Rotor Aircraft, Vectored Thrust Aircraft",
+        "description": "LTA (Lighter Than Air) Aircraft governs the use of all flying vehicles that use gas (mostly helium) to achieve flight. Normally these vehicles are known as 'zepplins' or 'blimps'.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "motorboats": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vechicle",
+        "defaults": "Ships",
+        "description": "Motorboats covers the operation of any motorized aircraft.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "rotor aircraft": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "Fixed-Wing Aircraft, Vector Thrust Aircraft, LTA Aircraft",
+        "description": "Rotor Aircraft governs the use of fixed and tilt-rotor aircraft.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "sailboats": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "",
+        "description": "Sailboats governs the use of sail-powered watercraft.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "ships": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "Motorboat",
+        "description": "Ships governs the piloting, navigation, and handling of a large surface ship.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "submarines": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "",
+        "description": "Submarines governs the use of any boat capable of operating underwater.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    },
+    "vectored thrust aircraft": {
+        "attribute": "Reaction",
+        "build_repair": true,
+        "category": "vehicle",
+        "defaults": "Fixed-Wing Aircraft, Rotor Aircraft, LTA Aircraft",
+        "description": "Vectored Thrust Aircraft governs aircraft that rely on vectored thrust for lift and propulsion. This includes low altitude vehicles (coloquially known as thunderbirds) and military craft that use this motive power, but do not normally operate at altitude due to their heavy loads of armor and armament.",
+        "source": "SR3E Core p. 89",
+        "specialization": "Remote Operations, Specific Vehicle"
+    }
+}

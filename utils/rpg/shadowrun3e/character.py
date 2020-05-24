@@ -52,33 +52,25 @@ class SR3Character(character_abc.CharacterABC):
 
         return skill
 
-    async def roll_attribute(self, attribute, threshold=4):
-        attribute = await self.get_attribute(attribute)
-        attr_name = list(attribute.keys())[0].capitalize()
-        roll = [str(threshold), "-n", "rolling", f"{attr_name[0]}"]
-
-        try:
-            if attribute['override']:
-                roll = roll.insert(0, attribute['override'])
-            else:
-                total = attribute['base'] + attribute['modifier']
-                roll = roll.insert(0, str(total))
-            return await self.handler.roll(roll)
-        except KeyError:
-            total = attribute['base'] + attribute['modifier']
-            roll.insert(0, str(total))
-            return await self.handler.roll(roll)
-
-    async def roll_skill(self, skill, threshold=4):
-        skill = await self.get_skill(skill)
-        skill_name = list(skill.keys())[0].capitalize()
-        roll = [str(skill['level']), str(threshold), "-n",
-                f"roll for {skill_name}"]
-        return await self.handler.roll(roll)
-
-    async def roll_spell(self, spell_name, threshold):
+    async def modify_karma(self, karma):
         """
-        Currently rolls the character's sorcery skill if it exists. In the
-        future, this will also return things like damage staging.
+        Verifies karma does not drop below 0 when being modified
         """
-        return await self.roll_attribute('sorcery')
+        if self.race == 'human':
+            pool_update = 10
+        else:
+            pool_update = 20
+
+        if self.karma['good'] + karma < 0:
+            raise ValueError
+
+        else:
+            self.karma['good'] += karma
+            if karma > 0:
+                self.karma['total'] += karma
+
+        if (self.karma["total"] % pool_update) == 0 and (
+           not self.karma['total'] == 0):
+            self.karma['pool'] += 1
+
+        return self.karma

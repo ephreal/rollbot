@@ -1,0 +1,68 @@
+{
+    "name": "fred",
+    "race": "human",
+    "attributes": {
+        "body": {
+            "base": 3,
+            "override": 0,
+            "modifier": 0
+        },
+        "strength": {
+            "base": 5,
+            "override": 0,
+            "modifier": 1
+        },
+        "quickness": {
+            "base": 6,
+            "override": 0,
+            "modifier": 0
+        },
+        "intelligence": {
+            "base": 3,
+            "override": 0,
+            "modifier": 0
+        },
+        "willpower": {
+            "base": 4,
+            "override": 0,
+            "modifier": 0
+        },
+        "charisma": {
+            "base": 3,
+            "override": 0,
+            "modifier": 0
+        },
+        "magic": {
+            "base": 6,
+            "override": 0,
+            "modifier": 0
+        },
+        "essence": {
+            "base": 6,
+            "override": 0,
+            "modifier": 0
+        }
+    },
+    "karma": {
+       "good": 4,
+       "pool": 0,
+       "total": 4
+    },
+    "skills": {
+        "rifles": {
+            "attribute": "Quickness",
+            "build_repair": true,
+            "category": "combat",
+            "defaults": "Assault Rifles, Pistols, Shotguns",
+            "description": "Sport and Sniper Rifles",
+            "source": "SR3E Core p. 86",
+            "level": 6,
+            "specializations": {
+                "ak47": {
+                    "level": 8
+                }
+            }
+        }
+    }
+
+}
