@@ -59,6 +59,42 @@ class TestSR3Character(unittest.TestCase):
         modifier = self.character.attributes['charisma']['modifier']
         self.assertEqual(modifier, 9)
 
+    def test_modify_physical_condition(self):
+        """
+        Verifies the physical condition is handled sanely
+        """
+
+        condition = run(self.character.modify_physical_condition(5))
+        self.assertEqual(condition['physical'], 5)
+
+        condition = run(self.character.modify_physical_condition(7))
+        self.assertEqual(condition['physical'], 10)
+        self.assertEqual(condition['overflow'], 2)
+
+        condition = run(self.character.modify_physical_condition(-3))
+        self.assertEqual(condition['physical'], 9)
+        self.assertEqual(condition['overflow'], 0)
+
+        condition = run(self.character.modify_physical_condition(-10))
+        self.assertEqual(condition['physical'], 0)
+
+    def test_modify_stun_condition(self):
+        """
+        Verifies that stun condition is handled properly
+        """
+
+        condition = run(self.character.modify_stun_condition(5))
+        self.assertEqual(condition['stun'], 5)
+
+        condition = run(self.character.modify_stun_condition(7))
+        self.assertEqual(condition['stun'], 10)
+        self.assertEqual(condition['physical'], 2)
+
+        condition = run(self.character.modify_stun_condition(9))
+        self.assertEqual(condition['stun'], 10)
+        self.assertEqual(condition['physical'], 10)
+        self.assertEqual(condition['overflow'], 1)
+
 
 def run(coroutine):
     """

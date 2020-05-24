@@ -96,3 +96,45 @@ class SR3Character(character_abc.CharacterABC):
         attribute = self.get_attribute(attribute)
         attribute['override'] = override
         return attribute
+
+    async def modify_physical_condition(self, modifier):
+        """
+        Modifier the character's physical condition monitor
+        """
+
+        # Remove from overflow first when removing from the physical monitor
+        if modifier < 0 and self.condition['overflow']:
+            temp = modifier + self.condition['overflow']
+            # Check if there was more overflow than modifier
+            if temp > 0:
+                self.condition['overflow'] += modifier
+                return self.condition
+            else:
+                modifier += self.condition['overflow']
+                self.condition['overflow'] = 0
+
+        self.condition['physical'] += modifier
+        if self.condition['physical'] > 10:
+            self.condition['overflow'] = (self.condition['physical'] - 10)
+            self.condition['physical'] -= self.condition['overflow']
+
+        elif self.condition['physical'] < 0:
+            self.condition['physical'] = 0
+
+        return self.condition
+
+    async def modify_stun_condition(self, modifier):
+        """
+        Modify the character's stun condition monitor
+        """
+
+        self.condition['stun'] += modifier
+        if self.condition['stun'] > 10:
+            modifier = self.condition['stun'] - 10
+            self.condition['stun'] = 10
+            await self.modify_physical_condition(modifier)
+
+        elif self.condition['stun'] < 0:
+            self.condition['stun'] = 0
+
+        return self.condition
