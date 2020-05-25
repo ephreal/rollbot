@@ -21,8 +21,6 @@ class Character(commands.Cog):
 
     @commands.command(aliases=['c', 'char'])
     async def character(self, ctx):
-        await ctx.send("WARNING: This command is under active development and"
-                       "is currently only working with test data.")
         try:
             command = ctx.message.content.split()[1:]
             parsed = await self.handler.handle_args(command)

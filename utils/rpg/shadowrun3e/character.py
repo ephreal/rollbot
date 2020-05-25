@@ -35,6 +35,80 @@ class SR3Character(character_abc.CharacterABC):
         self.condition = kwargs.pop("condition", None)
         self.contacts = kwargs.pop("contacts", None)
 
+    async def discord_formatting(self):
+        """
+        Formats a character object for display in discord. This includes:
+            character name
+            character race
+            character sex
+            character age
+            character karma
+            character attributes
+            character condition
+        """
+
+        message = []
+        message.append(f"name: {self.name}")
+        message.append(f"race: {self.race}")
+        message.append(f"{self.sex}")
+        message.append(f"age: {self.age}")
+        message.append(f"karma: {self.karma}")
+        message.append(f"attributes: {await self.format_attributes()}")
+        message.append(f"{await self.format_condition()}")
+        return "\n".join(message)
+
+    async def format_attributes(self):
+        """
+        Formatts all attributes for ease of reading
+        """
+
+        attributes = []
+        bod = self.attributes['body']
+        qui = self.attributes['quickness']
+        str = self.attributes['strength']
+        wil = self.attributes['willpower']
+        itl = self.attributes['intelligence']
+        cha = self.attributes['charisma']
+        mag = self.attributes['magic']
+        ess = self.attributes['essence']
+        attributes.append(f"B: {bod['base']}({bod['base'] + bod['modifier']})")
+        attributes.append(f"Q: {qui['base']}({qui['base'] + qui['modifier']})")
+        attributes.append(f"S: {str['base']}({str['base'] + str['modifier']})")
+        attributes.append(f"W: {wil['base']}({wil['base'] + wil['modifier']})")
+        attributes.append(f"I: {itl['base']}({itl['base'] + itl['modifier']})")
+        attributes.append(f"C: {cha['base']}({cha['base'] + cha['modifier']})")
+        attributes.append(f"M: {mag['base']}({mag['base'] + mag['modifier']})")
+        attributes.append(f"E: {ess['base']}({ess['base'] + ess['modifier']})")
+
+        return "   ".join(attributes)
+
+    async def format_condition(self):
+        """
+        Formats the condition monitor of a character for ease of reading
+        """
+
+        d_stun = ":orange_circle:"
+        d_physical = ":red_circle:"
+        d_overflow = ":skull_crossbones:"
+        not_hit = ":black_circle:"
+
+        physical = self.condition['physical']
+        physical = f"{d_physical * physical}{not_hit * (10 - physical)}" \
+                   f"({physical % 11}/10)"
+        physical = f"PHYS:{physical}"
+
+        stun = self.condition['stun']
+        stun = f"{d_stun * stun}{not_hit * (10 - stun)} ({stun % 11}/10)"
+        stun = f"STUN:{stun}"
+
+        overflow = self.condition['overflow']
+        body = self.attributes['body']['base']
+        overflow = f"{d_overflow * overflow}{not_hit * (body - overflow)}" \
+                   f"({overflow % (body+1)}/{body})"
+        overflow = f"OVER:{overflow}"
+
+        return "\n".join([stun, physical, overflow])
+
     async def get_skill(self, skill, category):
         """
         Gets a skill. Throws a KeyError if the attribute does not exist
@@ -129,6 +203,12 @@ class SR3Character(character_abc.CharacterABC):
 
         elif self.condition['physical'] < 0:
             self.condition['physical'] = 0
+
+        if self.condition['overflow'] > self.attributes['body']['base']:
+            self.condition['overflow'] = self.attributes['body']['base']
+
+        elif self.condition['overflow'] < 0:
+            self.condition['overflow'] = 0
 
         return self.condition
 

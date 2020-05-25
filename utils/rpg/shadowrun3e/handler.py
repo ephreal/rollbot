@@ -248,6 +248,9 @@ class SR3CharacterHandler():
             "d": 10
         }
 
+        if isinstance(damage_stage, int):
+            return damage_stage
+
         if not roll:
             return damage_dict[damage_stage]
 
@@ -326,46 +329,27 @@ class SR3CharacterHandler():
         await self.character.modify_physical_condition(damage)
         return self.character.condition
 
-    async def format_condition(self):
-        """
-        Formats the condition monitor of a character for ease of reading
-        """
-
-        d_stun = ":orange_circle:"
-        d_physical = ":red_circle:"
-        d_overflow = ":brown_circle:"
-        not_hit = ":black_circle:"
-
-        physical = self.condition['physical']
-        physical = f"{d_physical * physical}{not_hit * (10 - physical)}"
-
-        stun = self.condition['stun']
-        stun = f"{d_stun * stun}{not_hit * (10 - stun)}"
-
-        overflow = self.condition['overflow']
-        body = self.character.attributes['body']['base']
-        overflow = f"{d_overflow * overflow}{not_hit * (body - overflow)}"
-
-        return {"physical": physical, "stun": stun, "overflow": overflow}
-
     async def handle_args(self, parsable):
         try:
             parsed = await self.parse(parsable)
         except SystemExit:
-            return None
+            pass
 
-        if parsed.command == "roll":
-            return await self.handle_roll(parsed)
-        elif parsed.command == 'skill':
-            return await self.handle_skill(parsed)
-        elif parsed.command == 'attribute':
-            return await self.handle_attributes(parsed)
-        elif parsed.command == "condition":
-            return await self.handle_condition(parsed)
-        elif parsed.command == "karma":
-            return await self.handle_karma(parsed)
-        else:
-            print("Not yet handled")
+        try:
+            if parsed.command == "roll":
+                return await self.handle_roll(parsed)
+            elif parsed.command == 'skill':
+                return await self.handle_skill(parsed)
+            elif parsed.command == 'attribute':
+                return await self.handle_attributes(parsed)
+            elif parsed.command == "condition":
+                return await self.handle_condition(parsed)
+            elif parsed.command == "karma":
+                return await self.handle_karma(parsed)
+            else:
+                print("Not yet handled")
+        except AttributeError:
+            return await self.character.discord_formatting()
 
     async def handle_attributes(self, parsed):
         if parsed.override:
@@ -386,7 +370,7 @@ class SR3CharacterHandler():
         if parsed.damage:
             await self.handle_damage(parsed)
 
-        return self.character.condition
+        return await self.character.discord_formatting()
 
     async def handle_roll(self, parsed):
         if parsed.attribute:
