@@ -140,6 +140,24 @@ class TestSR3eCharacterHandler(unittest.TestCase):
         pistols = self.character.skills['pistols']
         self.assertEqual(pistols['level'], 2)
 
+    def test_handle_args_damage_staging(self):
+        """
+        Ensures the args handler hands off to the damage parser
+        """
+
+        damage = ['con', 'D', '-s', '-n', 'test', 'deadly', 'stun']
+        damage = run(self.handler.handle_args(damage))
+        self.assertEqual(self.character.condition['stun'], 10)
+
+        damage = ['con', 's', '-p', '-n', 'test', 'severe', 'physical']
+        damage = run(self.handler.handle_args(damage))
+        self.assertEqual(self.character.condition['physical'], 5)
+
+        current_damage = self.character.condition['physical']
+        damage = ['con', '5M', '-p', '-a', 'body', '-n', 'damage', 'roll']
+        damage = run(self.handler.handle_args(damage))
+        self.assertTrue(self.character.condition['physical'], current_damage)
+
 
 def run(coroutine):
     """

@@ -222,14 +222,121 @@ class SR3CharacterHandler():
 
         return await self.character.modify_karma(int(parsed.karma))
 
+    async def roll_damage(self, parsed):
+        """
+        Rolls damage against a threshold
+        """
+
+        parsed = await self.prepare_namespace(parsed)
+        roll = await self.roll_attribute(parsed)
+        return await roll.roll()
+
+    async def stage_damage(self, damage_stage, roll=None):
+        """
+        Stages damage. If no roll is passed in, then it returns the damage
+        """
+
+        damage_types = ["l", "m", "s", "d"]
+        damage_dict = {
+            "l": 1,
+            "m": 3,
+            "s": 5,
+            "d": 10
+        }
+
+        if not roll:
+            return damage_dict[damage_stage]
+
+        current_stage = damage_types.index(damage_stage)
+        print(roll.result)
+        hits = [hit for hit in roll.result if hit >= roll.threshold]
+        current_stage -= (len(hits) // 2)
+        return damage_dict[damage_types[current_stage]]
+
+    async def handle_damage(self, parsed):
+        """
+        Checks damage for thresholds, damage types, and passes off to the
+        appropriate condition modifier.
+        """
+
+        threshold = None
+        try:
+            damage_stage = int(parsed.damage)
+        except ValueError:
+            threshold, damage_stage = await self.get_damage(parsed.damage)
+
+        if threshold:
+            parsed.threshold = threshold
+            roll = await self.roll_damage(parsed)
+            damage = await self.stage_damage(damage_stage, roll)
+        else:
+            damage = await self.stage_damage(damage_stage)
+
+        if parsed.stun:
+            return await self.modify_stun(damage)
+        elif parsed.physical:
+            return await self.modify_physical(damage)
+
+    async def get_damage(self, damage_code):
+        """
+        There are 2 distinct ways damage can be passed in
+
+        threshold + damage stage: (6D, 5L, 7S, etc)
+        damage stage: (L, M, S, D)
+
+        Returns both the threshold and the damage code. The threshold will be
+        None if only the damage stage is passed in.
+        """
+
+        threshold = None
+        damage = None
+
+        damage_types = ["l", "m", "s", "d"]
+
+        damage_code = damage_code.lower()
+        if len(damage_code) == 1:
+            if damage_code in damage_types:
+                damage = damage_code
+        else:
+            # We assume the last item is the damage code
+            try:
+                damage = damage_code[-1].lower()
+                threshold = damage_code[:-1]
+                threshold = int(threshold)
+            except ValueError:
+                return None, None
+
+        return threshold, damage
+
+    async def modify_stun(self, damage):
+        """
+        Modifies the character's stun track
+        """
+
+        await self.character.modify_stun_condition(damage)
+        return self.character.condition
+
+    async def modify_physical(self, damage):
+        """
+        Modifies the charcater's physical stun track
+        """
+        await self.character.modify_physical_condition(damage)
+        return self.character.condition
+
     async def handle_args(self, parsable):
-        parsed = await self.parse(parsable)
+        try:
+            parsed = await self.parse(parsable)
+        except SystemExit:
+            return None
+
         if parsed.command == "roll":
             return await self.handle_roll(parsed)
         elif parsed.command == 'skill':
             return await self.handle_skill(parsed)
         elif parsed.command == 'attribute':
             return await self.handle_attributes(parsed)
+        elif parsed.command == "condition":
+            return await self.handle_condition(parsed)
         else:
             print("Not yet handled")
 
@@ -242,6 +349,12 @@ class SR3CharacterHandler():
             return await self.set_attribute(parsed)
         elif parsed.modify:
             return await self.modify_attribute(parsed)
+
+    async def handle_condition(self, parsed):
+        if parsed.damage:
+            await self.handle_damage(parsed)
+
+        return self.character.condition
 
     async def handle_roll(self, parsed):
         if parsed.attribute:

@@ -69,3 +69,18 @@ karma_parser = subparsers.add_parser("karma", help="Add or remove karma")
 karma_parser.add_argument("karma", nargs="?", help="Karma to add/remove")
 karma_parser.add_argument("-n", "--note", nargs="*")
 karma_parser.add_argument("--command", default="karma", help=argparse.SUPPRESS)
+
+
+damage_parser = subparsers.add_parser("condition", help="modify condition",
+                                      aliases=["c", "con"])
+damage_parser.add_argument("damage", nargs="?", help="damage")
+damage_group = damage_parser.add_mutually_exclusive_group()
+damage_group.add_argument("-p", "--physical", action="store_true",
+                          help="parse as physical damage")
+damage_group.add_argument("-s", "--stun", action="store_true",
+                          help="parse as stun damage")
+damage_parser.add_argument("-a", "--attribute", nargs="?",
+                           help="attribute for damage resist")
+damage_parser.add_argument("-n", "--note", nargs="*", help="notes")
+damage_parser.add_argument("--command", default="condition",
+                           help=argparse.SUPPRESS)
