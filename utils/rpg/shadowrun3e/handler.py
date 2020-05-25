@@ -84,11 +84,11 @@ class SR3CharacterHandler():
 
         try:
             skill = parsed.skill.lower()
-            skill = await self.character.get_skill(skill)
+            parsed.category = parsed.category.lower()
+            skill = await self.character.get_skill(skill, parsed.category)
         except KeyError:
             return None
 
-        # This is a kludgy hack and needs to be fixed tomorrow when I'm awake.
         try:
             parsed.dice = str(skill['level'])
         except TypeError:
@@ -109,13 +109,15 @@ class SR3CharacterHandler():
         with open("utils/rpg/shadowrun3e/skills.json", "r") as f:
             skills = json.loads(f.read())
 
+        category = parsed.category.lower()
+
         if self.character.karma:
 
             self.character.karma -= 1
             skill = parsed.skill.lower()
-            self.character.skills[skill] = skills[skill]
-            self.character.skills[skill]['level'] = 1
-            self.character.skills['specializations'] = {}
+            self.character.skills[category][skill] = skills[skill]
+            self.character.skills[category][skill]['level'] = 1
+            self.character.skills[category]['specializations'] = {}
             return skills[skill]
 
         return None
@@ -127,7 +129,9 @@ class SR3CharacterHandler():
         free.
         """
 
-        skill = await self.character.get_skill(parsed.skill.lower())
+        skill = parsed.skill.lower()
+        parsed.category = parsed.category.lower()
+        skill = await self.character.get_skill(skill, parsed.category)
         if not skill:
             return None
 
@@ -212,7 +216,7 @@ class SR3CharacterHandler():
         if not attribute:
             return None
 
-        attribute['override'] = int(parsed.override)
+        attribute['override'] = int(parsed.modify)
         return attribute
 
     async def modify_karma(self, parsed):
@@ -248,7 +252,6 @@ class SR3CharacterHandler():
             return damage_dict[damage_stage]
 
         current_stage = damage_types.index(damage_stage)
-        print(roll.result)
         hits = [hit for hit in roll.result if hit >= roll.threshold]
         current_stage -= (len(hits) // 2)
         return damage_dict[damage_types[current_stage]]
@@ -323,6 +326,28 @@ class SR3CharacterHandler():
         await self.character.modify_physical_condition(damage)
         return self.character.condition
 
+    async def format_condition(self):
+        """
+        Formats the condition monitor of a character for ease of reading
+        """
+
+        d_stun = ":orange_circle:"
+        d_physical = ":red_circle:"
+        d_overflow = ":brown_circle:"
+        not_hit = ":black_circle:"
+
+        physical = self.condition['physical']
+        physical = f"{d_physical * physical}{not_hit * (10 - physical)}"
+
+        stun = self.condition['stun']
+        stun = f"{d_stun * stun}{not_hit * (10 - stun)}"
+
+        overflow = self.condition['overflow']
+        body = self.character.attributes['body']['base']
+        overflow = f"{d_overflow * overflow}{not_hit * (body - overflow)}"
+
+        return {"physical": physical, "stun": stun, "overflow": overflow}
+
     async def handle_args(self, parsable):
         try:
             parsed = await self.parse(parsable)
@@ -337,6 +362,8 @@ class SR3CharacterHandler():
             return await self.handle_attributes(parsed)
         elif parsed.command == "condition":
             return await self.handle_condition(parsed)
+        elif parsed.command == "karma":
+            return await self.handle_karma(parsed)
         else:
             print("Not yet handled")
 
@@ -349,6 +376,11 @@ class SR3CharacterHandler():
             return await self.set_attribute(parsed)
         elif parsed.modify:
             return await self.modify_attribute(parsed)
+        elif parsed.attribute:
+            parsed = await self.prepare_attribute(parsed)
+            return parsed
+        else:
+            return self.character.attributes
 
     async def handle_condition(self, parsed):
         if parsed.damage:

@@ -8,7 +8,8 @@
         "notes": "",
         "karma": 5,
         "career": {
-          "karma": 5
+          "karma": 5,
+          "nuyen" : 3375
         }
     },
     "attributes": {
@@ -54,29 +55,33 @@
         }
     },
     "skills": {
-        "rifles": {
-            "attribute": "quickness",
-            "build_repair": true,
-            "category": "combat",
-            "defaults": "Assault Rifles, Pistols, Shotguns",
-            "description": "Sport and Sniper Rifles",
-            "source": "SR3E Core p. 86",
-            "level": 6,
-            "specializations": {
-                "ak47": {
-                    "level": 8
+        "active" : {
+            "rifles": {
+                "attribute": "quickness",
+                "build_repair": true,
+                "category": "combat",
+                "defaults": "Assault Rifles, Pistols, Shotguns",
+                "description": "Sport and Sniper Rifles",
+                "source": "SR3E Core p. 86",
+                "level": 6,
+                "specializations": {
+                    "ak47": {
+                        "level": 8
+                    }
                 }
             }
         },
-        "Megacorporate Policies": {
-          "type": "knowledge",
-          "attribute": "intelligence",
-          "category": "sixth world",
-          "source": "SR3E Core p. 90",
-          "level": 3,
-          "specializations": {
+        "knowledge" : {
+            "Megacorporate Policies": {
+              "type": "knowledge",
+              "attribute": "intelligence",
+              "category": "sixth world",
+              "source": "SR3E Core p. 90",
+              "level": 3,
+              "specializations": {
 
-          }
+              }
+            }
         }
     },
     "inventory" : {
@@ -156,7 +161,7 @@
             "Earl Cook" : {
                 "is_fake" : true,
                 "rating" : 3,
-                "currency" : 24750,
+                "nuyen" : 24750,
                 "permits" : ["Ares Predator"]
             }
         },

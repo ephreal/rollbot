@@ -51,7 +51,7 @@ class CharacterABC(abc.ABC):
         return character
 
     @staticmethod
-    async def from_json_file(subclass, path):
+    def from_json_file(subclass, path):
         # Returns a character subclass of the type passed in.
         # Note: Hi future self. Yes, this probably broke at some point. I don't
         #       know what could be a good fix though, sorry about that.

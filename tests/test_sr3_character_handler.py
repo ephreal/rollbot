@@ -36,7 +36,8 @@ class TestSR3eCharacterHandler(unittest.TestCase):
         """
         Verifies that a valid roll object is returned
         """
-        roll = ["roll", "4", "-sk", "rifles", "-n", "skill", "roll"]
+        roll = ["roll", "4", "-sk", "rifles", "-n", "skill", "roll", '-c',
+                'active']
         roll = run(self.handler.parse(roll))
         roll = run(self.handler.roll_skill(roll))
         self.assertTrue(roll)
@@ -66,7 +67,7 @@ class TestSR3eCharacterHandler(unittest.TestCase):
         """
         Verifies that overriding an attribute works as expected
         """
-        attr = ['attr', 'q', '-o', '10']
+        attr = ['attr', 'q', '10', '-o']
         attr = run(self.handler.parse(attr))
         attr = run(self.handler.override_attribute(attr))
         self.assertEqual(attr['override'], 10)
@@ -92,7 +93,7 @@ class TestSR3eCharacterHandler(unittest.TestCase):
         self.assertEqual(roll.threshold, '6')
         self.assertEqual(roll.dice, 6)
 
-        roll = ['roll', '3', '-sk', 'rifles']
+        roll = ['roll', '3', '-sk', 'rifles', '-c', 'active']
         roll = run(self.handler.handle_args(roll))
         self.assertEqual(roll.threshold, '3')
         self.assertEqual(roll.dice, 6)
@@ -106,7 +107,7 @@ class TestSR3eCharacterHandler(unittest.TestCase):
         attr = run(self.handler.handle_args(attr))
         self.assertEqual(6, attr['base'])
 
-        attr = ['attr', 'body', '-o', '7']
+        attr = ['attr', 'body', '7', '-o']
         self.assertEqual(self.character.attributes['body']['override'], 0)
         attr = run(self.handler.handle_args(attr))
         self.assertEqual(self.character.attributes['body']['override'], 7)
@@ -127,17 +128,17 @@ class TestSR3eCharacterHandler(unittest.TestCase):
         """
         Ensures the args handler hands off to the skill parser.
         """
-        skill = ["skill", "pistols", "-a"]
+        skill = ["skill", "pistols", "-a", '-c', 'active']
         skill = run(self.handler.handle_args(skill))
         self.assertEqual(skill['level'], 1)
-        self.assertTrue(self.character.skills['pistols'])
+        self.assertTrue(self.character.skills['active']['pistols'])
         karma = self.character.karma
         self.assertEqual(karma, 4)
 
-        skill = ['skill', 'pistols', '1', '-m']
+        skill = ['skill', 'pistols', '1', '-m', '-c', 'active']
         skill = run(self.handler.handle_args(skill))
         self.assertEqual(skill['level'], 2)
-        pistols = self.character.skills['pistols']
+        pistols = self.character.skills['active']['pistols']
         self.assertEqual(pistols['level'], 2)
 
     def test_handle_args_damage_staging(self):

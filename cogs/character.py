@@ -8,15 +8,27 @@ view the license at https://github.com/ephreal/catapi/LICENSE.
 
 
 from discord.ext import commands
+from utils.rpg.shadowrun3e.handler import SR3CharacterHandler
+from utils.rpg.shadowrun3e.character import SR3Character
 
 
 class Character(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        mock_user = "tests/mock/sr3_character.json"
+        self.character = SR3Character.from_json_file(SR3Character, mock_user)
+        self.handler = SR3CharacterHandler(self.character)
 
     @commands.command(aliases=['c', 'char'])
     async def character(self, ctx):
-        await ctx.send("This command is not ready for use")
+        await ctx.send("WARNING: This command is under active development and"
+                       "is currently only working with test data.")
+        try:
+            command = ctx.message.content.split()[1:]
+            parsed = await self.handler.handle_args(command)
+            await ctx.send(parsed)
+        except SystemExit:
+            pass
 
 
 def setup(bot):

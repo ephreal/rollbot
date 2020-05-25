@@ -35,23 +35,32 @@ class SR3Character(character_abc.CharacterABC):
         self.condition = kwargs.pop("condition", None)
         self.contacts = kwargs.pop("contacts", None)
 
-    async def get_skill(self, skill):
+    async def get_skill(self, skill, category):
         """
         Gets a skill. Throws a KeyError if the attribute does not exist
+
+        category: active, knowledge
         """
         try:
-            return self.skills[skill]
+            return self.skills[category][skill]
         except KeyError:
-            skill_keys = list(self.skills.keys())
-            for skill_name in skill_keys:
-                specializations = self.skills[skill_name]['specializations']
-                specialization_names = list(specializations.keys())
-                for specialization_name in specialization_names:
-                    if skill == specialization_name:
-                        skill = specializations[skill]
-                        break
+            skill = await self.get_specialization(skill, category)
 
         return skill
+
+    async def get_specialization(self, specialization, category='active'):
+        """
+        Checks for a specialization
+        """
+
+        spec = None
+        skills = self.skills[category]
+
+        for skill in skills:
+            if specialization in list(skills[skill]['specializations'].keys()):
+                spec = skills[skill]['specializations'][specialization]
+                break
+        return spec
 
     async def modify_karma(self, karma):
         """
@@ -73,7 +82,7 @@ class SR3Character(character_abc.CharacterABC):
         Modifies a base attribute safely
         """
 
-        attribute = self.get_attribute(attribute)
+        attribute = await self.get_attribute(attribute)
         if attribute['base'] + modifier < 0:
             raise ValueError
 
@@ -93,7 +102,7 @@ class SR3Character(character_abc.CharacterABC):
         """
         Sets the attribute override to the override passed in
         """
-        attribute = self.get_attribute(attribute)
+        attribute = await self.get_attribute(attribute)
         attribute['override'] = override
         return attribute
 

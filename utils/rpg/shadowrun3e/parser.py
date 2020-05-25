@@ -26,6 +26,8 @@ roll_group.add_argument("-a", "--attribute", nargs="?", help="roll attribute")
 roll_group.add_argument("-sk", "--skill", nargs="?", help="roll skill")
 roll_group.add_argument('-sp', '--spell', nargs="?", help='roll spell')
 roll_parser.add_argument("-n", "--note", nargs="*")
+roll_parser.add_argument("-c", "--category", nargs="?", default="active",
+                         help="skill category to roll")
 roll_parser.add_argument("--command", default="roll", help=argparse.SUPPRESS)
 
 
@@ -39,6 +41,7 @@ skill_group.add_argument("-s", "--set", help="Set a skill to a value")
 skill_group.add_argument("-m", "--modifier", help="modify a skill",
                          action="store_true")
 skill_parser.add_argument("-n", "--note", nargs="*")
+skill_parser.add_argument("-c", "--category", nargs="?", help="skill category")
 skill_parser.add_argument("--command", default="skill", help=argparse.SUPPRESS)
 
 
@@ -56,11 +59,13 @@ attr_parser = subparsers.add_parser("attribute", help="view/modify attributes",
                                     aliases=['a', 'attr'])
 attr_parser.add_argument("attribute", nargs="?", help="attribute to view")
 attr_parser.add_argument("modify", nargs="?", help="modify the attribute")
-attr_parser.add_argument("-m", "--modifier", action="store_true",
-                         help="Set the attribute modifier")
-attr_parser.add_argument("-o", "--override", help="override an attribute")
-attr_parser.add_argument("-s", "--set", action="store_true",
-                         help="set attribute to the value given")
+attr_group = attr_parser.add_mutually_exclusive_group()
+attr_group.add_argument("-m", "--modifier", action="store_true",
+                        help="Set the attribute modifier")
+attr_group.add_argument("-o", "--override", action="store_true",
+                        help="override an attribute")
+attr_group.add_argument("-s", "--set", action="store_true",
+                        help="set attribute to the value given")
 attr_parser.add_argument("-n", "--note", nargs="*")
 attr_parser.add_argument("--command", default="attribute",
                          help=argparse.SUPPRESS)
