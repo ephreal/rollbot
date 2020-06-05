@@ -69,13 +69,14 @@ class MessageManager(commands.Cog):
             {self.prefix}purge 10 all
         """
 
-        await ctx.message.delete()
-        if "all" in flags:
-            await ctx.message.channel.purge(limit=limit)
-        else:
-            await ctx.message.channel.purge(limit=limit,
-                                            check=lambda msg: not msg.pinned
-                                            and not msg.attachments)
+        with ctx.typing():
+            await ctx.message.delete()
+            if "all" in flags:
+                await ctx.message.channel.purge(limit=limit)
+            else:
+                await ctx.message.channel.purge(limit=limit,
+                                                check=lambda msg: not msg.pinned
+                                                and not msg.attachments)
 
     @purge.error
     async def purge_error(self, ctx, error):
