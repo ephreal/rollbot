@@ -26,8 +26,8 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
     @BOT.event
     async def on_member_join(member):
         guild = member.guild.id
-        if await BOT.db_handler.get_greeting_status(guild):
-            message = await BOT.db_handler.get_greeting(guild)
+        if await BOT.db_handler.guilds.get_greeting_status(guild):
+            message = await BOT.db_handler.guilds.get_greeting(guild)
             message = await on_join_builder(member, message)
             await member.send(embed=message)
 
