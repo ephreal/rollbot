@@ -14,6 +14,7 @@ import random
 from asyncio import sleep
 from discord import Embed
 from discord.ext import commands
+from utils import message_builder
 
 
 class utils(commands.Cog):
@@ -105,7 +106,8 @@ class utils(commands.Cog):
     @commands.command(description="Tech excuse generator", aliases=['ex'])
     async def excuse(self, ctx):
         excuse = random.choice(self.bot.excuses)
-        await ctx.send(excuse)
+        excuse = await message_builder.embed_reply(ctx.author, excuse)
+        await ctx.send(embed=excuse)
 
     @commands.command(description="Timer/Reminder")
     async def timer(self, ctx):
