@@ -10,6 +10,7 @@ License.
 
 import os
 import traceback
+import json
 
 from datetime import datetime
 from discord import Game
@@ -64,6 +65,9 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
         if not hasattr(BOT, 'appinfo'):
             BOT.appinfo = await BOT.application_info()
         await BOT.change_presence(activity=help_message)
+
+        with open("utils/json/excuses.json", "r") as f:
+            BOT.excuses = json.loads(f.read())['excuses']
 
     async def database_migrations():
         """

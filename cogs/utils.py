@@ -9,6 +9,7 @@ License.
 
 
 import aiohttp
+import random
 
 from asyncio import sleep
 from discord import Embed
@@ -100,6 +101,11 @@ class utils(commands.Cog):
         else:
             quote = self.get_quote(url)
             await ctx.send(quote)
+
+    @commands.command(description="Tech excuse generator", aliases=['ex'])
+    async def excuse(self, ctx):
+        excuse = random.choice(self.bot.excuses)
+        await ctx.send(excuse)
 
     @commands.command(description="Timer/Reminder")
     async def timer(self, ctx):
