@@ -21,22 +21,20 @@ async def get_quote(quote_type=None):
         -> quote: json
     """
 
-    url = "https://shadowrun.needs.management/api.php?"
+    url = "https://shadowrun.needs.management/api/quote"
 
     try:
-        if not quote_type:
-            url += "random=true"
-        elif quote_type == "random":
-            url += "random=true"
-        elif quote_type == "latest":
-            url += "latest=true"
-        elif int(quote_type):
-            url += f"quote_id={quote_type}"
+        if not quote_type or quote_type == "random":
+            pass
+        elif quote_type[1] == "latest":
+            url += "/latest"
+        elif int(quote_type[1]):
+            url += f"/{quote_type[1]}"
         else:
-            url += "random=true"
+            pass
 
     except Exception:
-        url += "random=true"
+        pass
 
     finally:
 

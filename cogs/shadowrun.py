@@ -89,7 +89,7 @@ class shadowrun(commands.Cog):
         elif roll_args[0].startswith("i"):
             message += await self.roll_initiative(roll_args[1:])
         elif roll_args[0].startswith("q"):
-            quote = await self.quote(roll_args[1])
+            quote = await self.quote(roll_args[0:])
             return await ctx.send(embed=quote)
         elif roll_args[0].startswith("re"):
             message += await self.reroll(ctx, roll_args[1:])
