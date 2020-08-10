@@ -116,7 +116,9 @@ async def replace_html_escapes(quote):
 
     html_escaped = {
                       "&quot;": '"',
-                      "&amp;":  "&"
+                      "&amp;":  "&",
+                      "&#34;": '"',
+                      "&#39;": "'",
                     }
 
     for key in list(quote.keys()):
