@@ -234,8 +234,20 @@
 			"HTTP tried to use a POLE request instead of a POST request.",
 			"Apparently the 'cat' command was aliased to 'dog'",
 			"The man-pages were used to start a fire when the AC made the server dangerously cold.",
-			"A VOIP phone tried to use QUAFF instead of SIP.",
+			"A VOIP phone tried to use the QUAFF protocol instead of SIP.",
             "We couldn't get the battery backups out of reverse.",
-            "The customer was playing games on the PS/2 port."
+            "The customer was playing games on the PS/2 port.",
+            "Relational database experiencing a breakup.",
+            "SQL tables entered into a polyamorous relationship.",
+            "Parent process has a disobedient child process.",
+            "Top command sunk to bottom.",
+            "'top' aliased to 'bottom'.",
+            "Printers are being haunted by ghostscript.",
+            "CSHELL returned to the ocean.",
+            "DNS is in a BIND.",
+            "Sysadmin has taken too much BSD.",
+            "Unzip utility can't find file's zipper.",
+            "The company was using a layer 3 switch as an edge router.",
+            "The wireless phone needed to be plugged in."
 		]
 }
