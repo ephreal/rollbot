@@ -109,7 +109,7 @@ class Tag(commands.Cog):
             return await ctx.send(message)
 
     @commands.command()
-    async def tags(self, ctx, page=None):
+    async def tags(self, ctx, page=1):
         """
         Gets 25 of your tags that you have defined. To see additional tags,
         pass in the page number to the command.
@@ -127,9 +127,11 @@ class Tag(commands.Cog):
         try:
             page = int(page)
         except ValueError:
-            page = 0
+            page = 1
         except TypeError:
-            page = 0
+            page = 1
+
+        page -= 1
 
         message = ["```\nYour tags are:\n"]
 
@@ -162,7 +164,7 @@ class Tag(commands.Cog):
         return f"{tag} has been created"
 
     @commands.command()
-    async def gtags(self, ctx, page=None):
+    async def gtags(self, ctx, page=1):
         """
         Gets 25 guild tags that are currently defined
 
@@ -179,12 +181,14 @@ class Tag(commands.Cog):
         try:
             page = int(page)
         except ValueError:
-            page = 0
+            page = 1
         except TypeError:
-            page = 0
+            page = 1
+
+        page -= 1
 
         message = ["```\nGuild Tags\n==========\n"]
-        tags = await self.db.fetch_all_guild_tags(ctx.guild.id)
+        tags = await self.db.fetch_all_guild_tags(ctx.guild.id, page)
         if not tags:
             message.append("Your guild has no tags")
         else:
