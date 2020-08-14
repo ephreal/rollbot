@@ -25,7 +25,7 @@ class BotParser(argparse.ArgumentParser):
     def error(self, message):
         """
         I'd like to print out the message for the user and NOT cause the bot
-        to exit, so trhowing an exception with the message here.
+        to exit, so throwing an exception with the message here.
         """
         raise ArgumentParserError(message)
 
