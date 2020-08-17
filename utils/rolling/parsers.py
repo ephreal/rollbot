@@ -59,7 +59,7 @@ class Sr3RollParser(BaseRollParser):
     def __init__(self):
         super().__init__()
         self.prog = "Sr3Roller"
-        self.add_argument("threshold", default=5, nargs="?", type=int,
+        self.add_argument("threshold", default=4, nargs="?", type=int,
                           help="Threshold dice must meet or exceed")
         self.add_argument('-m', "--mod", type=int, default=0,
                           help="modifier to add to final result")
