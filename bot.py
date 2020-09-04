@@ -11,6 +11,7 @@ License.
 import os
 import traceback
 import json
+import re
 
 from datetime import datetime
 from discord import Game
@@ -112,6 +113,15 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
             command = message.content.split()
             command = command[0].replace(BOT.command_prefix, "")
             await BOT.db_handler.metrics.update_commands(command, 1)
+
+        commands = re.findall("{%(.*?)%}", message.content)
+        if commands:
+            for command in commands:
+                command = command.strip()
+                if not command.startswith(BOT.command_prefix):
+                    command = BOT.command_prefix + command
+                message.content = command
+                await BOT.process_commands(message)
 
     @BOT.event
     async def on_command_error(ctx, error):
