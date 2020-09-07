@@ -41,8 +41,7 @@ class tests(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(description="Get a large amount of useful "
-                      "server channel/user info")
+    @commands.command(hidden=True)
     async def all_info(self, ctx):
         """
         Gets server information
@@ -79,14 +78,14 @@ class tests(commands.Cog):
             await sleep(1)
         await ctx.send("All info complete.")
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def get_guilds(self, ctx):
         guilds = [guild.name for guild in self.bot.guilds]
         guilds = "\n".join(guilds)
         await ctx.send(f"I am currently in {len(self.bot.guilds)} guilds.\n"
                        f"The guilds are {guilds}\n")
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def get_roles(self, ctx):
         await ctx.send(ctx.guild.roles)
 
@@ -120,7 +119,7 @@ class tests(commands.Cog):
         user_message += f"\tRoles: {roles}\n```"
         return user_message
 
-    @commands.command(description="Gets basic server info")
+    @commands.command(hidden=True)
     async def info(self, ctx):
         """
         Basic server, channel, and user info
