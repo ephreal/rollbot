@@ -53,6 +53,23 @@ It is also be possible to connect my bot to your discord server if you'd like to
 
 To view progress of new feature and features planned for the future, check out [the bot feature project board.](https://github.com/ephreal/rollbot/projects/1)
 
+## Hidden Commands
+
+Some bot commands are hidden from the general help menu. This is to cut down on the amount of space the help text takes up when you run the help command. These are the hidden commands.
+
+* all_info
+* get_guilds
+* get_roles
+* git
+* halt
+* info
+* logging
+* member_activity
+* reboot
+* reload
+* rename
+* spam
+
 ## Setting up the bot
 
 Setting up the bot requires the following.
