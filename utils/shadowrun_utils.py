@@ -132,13 +132,14 @@ async def replace_html_escapes(quote):
     return quote
 
 
-async def format_quote(quote, url):
+async def format_quote(quote):
     """
     Formats the quote for final display.
 
     quote: json string
         -> discord.Embed
     """
+    url = f"https://shadowrun.needs.management/quote/{quote['id']}"
     content = Embed(title=f"#{quote['id']}: {quote['title']}", url=url)
     content.set_footer(text=f"Author: {quote['author']}")
     content.description = quote['quote']

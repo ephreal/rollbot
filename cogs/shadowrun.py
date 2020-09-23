@@ -345,7 +345,7 @@ class shadowrun(commands.Cog):
         quote = await shadowrun_utils.remove_bbcode(quote)
         quote = await shadowrun_utils.replace_bbcode(quote)
         quote = await shadowrun_utils.replace_html_escapes(quote)
-        return await shadowrun_utils.format_quote(quote, url)
+        return await shadowrun_utils.format_quote(quote)
 
 
 def setup(bot):
