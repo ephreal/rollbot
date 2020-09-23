@@ -44,7 +44,7 @@ async def get_quote(quote_type=None):
             html = await fetch(session, url)
             html = json.loads(html)
 
-    return html
+    return html, url
 
 
 async def remove_bbcode(quote):
@@ -132,14 +132,14 @@ async def replace_html_escapes(quote):
     return quote
 
 
-async def format_quote(quote):
+async def format_quote(quote, url):
     """
     Formats the quote for final display.
 
     quote: json string
         -> discord.Embed
     """
-    content = Embed(title=f"#{quote['id']}: {quote['title']}")
+    content = Embed(title=f"#{quote['id']}: {quote['title']}", url=url)
     content.set_footer(text=f"Author: {quote['author']}")
     content.description = quote['quote']
     content.colour = Colour.lighter_grey()
