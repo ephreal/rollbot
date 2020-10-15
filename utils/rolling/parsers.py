@@ -60,7 +60,7 @@ class Sr3RollParser(BaseRollParser):
         super().__init__()
         self.prog = "Sr3Roller"
         self.add_argument("threshold", default=4, nargs="?", type=int,
-                          help="Threshold dice must meet or exceed")
+                          help="The threshold the roll must meet or exceed")
         self.add_argument('-m', "--mod", type=int, default=0,
                           help="modifier to add to final result")
         self.add_argument("-i", "--initiative", "--init", default=0, nargs="?",
@@ -77,3 +77,13 @@ class Sr5RollParser(BaseRollParser):
     def __init__(self):
         super().__init__()
         self.add_argument('-ext', '--extended', action='store_true')
+
+
+class VampireMasqueradeParser(BaseRollParser):
+    def __init__(self):
+        super().__init__()
+        self.prog = "VM Roller"
+        self.add_argument("difficulty", default=6, nargs="?", type=int,
+                          help="The threshold the roll must meet or exceed")
+        self.add_argument("mod", default=0, nargs="?", type=int,
+                          help="Not really used im vampire the masquerade")

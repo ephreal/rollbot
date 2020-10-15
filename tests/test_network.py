@@ -22,10 +22,10 @@ class TestNetwork(unittest.TestCase):
         Verifies that test_page retrieves a page correctly.
         """
 
-        url = 'https://shadowrun.needs.management/api.php?quote_id=5'
+        url = 'https://shadowrun.needs.management/api/quote/5'
         page = run(network.fetch_page(url))
         quote = json.loads(page)
-        self.assertEqual(quote['id'], '5')
+        self.assertEqual(quote['id'], 5)
         self.assertEqual(quote['title'], "Hellhound Happenings")
 
 

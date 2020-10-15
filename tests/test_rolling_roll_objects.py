@@ -132,6 +132,21 @@ class TestSr3Roll(unittest.TestCase):
         self.assertTrue("Hits" not in roll)
 
 
+class TestVMRoll(unittest.TestCase):
+    def setUp(self):
+        self.parser = parsers.VampireMasqueradeParser()
+
+    def test_initialization(self):
+        roll = ["6", "5", "-n", "hello", "world"]
+        roll = self.parser.parse_args(roll)
+        roll = rolls.VMRoll(roll)
+        run(roll.roll())
+
+        self.assertEqual(roll.difficulty, 5)
+        self.assertEqual(roll.dice, 6)
+        self.assertEqual(roll.note, ["hello", "world"])
+
+
 def run(coroutine):
     """
     Runs and returns the data from the couroutine passed in. This is to

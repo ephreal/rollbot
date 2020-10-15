@@ -55,3 +55,9 @@ class Sr3RollHandler(BaseRollHandler):
     def __init__(self):
         self.parser = parsers.Sr3RollParser()
         self.roll_type = rolls.Sr3Roll
+
+
+class VampireMasqueradeHandler(BaseRollHandler):
+    def __init__(self):
+        self.parser = parsers.VampireMasqueradeParser
+        self.roll_type = rolls.VMRoll

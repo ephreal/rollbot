@@ -26,10 +26,10 @@ async def get_quote(quote_type=None):
     try:
         if not quote_type or quote_type == "random":
             pass
-        elif quote_type[1] == "latest":
+        elif quote_type == "latest":
             url += "/latest"
-        elif int(quote_type[1]):
-            url += f"/{quote_type[1]}"
+        elif int(quote_type):
+            url += f"/{quote_type}"
         else:
             pass
 
@@ -44,7 +44,7 @@ async def get_quote(quote_type=None):
             html = await fetch(session, url)
             html = json.loads(html)
 
-    return html, url
+    return html
 
 
 async def remove_bbcode(quote):
@@ -139,7 +139,7 @@ async def format_quote(quote):
     quote: json string
         -> discord.Embed
     """
-    url = f"https://shadowrun.needs.management/quote/{quote['id']}"
+    url = f"{quote['url']}"
     content = Embed(title=f"#{quote['id']}: {quote['title']}", url=url)
     content.set_footer(text=f"Author: {quote['author']}")
     content.description = quote['quote']

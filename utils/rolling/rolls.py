@@ -13,6 +13,32 @@ from utils.rolling import rolling_utils
 class BaseRoll:
     """
     Sets up a roll namespace for ease of use
+
+    Paramaters
+        base_roll: a BaseRollParser object
+
+    Attributes
+        dice: The amount of dice to roll
+        note: A note to place with the roll
+        mod: A modifier to add to the dice total
+        result: A list of dice rolls
+
+    Methods
+        check_dice(dice):
+            -> (dice_pool, dice_sides)
+
+            Verifies if the dice pool and sides are sane. If not, returns a
+            single d20
+
+        format():
+            -> None
+
+            Formats the roll for display in discord.
+
+        roll():
+            -> None
+
+            Rolls the dice. All rolls are placed in self.result
     """
 
     def __init__(self, base_roll):
@@ -231,3 +257,42 @@ class Sr3Roll(BaseRoll):
         self.result.sort()
         self.hits = [x for x in self.result if x >= self.threshold]
         self.ones = [x for x in self.result if x == 1]
+
+
+class VMRoll(BaseRoll):
+    def __init__(self, vm_roll):
+        """
+        A roll object for vampire the masquerade.
+
+        vm_roll: VampireMasqueradeParser object
+        """
+
+        super().__init__(vm_roll)
+        self.sides = 10
+        self.difficulty = vm_roll.difficulty
+
+    async def format(self):
+        """
+        Formats the roll to be easily readable in discord.
+
+        If the dice have not yet been rolled, it rolls first.
+        """
+
+        if not self.result:
+            await self.roll()
+
+        message = ["```md"]
+        message.append(f"You rolled {self.dice} dice.\n")
+
+        ones = [x for x in self.result if x == 2]
+        success = [x for x in self.result if x >= self.difficulty]
+
+        if ones and not success:
+            message.append("A BOTCH has occured.")
+
+        message.append(f"Successes:\t{len(success)}")
+        message.append(f"Ones: \t\t{len(success)}")
+        message.append(f"Rolls: {self.result}")
+        message.append("```")
+
+        return "\n".join(message)

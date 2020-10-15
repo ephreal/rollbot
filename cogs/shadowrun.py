@@ -341,7 +341,7 @@ class shadowrun(commands.Cog):
         Fetches a shadowrun quote
         """
 
-        quote, url = await shadowrun_utils.get_quote(quote_type)
+        quote = await shadowrun_utils.get_quote(quote_type)
         quote = await shadowrun_utils.remove_bbcode(quote)
         quote = await shadowrun_utils.replace_bbcode(quote)
         quote = await shadowrun_utils.replace_html_escapes(quote)
