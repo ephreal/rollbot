@@ -127,7 +127,7 @@ class DndRoll(BaseRoll):
         """
         Formats a roll with advantage
         """
-        mod = self.dice
+        mod = self.mod
         self.sides = 20
         self.dice = 2
         await self.roll()
@@ -144,7 +144,7 @@ class DndRoll(BaseRoll):
         """
         Formats a roll with advantage
         """
-        mod = self.dice
+        mod = self.mod
         self.sides = 20
         self.dice = 2
         await self.roll()
