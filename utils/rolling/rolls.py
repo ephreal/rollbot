@@ -293,6 +293,7 @@ class VMRoll(BaseRoll):
         message.append(f"Successes: {len(success)}")
         message.append(f"Ones: \t {len(ones)}")
         message.append(f"Rolls:\t{self.result}")
+        message.append(f"Difficulty: {self.difficulty}")
         message.append("```")
 
         return "\n".join(message)
