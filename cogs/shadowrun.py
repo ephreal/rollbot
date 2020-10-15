@@ -341,6 +341,11 @@ class shadowrun(commands.Cog):
         Fetches a shadowrun quote
         """
 
+        if len(quote_type) == 1:
+            quote_type = "random"
+        else:
+            quote_type = quote_type[1]
+
         quote = await shadowrun_utils.get_quote(quote_type)
         quote = await shadowrun_utils.remove_bbcode(quote)
         quote = await shadowrun_utils.replace_bbcode(quote)
