@@ -39,8 +39,6 @@ class TestShadowrunUtils(unittest.TestCase):
         Verifies that the bbcode is replaced in the content properly
         """
 
-        # I might want to consider changing the API to return the URL of
-        # the quote instead of returning the html and the url as a tuple.
         quote = run(shadowrun_utils.get_quote(105))
         quote = run(shadowrun_utils.remove_bbcode(quote))
         quote = run(shadowrun_utils.replace_bbcode(quote))

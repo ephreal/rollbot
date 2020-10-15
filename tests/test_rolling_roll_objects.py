@@ -146,6 +146,16 @@ class TestVMRoll(unittest.TestCase):
         self.assertEqual(roll.dice, 6)
         self.assertEqual(roll.note, ["hello", "world"])
 
+    def test_format(self):
+        roll = ["6", "5", "-n", "hello", "world"]
+        roll = self.parser.parse_args(roll)
+        roll = rolls.VMRoll(roll)
+        run(roll.roll())
+        formatted = run(roll.format())
+
+        self.assertTrue("Ones" in formatted)
+        self.assertTrue("Successes" in formatted)
+
 
 def run(coroutine):
     """

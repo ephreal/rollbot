@@ -284,15 +284,15 @@ class VMRoll(BaseRoll):
         message = ["```md"]
         message.append(f"You rolled {self.dice} dice.\n")
 
-        ones = [x for x in self.result if x == 2]
+        ones = [x for x in self.result if x == 1]
         success = [x for x in self.result if x >= self.difficulty]
 
         if ones and not success:
             message.append("A BOTCH has occured.")
 
-        message.append(f"Successes:\t{len(success)}")
-        message.append(f"Ones: \t\t{len(success)}")
-        message.append(f"Rolls: {self.result}")
+        message.append(f"Successes: {len(success)}")
+        message.append(f"Ones: \t {len(ones)}")
+        message.append(f"Rolls:\t{self.result}")
         message.append("```")
 
         return "\n".join(message)

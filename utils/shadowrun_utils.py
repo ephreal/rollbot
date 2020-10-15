@@ -144,7 +144,6 @@ async def format_quote(quote):
     content.set_footer(text=f"Author: {quote['author']}")
     content.description = quote['quote']
     content.colour = Colour.lighter_grey()
-    # content += f"written:      {quote['time']}\n"
 
     return content
 

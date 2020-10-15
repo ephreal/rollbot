@@ -19,7 +19,8 @@ class roller(commands.Cog):
         self.handlers = {
                     "basic": handlers.BaseRollHandler(),
                     "sr3": handlers.Sr3RollHandler(),
-                    "dnd": handlers.DndRollHandler()
+                    "dnd": handlers.DndRollHandler(),
+                    "vm": handlers.VampireMasqueradeHandler()
         }
         self.guild_handlers = {}
         self.db = bot.db_handler.guilds
@@ -76,6 +77,7 @@ class roller(commands.Cog):
             "basic": "Basic rolling mode",
             "dnd": "Dungeons and Dragons",
             "sr3": "Shadowrun 3rd Edition",
+            "vm": "Vampire the Masquerade Roller"
         }
 
         mode = mode.lower()
@@ -91,6 +93,9 @@ class roller(commands.Cog):
         elif mode == "sr3":
             await self.db.set_roll_handler(ctx.guild.id, "sr3")
             self.guild_handlers[ctx.guild.id] = "sr3"
+        elif mode == "vm":
+            await self.db.set_roll_handler(ctx.guild.id, "vm")
+            self.guild_handlers[ctx.guild.id] = "vm"
         else:
             return await ctx.send("That is an invalid mode")
         await ctx.send(f"Mode changed to {modes[mode]}")
