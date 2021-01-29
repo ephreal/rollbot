@@ -28,13 +28,16 @@ async def process_host_commands(command):
         -> command_output (str)
     """
 
-    whitelist = ["uptime", "free", "du", "df"]
+    whitelist = ["uptime", "free", "df"]
 
     if command[0] in whitelist:
 
         data = Popen(command, stdout=PIPE)
         data = data.communicate()[0].decode()
-        return data
+        if len(data) > 1950:
+            data = data[0:1950]
+            data += "\n\n...\nOutput Truncated\n\n"
+        return f"```\n{data}```"
 
     else:
-        return "That command is not available."
+        return "```\nThat command is not available.```"

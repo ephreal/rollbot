@@ -25,7 +25,6 @@ class HostCommands(commands.Cog):
         server.
 
         Valid commands are
-        du
         df
         free
         uptime

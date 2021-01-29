@@ -34,11 +34,11 @@ class TestNetwork(unittest.TestCase):
 
         command = ["du", "-h"]
         output = run(verification.process_host_commands(command))
-        self.assertTrue("That command is not available." not in output)
+        self.assertTrue("```\nThat command is not available.```" not in output)
 
         command = ["ls", "-la"]
         output = run(verification.process_host_commands(command))
-        self.assertTrue("That command is not available." == output)
+        self.assertTrue("```\nThat command is not available.```" == output)
 
 
 def run(coroutine):
