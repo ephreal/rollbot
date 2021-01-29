@@ -27,6 +27,19 @@ class TestNetwork(unittest.TestCase):
         url = "https:// www.google.com"
         self.assertFalse(run(verification.is_url(url)))
 
+    def test_process_host_commands(self):
+        """
+        Ensures that only whitelisted commands are allowed to run
+        """
+
+        command = ["du", "-h"]
+        output = run(verification.process_host_commands(command))
+        self.assertTrue("That command is not available." not in output)
+
+        command = ["ls", "-la"]
+        output = run(verification.process_host_commands(command))
+        self.assertTrue("That command is not available." == output)
+
 
 def run(coroutine):
     """

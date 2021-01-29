@@ -8,6 +8,7 @@ License.
 """
 
 import re
+from subprocess import Popen, PIPE
 
 
 async def is_url(url):
@@ -15,3 +16,25 @@ async def is_url(url):
                   '|(?:%[0-9a-fA-F][0-9a-fA-F]))+', url):
         return True
     return False
+
+
+async def process_host_commands(command):
+    """
+    Checks the commands against a whitelist before allowing them to run.
+    This is to allow only specific commands to run without allowing other
+    commands that may cause problems/give up sensitive information to run.
+
+    command: list[str]
+        -> command_output (str)
+    """
+
+    whitelist = ["uptime", "free", "du", "df"]
+
+    if command[0] in whitelist:
+
+        data = Popen(command, stdout=PIPE)
+        data = data.communicate()[0].decode()
+        return data
+
+    else:
+        return "That command is not available."
