@@ -28,6 +28,7 @@ class HostCommands(commands.Cog):
         df
         free
         uptime
+        w
         """
 
         return await ctx.send(await process_host_commands(cmd))

@@ -28,7 +28,7 @@ async def process_host_commands(command):
         -> command_output (str)
     """
 
-    whitelist = ["uptime", "free", "df"]
+    whitelist = ["uptime", "free", "df", "w"]
 
     if command[0] in whitelist:
 
