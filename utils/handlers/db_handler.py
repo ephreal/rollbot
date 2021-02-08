@@ -346,20 +346,30 @@ class ShadowlandDB():
 
     async def add_guild(self, guild_id):
         c = self.conn.cursor()
-        sql = "insert into shadowland ?"
+        sql = "insert into shadowland_bbs (guild) values (?)"
         c.execute(sql, (guild_id, ))
+        self.conn.commit()
 
     async def check_guild(self, guild_id):
         c = self.conn.cursor()
-        sql = "select bbs from shadowland where guild_id = ?"
+        sql = "select guild from shadowland_bbs where guild = ?"
         c.execute(sql, (guild_id, ))
 
         data = c.fetchall()
         if not data:
-            sql = "insert into shadowland ?"
-            c.execute(sql, (guild_id, ))
+            await self.add_guild(guild_id)
 
-    async def create_bbs(self, guild_id):
-        self.check_guild(guild_id)
+    async def get_guild_bbs(self, guild_id):
         c = self.conn.cursor()
-        sql = """insert into shadowland_bbs ()"""
+        sql = "select id from shadowland_bbs where guild=?"
+        c.execute(sql, (guild_id, ))
+        return c.fetchall()[0][0]
+
+    async def create_thread(self, guild_id, name):
+        await self.check_guild(guild_id)
+        bbs_id = await self.get_guild_bbs(guild_id)
+        c = self.conn.cursor()
+        sql = """insert into shadowland_thread (name, bbs) values (?, ?)"""
+        c.execute(sql, (name, bbs_id))
+        self.conn.commit()
+        return name

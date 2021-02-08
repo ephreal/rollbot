@@ -41,7 +41,7 @@ class Migration(abc_migration.Migration):
 
         shadowland_thread = """create table shadowland_thread(
                             id integer primary key autoincrement not null,
-                            name varchar(128),
+                            name varchar(128) unique,
                             bbs int,
                             foreign key(bbs) references shadowland_bbs(id)
                             )"""
