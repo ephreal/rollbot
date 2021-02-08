@@ -19,23 +19,26 @@ class Deck():
     Class Variables
 
         cards (list[card.Card]):
-                A list of all cards in the deck.
+            A list of all cards in the deck.
 
         clean_deck (str list):
-                An ordered list of all cards in the deck.
+            An ordered list of all cards in the deck.
 
         discarded (str list):
-                A list of all cards in the discard pile
+            A list of all cards in the discard pile
 
         in_hand (str list)
-                A list of all cards currently in player's hands
+            A list of all cards currently in player's hands
+
+        size (int)
+            An int showing the total size of the deck.
 
     Class Functions
 
         Deck.__len__() -> length(int):
             Returns the amount of cards in the deck. As cards are removed, the
-            length should change. To get the total size of the deck if things
-            have been drawn from in, call len(Deck.clean_deck) instead.
+            length should change. To get the total size of the deck with all
+            cards, check Deck.size instead.
 
         Deck.add_discarded():
             Places all discarded card back into self.cards
@@ -107,6 +110,7 @@ class Deck():
         self.shuffle()
         self.discarded = []
         self.in_hand = []
+        self.size = len(cards)
 
     def __len__(self):
         """
@@ -161,16 +165,23 @@ class Deck():
         self.cards = [card for card in self.cards if card not in discard]
         self.discarded.extend(discard)
 
-    def discard_from_hand(self, card):
+    def discard_from_hand(self, cards):
         """
         Takes cards and checks if they are in self.in_hands. If they are, moves
         them into self.discarded.
         """
 
-        if isinstance(card, Card):
-            card = [card]
+        # It's been a while... I forget why I have isinstance here. Wouldn't
+        # card = [card] be the easier thing to do immediately, assuming card
+        # isn't already a list?
+        # I'm going to comment that out and try it. If it's been a few months
+        # and this is still here, just delete the huge comment.
+        # if isinstance(card, Card):
+        #     card = [card]
+        if not isinstance(cards, list):
+            cards = [cards]
 
-        cards = [x for x in self.in_hand if x in card]
+        cards = [x for x in self.in_hand if x in cards]
 
         if not cards:
             return
@@ -359,18 +370,24 @@ class UnoDeck(Deck):
     def __init__(self):
         # this will need to be redone to work with the actual card objects
         # before I use this.
-        double_cards = ["zero", "one", "two", "three" "four", "five", "six",
+        double_cards = ["zero", "one", "two", "three", "four", "five", "six",
                         "seven", "eight", "nine", "draw_two", "reverse",
                         "skip"]
+        values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0]
         colors = ["blue", "green", "red", "yellow"]
         quad_cards = ["draw four", "wild"]
         quad_cards = [[card, card, card, card] for card in quad_cards]
         cards = quad_cards[0]
         cards.extend(quad_cards[1])
+        cards = [Card(name=card, value=0) for card in cards]
 
+        counter = 0
         for card in double_cards:
             for color in colors:
-                cards.append(f"{card} {color}")
-                cards.append(f"{card} {color}")
+                cards.append(Card(name=f"{color} {card}",
+                                  value=values[counter]))
+                cards.append(Card(name=f"{color} {card}",
+                                  value=values[counter]))
+            counter += 1
 
         super().__init__(cards)

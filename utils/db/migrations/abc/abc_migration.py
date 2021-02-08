@@ -9,6 +9,7 @@ License.
 
 from abc import ABC
 import sqlite3
+from sqlite3 import OperationalError
 
 
 class Migration(ABC):
@@ -104,3 +105,17 @@ class Migration(ABC):
             version = -1
 
         return version
+
+    def failed_migration_pending(self, tables):
+        if not self.get_schema_version() == self.version:
+            return
+
+        cursor = self.connection.cursor()
+
+        for table in tables:
+            try:
+                sql = f"select * from {table} where id=1"
+                cursor.execute(sql)
+            except OperationalError:
+                return True
+        return False

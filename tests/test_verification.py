@@ -32,13 +32,13 @@ class TestNetwork(unittest.TestCase):
         Ensures that only whitelisted commands are allowed to run
         """
 
-        command = ["du", "-h"]
+        command = ["df", "-h"]
         output = run(verification.process_host_commands(command))
         self.assertTrue("```\nThat command is not available.```" not in output)
 
         command = ["ls", "-la"]
         output = run(verification.process_host_commands(command))
-        self.assertTrue("```\nThat command is not available.```" == output)
+        self.assertEqual("```\nThat command is not available.```", output)
 
 
 def run(coroutine):
