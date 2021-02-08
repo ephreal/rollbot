@@ -43,8 +43,8 @@ class TestMigration1(unittest.TestCase):
         self.migration.migrate()
         self.migration.connection.close()
         connection, cursor = self.get_connection()
-        cursor.execute("insert into shadowland_bbs (guild_id) values (12345)")
-        cursor.execute("select guild_id from shadowland_bbs")
+        cursor.execute("insert into shadowland_bbs (guild) values (12345)")
+        cursor.execute("select guild from shadowland_bbs")
         tag = cursor.fetchall()[0][0]
         self.assertEqual(tag, 12345)
 
@@ -78,6 +78,6 @@ class TestMigration1(unittest.TestCase):
 
         self.migration.migrated = False
         self.migration.migrate()
-        cursor.execute("insert into shadowland_bbs (guild_id) values (12345)")
+        cursor.execute("insert into shadowland_bbs (guild) values (12345)")
         connection.commit()
         self.assertFalse(self.migration.failed_migration_pending(["shadowland_bbs"]))

@@ -36,8 +36,7 @@ class Migration(abc_migration.Migration):
 
         shadowland_bbs = """create table shadowland_bbs(
                          id integer primary key autoincrement not null,
-                         guild int,
-                         foreign key(guild) references shadowland(id)
+                         guild int
                          )"""
 
         shadowland_thread = """create table shadowland_thread(

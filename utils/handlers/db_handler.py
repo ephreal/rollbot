@@ -362,4 +362,4 @@ class ShadowlandDB():
     async def create_bbs(self, guild_id):
         self.check_guild(guild_id)
         c = self.conn.cursor()
-        sql = """"""
+        sql = """insert into shadowland_bbs ()"""
