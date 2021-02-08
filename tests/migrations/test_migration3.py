@@ -43,8 +43,8 @@ class TestMigration1(unittest.TestCase):
         self.migration.migrate()
         self.migration.connection.close()
         connection, cursor = self.get_connection()
-        cursor.execute("insert into shadowland (guild_id) values (12345)")
-        cursor.execute("select guild_id from shadowland")
+        cursor.execute("insert into shadowland_bbs (guild_id) values (12345)")
+        cursor.execute("select guild_id from shadowland_bbs")
         tag = cursor.fetchall()[0][0]
         self.assertEqual(tag, 12345)
 
@@ -65,19 +65,19 @@ class TestMigration1(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.migration.revert()
         self.assertEqual(self.migration.get_schema_version(), 2)
-        self.assertFalse(self.migration.failed_migration_pending(["shadowland"]))
+        self.assertFalse(self.migration.failed_migration_pending(["shadowland_bbs"]))
 
     def test_failed_migration(self):
         """Checks to see if the migration is partially upgraded"""
         self.migration.migrate()
         connection, cursor = self.get_connection()
-        sql = "drop table shadowland"
+        sql = "drop table shadowland_bbs"
         cursor.execute(sql)
         connection.commit()
-        self.assertTrue(self.migration.failed_migration_pending(["shadowland"]))
+        self.assertTrue(self.migration.failed_migration_pending(["shadowland_bbs"]))
 
         self.migration.migrated = False
         self.migration.migrate()
-        cursor.execute("insert into shadowland (guild_id) values (12345)")
+        cursor.execute("insert into shadowland_bbs (guild_id) values (12345)")
         connection.commit()
-        self.assertFalse(self.migration.failed_migration_pending(["shadowland"]))
+        self.assertFalse(self.migration.failed_migration_pending(["shadowland_bbs"]))

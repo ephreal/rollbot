@@ -17,6 +17,7 @@ class DBHandler():
         self.metrics = MetricsDB(self.connection)
         self.tags = TagDB(self.connection)
         self.guilds = GuildConfigDB(self.connection)
+        self.shadowland = ShadowlandDB(self.connection)
 
 
 class GuildConfigDB():
@@ -311,11 +312,11 @@ class TagDB():
     async def fetch_all_tags(self, user_id, offset=0):
         """Returns 50 tags a user_id has"""
         c = self.conn.cursor()
-        sql = f'''select tag from tags where user_id=?
+        sql = '''select tag from tags where user_id=?
                   order by tag
                   limit 25
-                  offset {offset * 25}'''
-        c.execute(sql, (user_id, ))
+                  offset ?'''
+        c.execute(sql, (user_id, offset * 25))
         tags = c.fetchall()
 
         if tags:
@@ -326,14 +327,39 @@ class TagDB():
     async def fetch_all_guild_tags(self, guild_id, offset=0):
         """Returns all tags a guild has"""
         c = self.conn.cursor()
-        sql = f'''select tag from guild_tags where guild_id=?
-                  order by tag
-                  limit 25
-                  offset {offset * 25}'''
-        c.execute(sql, (guild_id, ))
+        sql = '''select tag from guild_tags where guild_id=?
+                 order by tag
+                 limit 25
+                 offset ?'''
+        c.execute(sql, (guild_id, offset * 25))
         tags = c.fetchall()
 
         if tags:
             return [tag[0] for tag in tags]
         else:
             return None
+
+
+class ShadowlandDB():
+    def __init__(self, connection=None):
+        self.conn = connection
+
+    async def add_guild(self, guild_id):
+        c = self.conn.cursor()
+        sql = "insert into shadowland ?"
+        c.execute(sql, (guild_id, ))
+
+    async def check_guild(self, guild_id):
+        c = self.conn.cursor()
+        sql = "select bbs from shadowland where guild_id = ?"
+        c.execute(sql, (guild_id, ))
+
+        data = c.fetchall()
+        if not data:
+            sql = "insert into shadowland ?"
+            c.execute(sql, (guild_id, ))
+
+    async def create_bbs(self, guild_id):
+        self.check_guild(guild_id)
+        c = self.conn.cursor()
+        sql = """"""

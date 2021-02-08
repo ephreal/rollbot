@@ -30,18 +30,12 @@ class Migration(abc_migration.Migration):
         # id there. Note that each guild should only have one entry in the
         # shadowland table.
         # Organization is
-        # shadowland: points to the correct bbs tables for the guild
         # shadowland_bbs: points to the correct threads for the bbs
         # shadowland_threads: Consists of posts in that thread
         # shadowland_posts: Author/text info of each post
-        shadowland = """create table shadowland (
-                        id integer primary key autoincrement not null,
-                        bbs varchar(128),
-                        guild_id integer
-                        )"""
+
         shadowland_bbs = """create table shadowland_bbs(
                          id integer primary key autoincrement not null,
-                         thread varchar(256),
                          guild int,
                          foreign key(guild) references shadowland(id)
                          )"""
@@ -70,11 +64,10 @@ class Migration(abc_migration.Migration):
         self.upgrade_table_version("schema")
         self.connection.commit()
 
-        cursor.execute(shadowland)
         cursor.execute(shadowland_bbs)
         cursor.execute(shadowland_thread)
         cursor.execute(shadowland_post)
-        self.upgrade_table_version("shadowland")
+
         self.upgrade_table_version("shadowland_bbs")
         self.upgrade_table_version("shadowland_thread")
         self.upgrade_table_version("shadowland_post")
@@ -91,8 +84,7 @@ class Migration(abc_migration.Migration):
         cursor = self.connection.cursor()
 
         # We gotta run this in reverse here... posts reference threads, etc.
-        tables = ["shadowland_post", "shadowland_thread", "shadowland_bbs",
-                  "shadowland"]
+        tables = ["shadowland_post", "shadowland_thread", "shadowland_bbs"]
         for table in tables:
             try:
                 cursor.execute(f"drop table {table}")
@@ -117,8 +109,7 @@ class Migration(abc_migration.Migration):
     def requisites(self):
         """Verifies the database schema is equal to 1"""
 
-        tables = ["shadowland", "shadowland_bbs", "shadowland_thread",
-                  "shadowland_post"]
+        tables = ["shadowland_bbs", "shadowland_thread", "shadowland_post"]
 
         # Ensure that a migration did not fail midway.
         if self.failed_migration_pending(tables):
