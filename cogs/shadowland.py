@@ -31,6 +31,12 @@ class shadowland(commands.Cog):
         name = await self.db.create_thread(ctx.guild.id, name)
         await ctx.send(f"Created thread: {name}")
 
+    @commands.command()
+    async def new_post(self, ctx, thread_name, *content):
+        thread_id = await self.db.get_thread_by_name(ctx.guild.id, thread_name)
+        await self.db.create_post(thread_id, ctx.author.name, " ".join(content))
+        return await ctx.send("Created post")
+
 
 def setup(bot):
     bot.add_cog(shadowland(bot))

@@ -373,3 +373,17 @@ class ShadowlandDB():
         c.execute(sql, (name, bbs_id))
         self.conn.commit()
         return name
+
+    async def create_post(self, thread_id, user, content):
+        c = self.conn.cursor()
+        sql = """insert into shadowland_post (thread, user, content)
+                 values (?, ?, ?)"""
+        c.execute(sql, (thread_id, user, content))
+        self.conn.commit()
+
+    async def get_thread_by_name(self, guild_id, name):
+        bbs_id = await self.get_guild_bbs(guild_id)
+        c = self.conn.cursor()
+        sql = """select id from shadowland_thread where bbs = ? and name = ?"""
+        c.execute(sql, (bbs_id, name))
+        return c.fetchall()[0][0]
