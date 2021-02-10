@@ -25,6 +25,9 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
 
     BOT = commands.Bot(command_prefix=prefix, description=description)
 
+    with open("utils/json/shadowland.json", "r") as f:
+        BOT.shadowland_strings = json.loads(f.read())
+
     @BOT.event
     async def on_member_join(member):
         guild = member.guild.id
