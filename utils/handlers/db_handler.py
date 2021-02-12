@@ -350,6 +350,13 @@ class ShadowlandDB():
         c.execute(sql, (guild_id, ))
         self.conn.commit()
 
+    async def add_user(self, guild_id, user_id, name):
+        c = self.conn.cursor()
+        sql = """insert into shadowland_user (user, guild, name)
+                 values (?, ?, ?)"""
+        c.execute(sql, (user_id, guild_id, name))
+        self.conn.commit()
+
     async def check_guild(self, guild_id):
         c = self.conn.cursor()
         sql = "select guild from shadowland_bbs where guild = ?"
@@ -358,6 +365,12 @@ class ShadowlandDB():
         data = c.fetchall()
         if not data:
             await self.add_guild(guild_id)
+
+    async def get_bbs_username(self, guild_id, user_id):
+        c = self.conn.cursor()
+        sql = "select name from shadowland_user where guild=? and user=?"
+        c.execute(sql, (guild_id, user_id))
+        return c.fetchall()
 
     async def get_guild_bbs(self, guild_id):
         c = self.conn.cursor()
@@ -373,6 +386,14 @@ class ShadowlandDB():
         c.execute(sql, (name, bbs_id))
         self.conn.commit()
         return name
+
+    async def get_threads(self, guild_id, page=0):
+        await self.check_guild(guild_id)
+        bbs_id = await self.get_guild_bbs(guild_id)
+        c = self.conn.cursor()
+        sql = """select name from shadowland_thread where bbs=?"""
+        c.execute(sql, (bbs_id, ))
+        return c.fetchall()
 
     async def create_post(self, thread_id, user, content):
         c = self.conn.cursor()

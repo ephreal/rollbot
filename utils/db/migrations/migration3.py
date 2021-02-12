@@ -54,6 +54,13 @@ class Migration(abc_migration.Migration):
                           foreign key(thread) references shadowland_thread(id)
                           )
                            """
+        shadowland_user = """create table shadowland_user(
+                          id integer primary key autoincrement not null,
+                          user int,
+                          name varchar(64),
+                          guild int
+                          )
+                          """
 
         cursor = self.connection.cursor()
         # I'm going to update the schema immediately so that I can revert any
@@ -66,10 +73,12 @@ class Migration(abc_migration.Migration):
         cursor.execute(shadowland_bbs)
         cursor.execute(shadowland_thread)
         cursor.execute(shadowland_post)
+        cursor.execute(shadowland_user)
 
         self.upgrade_table_version("shadowland_bbs")
         self.upgrade_table_version("shadowland_thread")
         self.upgrade_table_version("shadowland_post")
+        self.upgrade_table_version("shadowland_user")
         self.connection.commit()
 
         self.migrated = True
@@ -83,7 +92,8 @@ class Migration(abc_migration.Migration):
         cursor = self.connection.cursor()
 
         # We gotta run this in reverse here... posts reference threads, etc.
-        tables = ["shadowland_post", "shadowland_thread", "shadowland_bbs"]
+        tables = ["shadowland_post", "shadowland_thread", "shadowland_bbs",
+                  "shadowland_user"]
         for table in tables:
             try:
                 cursor.execute(f"drop table {table}")
@@ -108,7 +118,8 @@ class Migration(abc_migration.Migration):
     def requisites(self):
         """Verifies the database schema is equal to 1"""
 
-        tables = ["shadowland_bbs", "shadowland_thread", "shadowland_post"]
+        tables = ["shadowland_bbs", "shadowland_thread", "shadowland_post",
+                  "shadowland_user"]
 
         # Ensure that a migration did not fail midway.
         if self.failed_migration_pending(tables):
