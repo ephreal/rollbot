@@ -49,6 +49,7 @@ class MessageManager(commands.Cog):
 
             embed.timestamp = message.created_at
             messages.append(embed)
+            await message.delete()
 
         for i in messages[::-1]:
             await channel.send(embed=i)
