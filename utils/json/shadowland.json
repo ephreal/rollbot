@@ -103,6 +103,7 @@
         "Corps robbing the poor is business, but us fighting back is violence?",
         "If you don't fit in then you're doing it right.",
         "Giving you the best weapon to fight the corps with: An education!",
+<<<<<<< HEAD
         "Your ignorance is their power. Get in here and learn!",
         "If voting actually worked, it'd be made illegal by now.",
         "If you behaved like the corps, you'd be a criminal. Oh wait, you are!",
@@ -110,6 +111,9 @@
         "Just because everyone thinks it doesn't mean it's true.",
         "Telling you why to think but not what."
 
+=======
+        "Your ignorance is their power. Get in here and learn!"
+>>>>>>> master
     ],
     "forums": "Forums",
     "usage_text": "Input a number to navigate.",
