@@ -67,7 +67,7 @@ class roller(commands.Cog):
         await channel.send(embed=message)
 
     @commands.command(description="Sets current rolling mode")
-    async def game(self, ctx, mode):
+    async def rollmode(self, ctx, mode):
         """Sets the current rolling mode.
 
         Valid options are "basic", "dnd", and "sr3"
