@@ -25,8 +25,8 @@ class Indexer():
         self.index_path = index_path
         self.index_name = "song_index.json"
         self.ignore_files = [self.index_name, "bot_sounds"]
-        self.remove_punctuation = ["[", "]", "(", ")", "\"", ";", ":", "?",
-                                   "&", "-"]
+        self.audio_exts = [".midi", ".mp3", ".opus", ".wav"]
+        self.tokenizer = nltk.RegexpTokenizer(r"\w+")
 
     def update_index(self):
         """
@@ -58,15 +58,18 @@ class Indexer():
         """
 
         file_path = os.path.join(root, file_name)
-        file_name, _ = os.path.splitext(file_name)
+        file_name, ext = os.path.splitext(file_name)
+        print(ext)
+
+        # Check to see if the extension maps to a known audio extension.
+        if ext not in self.audio_exts:
+            return
         album_dir = os.path.basename(root)
         author_dir = os.path.basename(os.path.dirname(root))
-        for punc in self.remove_punctuation:
-            file_name.replace(punc, " ")
         stop_words = set(stopwords.words('english'))
-        word_tokens = nltk.tokenize.word_tokenize(file_name)
-        word_tokens.extend(nltk.tokenize.word_tokenize(album_dir))
-        word_tokens.extend(nltk.tokenize.word_tokenize(author_dir))
+        word_tokens = self.tokenizer.tokenize(file_name)
+        word_tokens.extend(self.tokenizer.tokenize(album_dir))
+        word_tokens.extend(self.tokenizer.tokenize(author_dir))
         tokens = [t.lower() for t in word_tokens if t not in stop_words]
 
         for token in tokens:
