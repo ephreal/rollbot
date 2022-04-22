@@ -13,6 +13,7 @@ import json
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
+import threading
 
 
 class SetupBot(ttk.Notebook):
@@ -50,9 +51,9 @@ class SetupBot(ttk.Notebook):
         self.bot_prefix = ttk.Entry(self.main_frame, width=60)
         self.bot_token = ttk.Entry(self.main_frame, width=60)
 
-        self.bot_avatar.insert(1, config["avatar"])
+        # self.bot_avatar.insert(1, config["avatar"])
         self.bot_description.insert(1, config["description"])
-        self.bot_name.insert(1, config["name"])
+        # self.bot_name.insert(1, config["name"])
         self.bot_prefix.insert(1, config["prefix"])
         self.bot_token.insert(1, config["token"])
 
@@ -166,6 +167,11 @@ class SetupBot(ttk.Notebook):
         """
 
         print("Starting the bot...")
+        th = threading.Thread(target=self.start_bot)
+        th.start()
+
+    @classmethod
+    def start_bot(self):
         os.system(f"{sys.executable} main.py")
 
 
