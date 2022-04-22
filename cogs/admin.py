@@ -134,7 +134,7 @@ class admin(commands.Cog):
         await ctx.send(f"{shutdown_message}"+shutdown_message[-1]*4+"....")
 
         self.bot.logger.log(msg="Bot is shutting down", level=50)
-        await client.Client.logout(self.bot)
+        await client.Client.close(self.bot)
 
     @halt.error
     async def halt_error(self, ctx, error):
@@ -255,7 +255,7 @@ class admin(commands.Cog):
         """
 
         await ctx.send("rebooting....")
-        await client.Client.logout(self.bot)
+        await client.Client.close(self.bot)
 
     @commands.command(hidden=True,
                       description="Reloads bot cogs")

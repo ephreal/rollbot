@@ -127,6 +127,23 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
                 await BOT.process_commands(message)
 
     @BOT.event
+    async def on_message_edit(before, after):
+        """
+        Checks to see if the edited message starts with the bot command
+        prefix. If the edited message starts with the command prefix, this will
+        then attempt to run the command.
+        """
+
+        if after.content.startswith(f"{BOT.command_prefix*2}"):
+            return
+
+        if after.content.startswith(prefix):
+            await BOT.process_commands(after)
+            command = after.content.split()
+            command = command[0].replace(BOT.command_prefix, "")
+            await BOT.db_handler.metrics.update_commands(command, 1)
+
+    @BOT.event
     async def on_command_error(ctx, error):
         if isinstance(error, commands.CommandNotFound):
             handler = BOT.db_handler.tags
