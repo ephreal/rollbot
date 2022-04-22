@@ -57,19 +57,24 @@ class Indexer():
             -> None
         """
 
+        # Get the filename from the file path
         file_path = os.path.join(root, file_name)
         file_name, ext = os.path.splitext(file_name)
-        print(ext)
 
         # Check to see if the extension maps to a known audio extension.
         if ext not in self.audio_exts:
             return
+
+        # Generate a list of word tokens for the album dir, author dir, and
+        # the filename
         album_dir = os.path.basename(root)
         author_dir = os.path.basename(os.path.dirname(root))
-        stop_words = set(stopwords.words('english'))
         word_tokens = self.tokenizer.tokenize(file_name)
         word_tokens.extend(self.tokenizer.tokenize(album_dir))
         word_tokens.extend(self.tokenizer.tokenize(author_dir))
+
+        # Remove any punctuation
+        stop_words = set(stopwords.words('english'))
         tokens = [t.lower() for t in word_tokens if t not in stop_words]
 
         for token in tokens:
