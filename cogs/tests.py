@@ -172,5 +172,5 @@ author id:  {info['author_id']}
         await ctx.send(f"There are {len(users)} members in this guild.")
 
 
-def setup(bot):
-    bot.add_cog(tests(bot))
+async def setup(bot):
+    await bot.add_cog(tests(bot))

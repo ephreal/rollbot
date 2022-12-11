@@ -179,5 +179,5 @@ class utils(commands.Cog):
             return await html.text()
 
 
-def setup(bot):
-    bot.add_cog(utils(bot))
+async def setup(bot):
+    await bot.add_cog(utils(bot))

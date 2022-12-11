@@ -45,7 +45,7 @@ class MessageManager(commands.Cog):
             embed = Embed(description=message.content)
 
             embed.set_author(name=message.author.name,
-                             icon_url=message.author.avatar_url)
+                             icon_url=message.author.avatar)
 
             embed.timestamp = message.created_at
             messages.append(embed)
@@ -70,14 +70,13 @@ class MessageManager(commands.Cog):
             {self.prefix}purge 10 all
         """
 
-        with ctx.typing():
-            await ctx.message.delete()
-            if "all" in flags:
-                await ctx.message.channel.purge(limit=limit)
-            else:
-                await ctx.message.channel.purge(limit=limit,
-                                                check=lambda msg: not msg.pinned
-                                                and not msg.attachments)
+        await ctx.message.delete()
+        if "all" in flags:
+            await ctx.message.channel.purge(limit=limit)
+        else:
+            await ctx.message.channel.purge(limit=limit,
+                                            check=lambda msg: not msg.pinned
+                                            and not msg.attachments)
 
     @purge.error
     async def purge_error(self, ctx, error):
@@ -88,5 +87,5 @@ class MessageManager(commands.Cog):
                            f"Error message: {error}")
 
 
-def setup(bot):
-    bot.add_cog(MessageManager(bot))
+async def setup(bot):
+    await bot.add_cog(MessageManager(bot))

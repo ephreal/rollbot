@@ -353,5 +353,5 @@ class shadowrun(commands.Cog):
         return await shadowrun_utils.format_quote(quote)
 
 
-def setup(bot):
-    bot.add_cog(shadowrun(bot))
+async def setup(bot):
+    await bot.add_cog(shadowrun(bot))

@@ -60,13 +60,8 @@ async def remove_bbcode(quote):
                     "[u]", "[/u]", "[s]", "[/s]"
                   ]
 
-    for key in list(quote.keys()):
-        if key == "id":
-            continue
-        replaced = quote[key]
-        for i in bbcode_tags:
-            replaced = replaced.replace(i, "")
-        quote[key] = replaced
+    for i in bbcode_tags:
+        quote['quote'] = quote['quote'].replace(i, "")
 
     return quote
 
@@ -121,13 +116,8 @@ async def replace_html_escapes(quote):
                       "&#39;": "'",
                     }
 
-    for key in list(quote.keys()):
-        if key == "id":
-            continue
-        replaced = quote[key]
-        for i in html_escaped.keys():
-            replaced = replaced.replace(i, html_escaped[i])
-        quote[key] = replaced
+    for i in html_escaped.keys():
+        quote['quote'] = quote['quote'].replace(i, html_escaped[i])
 
     return quote
 

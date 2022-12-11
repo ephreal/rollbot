@@ -124,7 +124,7 @@ class admin(commands.Cog):
 
         Only the owner of the bot may shut the bot down.
 
-        usage: {self.prefix}po
+        usage: {self.prefix}halt
         """
 
         shutdown_message = await admin_utils.shutdown_message()
@@ -326,5 +326,5 @@ class admin(commands.Cog):
                            f"Error message: {error}")
 
 
-def setup(bot):
-    bot.add_cog(admin(bot))
+async def setup(bot):
+    await bot.add_cog(admin(bot))

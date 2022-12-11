@@ -14,7 +14,7 @@ import json
 import re
 
 from datetime import datetime
-from discord import Game
+from discord import Game, Intents
 from discord.ext import commands
 from utils.message_builder import on_join_builder
 from utils.db import db_migration_handler
@@ -23,7 +23,11 @@ from utils.handlers import db_handler
 
 def build_bot(prefix, restrict_rolling, description, catapi_key=None):
 
-    BOT = commands.Bot(command_prefix=prefix, description=description)
+    # Subscribing to all intents since I don't ever expect my bot to be large
+    # enough to require verification
+    intents = Intents.all()
+
+    BOT = commands.Bot(command_prefix=prefix, description=description, intents=intents)
 
     @BOT.event
     async def on_member_join(member):
@@ -175,7 +179,7 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
         for extension in cogs:
             try:
                 print(f"Loading {extension}...")
-                BOT.load_extension(f"cogs.{extension}")
+                await BOT.load_extension(f"cogs.{extension}")
                 print(f"Loaded {extension}")
 
             except AttributeError as e:

@@ -307,5 +307,5 @@ class musicPlayer(commands.Cog):
             return await self.initialize_voice(ctx)
 
 
-def setup(bot):
-    bot.add_cog(musicPlayer(bot))
+async def setup(bot):
+    await bot.add_cog(musicPlayer(bot))

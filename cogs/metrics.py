@@ -69,5 +69,5 @@ class Metrics(commands.Cog):
         return self.bot.appinfo.owner.id == ctx.author.id
 
 
-def setup(bot):
-    bot.add_cog(Metrics(bot))
+async def setup(bot):
+    await bot.add_cog(Metrics(bot))

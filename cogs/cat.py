@@ -29,9 +29,9 @@ class Catapi(commands.Cog):
             await asyncio.sleep(5)
 
 
-def setup(bot):
+async def setup(bot):
     if bot.catapi_key:
-        bot.add_cog(Catapi(bot))
+        await bot.add_cog(Catapi(bot))
         print("catapi added")
     else:
         print("Cat cog not loaded: Missing bot.catapi_key")

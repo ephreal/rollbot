@@ -1,38 +1,10 @@
 # -*- coding: utf-8 -*-
-
 """
-Copyright 2018-2019 Ephreal
+This software is licensed under the License (MIT) located at
+https://github.com/ephreal/rollbot/Licence
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
-
-
-Commands provided by this cog:
-
-    ban  : Bans a member from the guild. Member name and reason for ban are
-           are required. Messages banned member and banning member
-
-    kick : Kicks a member from a guild. Member name and reason for kick
-           are required. Messages both kicker and kickee durink kick process
-
-    promote : Promotes a member from a lower privileged role in the guild to
-              a higher privileged role. Members can only promote to their same
-              level. Roles must be created with create_roles.
+Please see the license for any restrictions or rights granted to you by the
+License.
 """
 
 from discord.ext import commands
@@ -136,5 +108,5 @@ class MemberManager(commands.Cog):
         await ctx.author.send(f"{member} has been kicked from the guild.")
 
 
-def setup(bot):
-    bot.add_cog(MemberManager(bot))
+async def setup(bot):
+    await bot.add_cog(MemberManager(bot))

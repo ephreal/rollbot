@@ -117,5 +117,5 @@ class roller(commands.Cog):
         return tuple(roll_args), handler
 
 
-def setup(bot):
-    bot.add_cog(roller(bot))
+async def setup(bot):
+    await bot.add_cog(roller(bot))

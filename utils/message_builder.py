@@ -22,7 +22,7 @@ async def embed_reply(author, content, color=Colour.blue()):
     """
 
     message = Embed()
-    message.set_author(name=author.name, icon_url=author.avatar_url)
+    message.set_author(name=author.name, icon_url=author.avatar)
     message.thumbnail.height = 128
     message.thumbnail.width = 128
     message.description = content
@@ -51,7 +51,7 @@ async def embed_catapi_image(ctx, image):
         breed = f"breed: {breed.name}    breed_id: {breed.id}\n"
         message.footer = breed.wikipedia_url
 
-    message.set_author(name=author.name, icon_url=author.avatar_url)
+    message.set_author(name=author.name, icon_url=author.avatar)
     message.colour = Colour.green()
     message.description = f"Image id: {image.id}\n{breed}{image.url}"
     message.set_image(url=image.url)

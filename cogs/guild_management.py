@@ -154,5 +154,5 @@ class GuildManager(commands.Cog):
         await ctx.author.add_roles(nsfw_role)
 
 
-def setup(bot):
-    bot.add_cog(GuildManager(bot))
+async def setup(bot):
+    await bot.add_cog(GuildManager(bot))

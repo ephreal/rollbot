@@ -215,5 +215,5 @@ class Tag(commands.Cog):
         return f"{tag} has been created"
 
 
-def setup(bot):
-    bot.add_cog(Tag(bot))
+async def setup(bot):
+    await bot.add_cog(Tag(bot))

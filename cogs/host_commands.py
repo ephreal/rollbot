@@ -34,5 +34,5 @@ class HostCommands(commands.Cog):
         return await ctx.send(await process_host_commands(cmd))
 
 
-def setup(bot):
-    bot.add_cog(HostCommands(bot))
+async def setup(bot):
+    await bot.add_cog(HostCommands(bot))

@@ -15,11 +15,5 @@ class cardgames(commands.Cog):
         self.bot = bot
 
 
-if __name__ == "__main__":
-    # Do testing functions here
-    # none are made yet....
-    pass
-
-else:
-    def setup(bot):
-        bot.add_cog(cardgames(bot))
+async def setup(bot):
+    await bot.add_cog(cardgames(bot))

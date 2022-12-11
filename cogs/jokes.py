@@ -123,5 +123,5 @@ class Joke(commands.Cog):
         return f"{random_joke['setup']}\n{random_joke['punchline']}"
 
 
-def setup(bot):
-    bot.add_cog(Joke(bot))
+async def setup(bot):
+    await bot.add_cog(Joke(bot))
