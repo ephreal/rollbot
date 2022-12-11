@@ -118,6 +118,7 @@ async def replace_html_escapes(quote):
 
     for i in html_escaped.keys():
         quote['quote'] = quote['quote'].replace(i, html_escaped[i])
+        quote['title'] = quote['title'].replace(i, html_escaped[i])
 
     return quote
 
