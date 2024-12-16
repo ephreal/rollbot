@@ -6,73 +6,81 @@ https://github.com/ephreal/rollbot/Licence
 Please see the license for any restrictions or rights granted to you by the
 License.
 """
-
 from discord import Colour
 from discord.ext import commands
 from utils import message_builder
 from utils.rolling import rolling_utils
 from utils.rolling import handlers
+import re
 
 
-class roller(commands.Cog):
+class Roller(commands.Cog):
     def __init__(self, bot):
         self.handlers = {
-                    "basic": handlers.BaseRollHandler(),
-                    "sr3": handlers.Sr3RollHandler(),
-                    "dnd": handlers.DndRollHandler(),
-                    "vm": handlers.VampireMasqueradeHandler()
+            "basic": handlers.BaseRollHandler(),
+            "sr3": handlers.Sr3RollHandler(),
+            "dnd": handlers.DndRollHandler(),
+            "vm": handlers.VampireMasqueradeHandler(),
         }
-        self.guild_handlers = {}
-        self.db = bot.db_handler.guilds
+        self.guild_handlers = {}  # In-memory storage for guild roll modes
         self.bot = bot
+
+    def get_default_rollmode(self, ctx):
+        """Get the default rollmode for the guild."""
+        return self.guild_handlers.get(ctx.guild.id, 'sr3')
+
+    def is_xdy_format(self, string):
+        """Check if the string is in the 'XdY' format."""
+        return bool(re.match(r'^\d+d\d+$', string))
+
+    def determine_handler(self, roll_args, rollmode):
+        """Determine the appropriate handler based on rollmode and input format."""
+        if self.is_xdy_format(roll_args[0]) and rollmode not in ['basic', 'dnd']:
+            return self.handlers['basic']
+        
+        return self.handlers.get(rollmode, self.handlers['sr3'])
+
+    async def preprocess_roll_args(self, ctx, roll_args):
+        """Preprocess the roll arguments and extract rollmode."""
+        rollmode = self.get_default_rollmode(ctx)
+        return roll_args, rollmode
 
     @commands.command(aliases=['r'])
     async def roll(self, ctx, *roll_args):
-        """Rolls dice
+        """Rolls dice based on the specified game mode and arguments."""
+        if not roll_args:
+            return await ctx.send("Please provide a roll argument, e.g., `1d6`")
 
-        Rolls XdY dice.
+        roll_args, rollmode = await self.preprocess_roll_args(ctx, list(roll_args))
 
-        By default, the dice roller rolls dice with the currently set game
-        mode. This can be changed with the ".set" command, or by passing in
-        the "-g" parameter.
-
-        roll 10, six-sided dice
-            .roll 10d6
-
-        Add 5 to 10, six sided dice
-            .roll 10d6 -m 5
-
-        Give a note specifying what the note is for
-            .roll 1d6 -n This is a test roll
-        """
-
-        roll_args, handler = await self.get_handler(ctx, list(roll_args))
-
+        # Check if we are in a roll channel
         channel = await rolling_utils.check_roll_channel(ctx, self.bot)
+
         if "-h" in roll_args:
+            # Provide help if -h is used
+            handler = self.handlers.get(rollmode, self.handlers['sr3'])
             message = handler.parser.format_help()
-            message = f"```{message}```"
-            return await ctx.send(message)
+            return await ctx.send(f"```{message}```")
 
-        roll = await handler.roll(roll_args)
-        message = await roll.format()
+        # Determine the appropriate handler for the roll
+        handler = self.determine_handler(roll_args, rollmode)
 
-        if "CRITICAL" in message or "FAILURE" in message:
-            message = await message_builder.embed_reply(ctx.author, message,
-                                                        Colour.red())
-        else:
-            message = await message_builder.embed_reply(ctx.author, message,
-                                                        Colour.green())
+        try:
+            roll = await handler.roll(roll_args)
+            message = await roll.format()
 
-        await channel.send(embed=message)
+            embed_color = Colour.red() if "CRITICAL" in message or "FAILURE" in message else Colour.green()
+            message = await message_builder.embed_reply(ctx.author, message, embed_color)
+            await channel.send(embed=message)
+        except Exception as e:
+            await ctx.send(f"An error occurred while rolling: {str(e)}")
 
     @commands.command(description="Sets current rolling mode")
     async def rollmode(self, ctx, mode):
         """Sets the current rolling mode.
 
-        Valid options are "basic", "dnd", and "sr3"
+        Valid options are "basic", "dnd", "sr3", and "vm"
         """
-
         modes = {
             "basic": "Basic rolling mode",
             "dnd": "Dungeons and Dragons",
@@ -82,40 +90,12 @@ class roller(commands.Cog):
 
         mode = mode.lower()
 
-        if mode == "basic":
-            await self.db.set_roll_handler(ctx.guild.id, "basic")
-            self.guild_handlers[ctx.guild.id] = "basic"
-
-        elif mode == "dnd":
-            await self.db.set_roll_handler(ctx.guild.id, "dnd")
-            self.guild_handlers[ctx.guild.id] = "dnd"
-
-        elif mode == "sr3":
-            await self.db.set_roll_handler(ctx.guild.id, "sr3")
-            self.guild_handlers[ctx.guild.id] = "sr3"
-        elif mode == "vm":
-            await self.db.set_roll_handler(ctx.guild.id, "vm")
-            self.guild_handlers[ctx.guild.id] = "vm"
-        else:
+        if mode not in modes:
             return await ctx.send("That is an invalid mode")
+
+        self.guild_handlers[ctx.guild.id] = mode
         await ctx.send(f"Mode changed to {modes[mode]}")
-
-    async def get_handler(self, ctx, roll_args):
-        if "-g" in roll_args:
-            index = roll_args.index("-g")
-            roll_args.pop(index)
-            handler = roll_args.pop(index)
-        else:
-
-            try:
-                handler = self.guild_handlers[ctx.guild.id]
-            except KeyError:
-                handler = await self.db.get_roll_handler(ctx.guild.id)
-                self.guild_handlers[ctx.guild.id] = handler
-
-        handler = self.handlers[handler]
-        return tuple(roll_args), handler
 
 
 async def setup(bot):
-    await bot.add_cog(roller(bot))
+    await bot.add_cog(Roller(bot))
