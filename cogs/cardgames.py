@@ -8,11 +8,25 @@ License.
 """
 
 from discord.ext import commands
+from classes.games import game_handler
 
 
 class cardgames(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.handlers = {}
+    
+    @commands.command(description="Plays blackjack with you")
+    def blackjack(self, ctx):
+        """
+        Plays a game of blackjack with the person who ran the command.
+
+        usage:
+
+        .blackjack
+        """
+        return await ctx.send("Zorp class printer brah!")
+
 
 
 async def setup(bot):

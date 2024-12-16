@@ -27,6 +27,10 @@ def build_bot(prefix, restrict_rolling, description, catapi_key=None):
     # enough to require verification
     intents = Intents.all()
 
+    # Removing the presences intents since it's not really necessary *AND*
+    # causes me a bit of slowdown.
+    intents.presences = False
+
     BOT = commands.Bot(command_prefix=prefix, description=description, intents=intents)
 
     @BOT.event
